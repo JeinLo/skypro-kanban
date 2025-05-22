@@ -1099,4 +1099,16 @@ body {
   .pop-exit__form-group {
     display: block;
   }
+
+  /* src/App.css */
+  .loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+  }
 }
