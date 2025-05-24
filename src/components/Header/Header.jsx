@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import PopUser from "../popups/PopUser/PopUser";
-import "../../App.css";
+import {
+  StyledHeader,
+  StyledHeaderBlock,
+  StyledHeaderNav,
+  StyledLogo,
+  StyledPrimaryButton,
+  StyledUserButton,
+} from "./Header.styled";
+import { Container } from "../../styles/Global.styled";
 
 function Header() {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
@@ -14,35 +22,30 @@ function Header() {
   };
 
   return (
-    <header className="header">
-      <div className="container">
-        <div className="header__block">
-          <div className="header__logo _show _light">
-            <a href="" target="_self">
-              Logo
-            </a>
-          </div>
-          <div className="header__logo _dark">
-            <a href="" target="_self">
-              Dark Logo
-            </a>
-          </div>
-          <nav className="header__nav">
-            <button className="header__btn-main-new _hover01" id="btnMainNew">
+    <StyledHeader>
+      <Container>
+        <StyledHeaderBlock>
+          <div
+            style={{
+              width: "84.13323974609375px",
+              height: "17.18410873413086px",
+            }}
+          ></div>
+          <StyledLogo href="" target="_self">
+            SKYPRO
+          </StyledLogo>
+          <StyledHeaderNav>
+            <StyledPrimaryButton>
               <a href="#popNewCard">Создать новую задачу</a>
-            </button>
-            <button
-              type="button"
-              className="header__user _hover02"
-              onClick={handleUserClick}
-            >
+            </StyledPrimaryButton>
+            <StyledUserButton type="button" onClick={handleUserClick}>
               Ivan Ivanov
-            </button>
+            </StyledUserButton>
             <PopUser isOpen={isUserPopupOpen} onClose={handleClosePopup} />
-          </nav>
-        </div>
-      </div>
-    </header>
+          </StyledHeaderNav>
+        </StyledHeaderBlock>
+      </Container>
+    </StyledHeader>
   );
 }
 

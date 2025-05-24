@@ -1,14 +1,14 @@
 import React from "react";
 import Card from "../Card/Card";
-import "../../App.css";
+import { StyledColumn, ColumnTitle } from "./Column.styled";
 
 function Column({ title, cards }) {
   return (
-    <div className="main__column column">
-      <div className="column__title">
+    <StyledColumn>
+      <ColumnTitle>
         <p>{title}</p>
-      </div>
-      <div className="cards">
+      </ColumnTitle>
+      <div>
         {cards.map((card) => (
           <Card
             key={card.id}
@@ -18,7 +18,7 @@ function Column({ title, cards }) {
           />
         ))}
       </div>
-    </div>
+    </StyledColumn>
   );
 }
 
