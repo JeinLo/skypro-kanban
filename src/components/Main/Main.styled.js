@@ -3,7 +3,6 @@ import themes from "../../styles/theme";
 
 export const StyledMain = styled.main`
   width: 100%;
-  background-color: ${themes.background.main};
 `;
 
 export const StyledMainBlock = styled.div`

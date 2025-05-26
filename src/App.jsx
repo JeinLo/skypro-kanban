@@ -1,18 +1,24 @@
+import styled from "styled-components";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
-import PopNewCard from "./components/popups/PopNewCard/PopNewCard";
-import PopBrowse from "./components/popups/PopBrowse/PopBrowse";
-import { Wrapper } from "./styles/Global.styled";
-import "./App.css";
+import GlobalStyle from "./styles/GlobalStyles";
+
+const StyledApp = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`;
 
 function App() {
   return (
-    <Wrapper>
-      <PopNewCard />
-      <PopBrowse />
-      <Header />
-      <Main />
-    </Wrapper>
+    <>
+      <GlobalStyle />
+      <StyledApp>
+        <Header />
+        <Main />
+      </StyledApp>
+    </>
   );
 }
 
