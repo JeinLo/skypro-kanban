@@ -1,8 +1,13 @@
-// src/components/Main/Main.jsx
 import React, { useState, useEffect } from "react";
 import Column from "../Column/Column";
 import cards from "../../../data";
-import "../../App.css";
+import {
+  StyledMain,
+  StyledMainBlock,
+  StyledMainContent,
+  StyledLoading,
+} from "./Main.styled";
+import { Container } from "../../styles/Global.styled";
 
 function Main() {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,13 +29,13 @@ function Main() {
   ];
 
   return (
-    <main className="main">
-      <div className="container">
-        <div className="main__block">
+    <StyledMain>
+      <Container>
+        <StyledMainBlock>
           {isLoading ? (
-            <div className="loading">Данные загружаются...</div>
+            <StyledLoading>Данные загружаются...</StyledLoading>
           ) : (
-            <div className="main__content">
+            <StyledMainContent>
               {statuses.map((status) => (
                 <Column
                   key={status}
@@ -38,11 +43,11 @@ function Main() {
                   cards={cards.filter((card) => card.status === status)}
                 />
               ))}
-            </div>
+            </StyledMainContent>
           )}
-        </div>
-      </div>
-    </main>
+        </StyledMainBlock>
+      </Container>
+    </StyledMain>
   );
 }
 
