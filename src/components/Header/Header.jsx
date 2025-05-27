@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import PopUser from "../popups/PopUser/PopUser";
+import { Link } from "react-router-dom";
 import {
   StyledHeader,
   StyledHeaderBlock,
@@ -8,43 +7,22 @@ import {
   StyledPrimaryButton,
   StyledUserButton,
 } from "./Header.styled";
-import { Container } from "../../styles/Global.styled";
+import PopUser from "../popups/PopUser";
 
-function Header() {
-  const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
-
-  const handleUserClick = () => {
-    setIsUserPopupOpen(true);
-  };
-
-  const handleClosePopup = () => {
-    setIsUserPopupOpen(false);
-  };
-
+function Header({ setIsAuth }) {
   return (
     <StyledHeader>
-      <Container>
-        <StyledHeaderBlock>
-          <div
-            style={{
-              width: "84.13323974609375px",
-              height: "17.18410873413086px",
-            }}
-          ></div>
-          <StyledLogo href="" target="_self">
-            SKYPRO
-          </StyledLogo>
-          <StyledHeaderNav>
-            <StyledPrimaryButton>
-              <a href="#popNewCard">Создать новую задачу</a>
-            </StyledPrimaryButton>
-            <StyledUserButton type="button" onClick={handleUserClick}>
-              Ivan Ivanov
-            </StyledUserButton>
-            <PopUser isOpen={isUserPopupOpen} onClose={handleClosePopup} />
-          </StyledHeaderNav>
-        </StyledHeaderBlock>
-      </Container>
+      <StyledHeaderBlock>
+        <StyledLogo as={Link} to="/">
+          SKYPRO
+        </StyledLogo>
+        <StyledHeaderNav>
+          <StyledPrimaryButton as={Link} to="/card/add">
+            Создать новую задачу
+          </StyledPrimaryButton>
+          <PopUser setIsAuth={setIsAuth} />
+        </StyledHeaderNav>
+      </StyledHeaderBlock>
     </StyledHeader>
   );
 }

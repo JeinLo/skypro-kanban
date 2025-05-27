@@ -1,54 +1,39 @@
-import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   StyledPopUser,
-  StyledPopUserContainer,
-  StyledPopUserBlock,
-  StyledPopUserContent,
-  StyledPopUserTitle,
-  StyledPopUserEmail,
-  StyledPopUserThemeSelect,
-  StyledPopUserButton,
-  StyledPopUserClose,
+  StyledName,
+  StyledEmail,
+  StyledSelect,
+  StyledButton,
+  StyledUserLink,
+  StyledArrow,
 } from "./PopUser.styled";
 
-function PopUser({ isOpen, onClose }) {
-  const [theme, setTheme] = useState("light");
-
-  const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-    // Заглушка для смены темы: в реальном проекте здесь будет логика обновления глобальной темы
-    console.log(`Selected theme: ${e.target.value}`);
-  };
+function PopUser({ setIsAuth }) {
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
-    // Заглушка для выхода из аккаунта
-    console.log("User logged out");
-    onClose();
+    setIsAuth(false);
+    navigate("/login");
   };
 
   return (
-    <StyledPopUser isOpen={isOpen}>
-      <StyledPopUserContainer>
-        <StyledPopUserBlock>
-          <StyledPopUserClose onClick={onClose}>×</StyledPopUserClose>
-          <StyledPopUserContent>
-            <StyledPopUserTitle>Профиль</StyledPopUserTitle>
-            <StyledPopUserTitle>Ivan Ivanov</StyledPopUserTitle>
-            <StyledPopUserEmail>ivan.ivanov@example.com</StyledPopUserEmail>
-            <StyledPopUserThemeSelect
-              value={theme}
-              onChange={handleThemeChange}
-            >
-              <option value="light">Светлая тема</option>
-              <option value="dark">Тёмная тема</option>
-            </StyledPopUserThemeSelect>
-            <StyledPopUserButton onClick={handleLogout}>
-              Выйти
-            </StyledPopUserButton>
-          </StyledPopUserContent>
-        </StyledPopUserBlock>
-      </StyledPopUserContainer>
-    </StyledPopUser>
+    <>
+      <StyledUserLink onClick={() => setIsOpen(!isOpen)}>
+        Ivan Ivanov <StyledArrow>▼</StyledArrow>
+      </StyledUserLink>
+      <StyledPopUser isOpen={isOpen}>
+        <StyledName>Ivan Ivanov</StyledName>
+        <StyledEmail>ivan@example.com</StyledEmail>
+        <StyledSelect>
+          <option value="theme1">Тема 1</option>
+          <option value="theme2">Тема 2</option>
+        </StyledSelect>
+        <StyledButton onClick={handleLogout}>Выйти</StyledButton>
+      </StyledPopUser>
+    </>
   );
 }
 
