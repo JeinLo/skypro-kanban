@@ -1,29 +1,28 @@
-import { Link } from "react-router-dom";
 import {
-  StyledHeader,
-  StyledHeaderBlock,
-  StyledHeaderNav,
-  StyledLogo,
-  StyledPrimaryButton,
-  StyledUserButton,
+  SHeader,
+  Logo,
+  StyledActions,
+  StyledTaskLink,
+  StyledUserLink,
+  StyledArrow,
 } from "./Header.styled";
-import PopUser from "../popups/PopUser";
+import { useState } from "react";
+import PopUser from "../popups/PopUser/PopUser";
 
 function Header({ setIsAuth }) {
+  const [isPopUserOpen, setIsPopUserOpen] = useState(false);
+
   return (
-    <StyledHeader>
-      <StyledHeaderBlock>
-        <StyledLogo as={Link} to="/">
-          SKYPRO
-        </StyledLogo>
-        <StyledHeaderNav>
-          <StyledPrimaryButton as={Link} to="/card/add">
-            Создать новую задачу
-          </StyledPrimaryButton>
-          <PopUser setIsAuth={setIsAuth} />
-        </StyledHeaderNav>
-      </StyledHeaderBlock>
-    </StyledHeader>
+    <SHeader>
+      <Logo>SKYPRO</Logo>
+      <StyledActions>
+        <StyledTaskLink to="/card/add">Создать задание</StyledTaskLink>
+        <StyledUserLink onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
+          Ivan Ivanov <StyledArrow>▼</StyledArrow>
+        </StyledUserLink>
+        <PopUser isOpen={isPopUserOpen} setIsAuth={setIsAuth} />
+      </StyledActions>
+    </SHeader>
   );
 }
 

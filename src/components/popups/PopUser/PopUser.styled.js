@@ -48,20 +48,3 @@ export const StyledButton = styled.button`
     background-color: #c82333;
   }
 `;
-
-export const StyledUserLink = styled.div`
-  color: #000000;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-export const StyledArrow = styled.span`
-  font-size: 12px;
-  color: #000000;
-`;

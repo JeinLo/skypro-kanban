@@ -1,39 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import {
   StyledPopUser,
   StyledName,
   StyledEmail,
   StyledSelect,
   StyledButton,
-  StyledUserLink,
-  StyledArrow,
 } from "./PopUser.styled";
 
-function PopUser({ setIsAuth }) {
+function PopUser({ isOpen, setIsAuth }) {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
     setIsAuth(false);
-    navigate("/login");
+    navigate("/exit");
   };
 
   return (
-    <>
-      <StyledUserLink onClick={() => setIsOpen(!isOpen)}>
-        Ivan Ivanov <StyledArrow>▼</StyledArrow>
-      </StyledUserLink>
-      <StyledPopUser isOpen={isOpen}>
-        <StyledName>Ivan Ivanov</StyledName>
-        <StyledEmail>ivan@example.com</StyledEmail>
-        <StyledSelect>
-          <option value="theme1">Тема 1</option>
-          <option value="theme2">Тема 2</option>
-        </StyledSelect>
-        <StyledButton onClick={handleLogout}>Выйти</StyledButton>
-      </StyledPopUser>
-    </>
+    <StyledPopUser isOpen={isOpen}>
+      <StyledName>Ivan Ivanov</StyledName>
+      <StyledEmail>ivan@example.com</StyledEmail>
+      <StyledSelect>
+        <option value="theme1">Тема 1</option>
+        <option value="theme2">Тема 2</option>
+      </StyledSelect>
+      <StyledButton onClick={handleLogoutClick}>Выйти</StyledButton>
+    </StyledPopUser>
   );
 }
 

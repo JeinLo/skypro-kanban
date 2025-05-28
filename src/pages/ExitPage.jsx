@@ -61,8 +61,10 @@ function ExitPage({ setIsAuth }) {
     <StyledExitPage>
       <StyledModal>
         <StyledTitle>Вы уверены, что хотите выйти?</StyledTitle>
-        <StyledButton onClick={handleLogout}>Выйти</StyledButton>
-        <StyledCancelButton onClick={handleCancel}>Отмена</StyledCancelButton>
+        <StyledButton onClick={handleLogout}>Да, выйти</StyledButton>
+        <StyledCancelButton onClick={handleCancel}>
+          Нет, остаться
+        </StyledCancelButton>
       </StyledModal>
     </StyledExitPage>
   );
