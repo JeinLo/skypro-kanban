@@ -15,6 +15,7 @@ function Column({ title, cards }) {
             topic={card.topic}
             title={card.title}
             date={card.date}
+            id={card.id} // Передаём id в Card
           />
         ))}
       </div>

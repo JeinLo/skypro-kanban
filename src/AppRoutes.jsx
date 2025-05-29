@@ -14,15 +14,24 @@ function AppRoutes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const authStatus = localStorage.getItem("isAuth") === "true";
+    setIsAuth(authStatus);
     setTimeout(() => {
       setLoading(false);
     }, 3000);
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("isAuth", isAuth);
+  }, [isAuth]);
+
   return (
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
-        <Route path="/" element={<MainPage loading={loading} />} />
+        <Route
+          path="/"
+          element={<MainPage loading={loading} setIsAuth={setIsAuth} />}
+        />
         <Route path="/card/add" element={<NewCardPage />} />
         <Route path="/card/:id" element={<CardPage />} />
         <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />

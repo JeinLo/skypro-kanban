@@ -9,14 +9,14 @@ const StyledMainPage = styled.div`
   width: 100%;
 `;
 
-function MainPage({ loading }) {
+function MainPage({ loading, setIsAuth }) {
   return (
     <StyledMainPage>
       {loading ? (
         <div>Loading...</div>
       ) : (
         <>
-          <Header />
+          <Header setIsAuth={setIsAuth} />
           <Main />
         </>
       )}

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   StyledCards,
   StyledCardItem,
@@ -11,7 +12,7 @@ import {
   StyledCardDate,
 } from "./Card.styled";
 
-function Card({ topic, title, date }) {
+function Card({ topic, title, date, id }) {
   const themeMap = {
     "Web Design": "webDesign",
     Research: "research",
@@ -28,16 +29,16 @@ function Card({ topic, title, date }) {
             <StyledCardTheme theme={theme}>
               <p>{topic}</p>
             </StyledCardTheme>
-            <StyledCardBtn href="#popBrowse" target="_self">
+            <StyledCardBtn as={Link} to={`/card/${id}`}>
               <div></div>
               <div></div>
               <div></div>
             </StyledCardBtn>
           </StyledCardGroup>
           <StyledCardContent>
-            <a href="" target="_blank">
-              <StyledCardTitle>{title}</StyledCardTitle>
-            </a>
+            <StyledCardTitle as={Link} to={`/card/${id}`}>
+              {title}
+            </StyledCardTitle>
             <StyledCardDate>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
