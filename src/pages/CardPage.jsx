@@ -63,7 +63,8 @@ const StyledButton = styled.button`
 
 function CardPage() {
   const { id } = useParams();
-  const card = cards.find((c) => c.id === id);
+  const cardId = parseInt(id, 10); // Преобразуем строковый id в число
+  const card = cards.find((c) => c.id === cardId); // Сравниваем как числа
 
   if (!card) {
     return (

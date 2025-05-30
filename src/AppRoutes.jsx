@@ -8,6 +8,7 @@ import NewCardPage from "./pages/NewCardPage";
 import ExitPage from "./pages/ExitPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
+import Layout from "./components/Layout";
 
 function AppRoutes() {
   const [isAuth, setIsAuth] = useState(false);
@@ -28,13 +29,12 @@ function AppRoutes() {
   return (
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
-        <Route
-          path="/"
-          element={<MainPage loading={loading} setIsAuth={setIsAuth} />}
-        />
-        <Route path="/card/add" element={<NewCardPage />} />
-        <Route path="/card/:id" element={<CardPage />} />
-        <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />
+        <Route element={<Layout setIsAuth={setIsAuth} />}>
+          <Route path="/" element={<MainPage loading={loading} />} />
+          <Route path="/card/add" element={<NewCardPage />} />
+          <Route path="/card/:id" element={<CardPage />} />
+          <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />
+        </Route>
       </Route>
       <Route path="/login" element={<LoginPage setIsAuth={setIsAuth} />} />
       <Route

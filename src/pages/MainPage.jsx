@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Header from "../components/Header/Header";
 import Main from "../components/Main/Main";
 
 const StyledMainPage = styled.div`
@@ -9,17 +8,10 @@ const StyledMainPage = styled.div`
   width: 100%;
 `;
 
-function MainPage({ loading, setIsAuth }) {
+function MainPage({ loading }) {
   return (
     <StyledMainPage>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <Header setIsAuth={setIsAuth} />
-          <Main />
-        </>
-      )}
+      {loading ? <div>Loading...</div> : <Main />}
     </StyledMainPage>
   );
 }
