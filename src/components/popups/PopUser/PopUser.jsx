@@ -1,53 +1,34 @@
-import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   StyledPopUser,
-  StyledPopUserContainer,
-  StyledPopUserBlock,
-  StyledPopUserContent,
-  StyledPopUserTitle,
-  StyledPopUserEmail,
-  StyledPopUserThemeSelect,
-  StyledPopUserButton,
-  StyledPopUserClose,
+  StyledName,
+  StyledEmail,
+  StyledSelect,
+  StyledButton,
 } from "./PopUser.styled";
 
-function PopUser({ isOpen, onClose }) {
-  const [theme, setTheme] = useState("light");
+function PopUser({ isOpen, setIsAuth }) {
+  const navigate = useNavigate();
 
-  const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-    // Заглушка для смены темы: в реальном проекте здесь будет логика обновления глобальной темы
-    console.log(`Selected theme: ${e.target.value}`);
-  };
-
-  const handleLogout = () => {
-    // Заглушка для выхода из аккаунта
-    console.log("User logged out");
-    onClose();
+  const handleLogoutClick = () => {
+    if (typeof setIsAuth === "function") {
+      setIsAuth(false);
+      localStorage.setItem("isAuth", false);
+      navigate("/login");
+    } else {
+      console.error("setIsAuth is not a function");
+    }
   };
 
   return (
     <StyledPopUser isOpen={isOpen}>
-      <StyledPopUserContainer>
-        <StyledPopUserBlock>
-          <StyledPopUserClose onClick={onClose}>×</StyledPopUserClose>
-          <StyledPopUserContent>
-            <StyledPopUserTitle>Профиль</StyledPopUserTitle>
-            <StyledPopUserTitle>Ivan Ivanov</StyledPopUserTitle>
-            <StyledPopUserEmail>ivan.ivanov@example.com</StyledPopUserEmail>
-            <StyledPopUserThemeSelect
-              value={theme}
-              onChange={handleThemeChange}
-            >
-              <option value="light">Светлая тема</option>
-              <option value="dark">Тёмная тема</option>
-            </StyledPopUserThemeSelect>
-            <StyledPopUserButton onClick={handleLogout}>
-              Выйти
-            </StyledPopUserButton>
-          </StyledPopUserContent>
-        </StyledPopUserBlock>
-      </StyledPopUserContainer>
+      <StyledName>Ivan Ivanov</StyledName>
+      <StyledEmail>ivan@example.com</StyledEmail>
+      <StyledSelect>
+        <option value="theme1">Тема 1</option>
+        <option value="theme2">Тема 2</option>
+      </StyledSelect>
+      <StyledButton onClick={handleLogoutClick}>Выйти</StyledButton>
     </StyledPopUser>
   );
 }

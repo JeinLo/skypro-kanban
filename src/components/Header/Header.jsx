@@ -1,51 +1,28 @@
-import React, { useState } from "react";
-import PopUser from "../popups/PopUser/PopUser";
 import {
-  StyledHeader,
-  StyledHeaderBlock,
-  StyledHeaderNav,
-  StyledLogo,
-  StyledPrimaryButton,
-  StyledUserButton,
+  SHeader,
+  Logo,
+  StyledActions,
+  StyledTaskLink,
+  StyledUserLink,
+  StyledArrow,
 } from "./Header.styled";
-import { Container } from "../../styles/Global.styled";
+import { useState } from "react";
+import PopUser from "../popups/PopUser/PopUser";
 
-function Header() {
-  const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
-
-  const handleUserClick = () => {
-    setIsUserPopupOpen(true);
-  };
-
-  const handleClosePopup = () => {
-    setIsUserPopupOpen(false);
-  };
+function Header({ setIsAuth }) {
+  const [isPopUserOpen, setIsPopUserOpen] = useState(false);
 
   return (
-    <StyledHeader>
-      <Container>
-        <StyledHeaderBlock>
-          <div
-            style={{
-              width: "84.13323974609375px",
-              height: "17.18410873413086px",
-            }}
-          ></div>
-          <StyledLogo href="" target="_self">
-            SKYPRO
-          </StyledLogo>
-          <StyledHeaderNav>
-            <StyledPrimaryButton>
-              <a href="#popNewCard">Создать новую задачу</a>
-            </StyledPrimaryButton>
-            <StyledUserButton type="button" onClick={handleUserClick}>
-              Ivan Ivanov
-            </StyledUserButton>
-            <PopUser isOpen={isUserPopupOpen} onClose={handleClosePopup} />
-          </StyledHeaderNav>
-        </StyledHeaderBlock>
-      </Container>
-    </StyledHeader>
+    <SHeader>
+      <Logo>SKYPRO</Logo>
+      <StyledActions>
+        <StyledTaskLink to="/card/add">Создать задание</StyledTaskLink>
+        <StyledUserLink onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
+          Ivan Ivanov <StyledArrow>▼</StyledArrow>
+        </StyledUserLink>
+        <PopUser isOpen={isPopUserOpen} setIsAuth={setIsAuth} />
+      </StyledActions>
+    </SHeader>
   );
 }
 

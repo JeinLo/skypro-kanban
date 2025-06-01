@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import Header from "./components/Header/Header";
-import Main from "./components/Main/Main";
 import GlobalStyle from "./styles/GlobalStyles";
+import AppRoutes from "./AppRoutes";
 
 const StyledApp = styled.div`
   min-height: 100vh;
@@ -15,8 +14,7 @@ function App() {
     <>
       <GlobalStyle />
       <StyledApp>
-        <Header />
-        <Main />
+        <AppRoutes />
       </StyledApp>
     </>
   );
