@@ -1,7 +1,7 @@
 import AuthForm from "./LoginPage";
 
-function RegisterPage({ setIsAuth }) {
-  return <AuthForm isSignUp={true} setIsAuth={setIsAuth} />;
+function RegisterPage({ setIsAuth, setToken }) {
+  return <AuthForm isSignUp={true} setIsAuth={setIsAuth} setToken={setToken} />;
 }
 
 export default RegisterPage;

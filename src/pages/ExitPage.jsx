@@ -50,7 +50,8 @@ function ExitPage({ setIsAuth }) {
 
   const handleLogout = () => {
     setIsAuth(false);
-    localStorage.setItem("isAuth", false);
+    localStorage.removeItem("isAuth");
+    localStorage.removeItem("userInfo");
     navigate("/login");
   };
 

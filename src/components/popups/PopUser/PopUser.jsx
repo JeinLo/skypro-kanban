@@ -11,13 +11,11 @@ function PopUser({ isOpen, setIsAuth }) {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    if (typeof setIsAuth === "function") {
-      setIsAuth(false);
-      localStorage.setItem("isAuth", false);
-      navigate("/login");
-    } else {
+    if (typeof setIsAuth !== "function") {
       console.error("setIsAuth is not a function");
+      return;
     }
+    navigate("/exit");
   };
 
   return (
