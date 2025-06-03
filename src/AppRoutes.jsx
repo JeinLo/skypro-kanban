@@ -34,12 +34,13 @@ function AppRoutes() {
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
         <Route element={<Layout setIsAuth={setIsAuth} />}>
+ react5-api
           <Route
             path="/"
-            element={<MainPage loading={loading} token={token} />}
-          />
+            element={<MainPage loading={loading} token={token} />} />
           <Route path="/card/add" element={<NewCardPage token={token} />} />
           <Route path="/card/:id" element={<CardPage token={token} />} />
+
           <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />
         </Route>
       </Route>
