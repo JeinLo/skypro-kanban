@@ -16,6 +16,7 @@ axios.interceptors.response.use(
 
 export async function signIn({ login, password }) {
   try {
+    console.log("signIn request:", { login, password });
     const response = await axios.post(
       `${API_URL}/login`,
       { login, password },
@@ -35,6 +36,7 @@ export async function signIn({ login, password }) {
 
 export async function signUp({ name, login, password }) {
   try {
+    console.log("signUp request:", { name, login, password });
     const response = await axios.post(
       API_URL,
       { name, login, password },

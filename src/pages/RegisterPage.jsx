@@ -146,7 +146,11 @@ const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
       navigate("/");
     } catch (err) {
       console.error("Auth error:", err.message);
-      setError(err.message || "Ошибка регистрации");
+      setError(
+        err.message.includes("400")
+          ? "Неверный формат данных. Проверьте email и пароль."
+          : err.message || "Ошибка авторизации"
+      );
     }
   };
 
