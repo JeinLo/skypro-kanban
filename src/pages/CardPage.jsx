@@ -146,7 +146,6 @@ function CardPage({ token }) {
       setError(err.message);
     }
   };
-
   if (loading) {
     return (
       <StyledCardPage>
