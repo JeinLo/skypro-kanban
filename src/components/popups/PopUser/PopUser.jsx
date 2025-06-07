@@ -11,19 +11,21 @@ function PopUser({ isOpen, setIsAuth }) {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    if (typeof setIsAuth === "function") {
-      setIsAuth(false);
-      localStorage.setItem("isAuth", false);
-      navigate("/login");
-    } else {
+    if (typeof setIsAuth !== "function") {
       console.error("setIsAuth is not a function");
+      return;
     }
+    navigate("/exit");
   };
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
+  const name = userInfo.user?.name || "Ivan Ivanov";
+  const email = userInfo.user?.login || "ivan@example.com";
 
   return (
     <StyledPopUser isOpen={isOpen}>
-      <StyledName>Ivan Ivanov</StyledName>
-      <StyledEmail>ivan@example.com</StyledEmail>
+      <StyledName>{name}</StyledName>
+      <StyledEmail>{email}</StyledEmail>
       <StyledSelect>
         <option value="theme1">Тема 1</option>
         <option value="theme2">Тема 2</option>
