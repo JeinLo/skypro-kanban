@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Header from "./Header/Header";
+import Header from "./Header/Header.jsx";
 import { Outlet } from "react-router-dom";
 
 const StyledLayout = styled.div`

@@ -18,10 +18,14 @@ function PopUser({ isOpen, setIsAuth }) {
     navigate("/exit");
   };
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
+  const name = userInfo.user?.name || "Ivan Ivanov";
+  const email = userInfo.user?.login || "ivan@example.com";
+
   return (
     <StyledPopUser isOpen={isOpen}>
-      <StyledName>Ivan Ivanov</StyledName>
-      <StyledEmail>ivan@example.com</StyledEmail>
+      <StyledName>{name}</StyledName>
+      <StyledEmail>{email}</StyledEmail>
       <StyledSelect>
         <option value="theme1">Тема 1</option>
         <option value="theme2">Тема 2</option>

@@ -105,7 +105,7 @@ const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
     }
     if (!formData.login.trim()) {
       newErrors.login = true;
-      setError("Заполните эл. почту");
+      setError("Заполните логин");
       isValid = false;
     }
     if (!formData.password.trim()) {
@@ -133,16 +133,14 @@ const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
     if (!validateForm()) return;
 
     try {
-      const data = isSignUp
-        ? await signUp(formData)
-        : await signIn({ login: formData.login, password: formData.password });
+      const data = isSignUp ? await signUp(formData) : await signIn(formData);
       setIsAuth(true);
       setToken(data.token);
       localStorage.setItem("userInfo", JSON.stringify(data));
       localStorage.setItem("isAuth", true);
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Ошибка авторизации");
     }
   };
 
@@ -166,7 +164,7 @@ const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
             <StyledInput
               type="text"
               name="login"
-              placeholder="Эл. почта"
+              placeholder="Логин"
               value={formData.login}
               onChange={handleChange}
               $error={errors.login}
