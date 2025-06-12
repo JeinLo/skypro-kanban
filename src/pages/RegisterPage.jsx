@@ -61,6 +61,7 @@ const StyledButton = styled.button`
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+  width: 100%;
   &:hover {
     background-color: #0056b3;
   }
@@ -144,12 +145,14 @@ function RegisterPage({ setIsAuth, setToken }) {
         login: formData.login,
         password: formData.password,
       });
+
       setIsAuth(true);
       setToken(data.user?.token || data.token);
       localStorage.setItem("isAuth", "true");
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/");
     } catch (err) {
+      console.error("Ошибка регистрации:", err.message);
       setError(err.message);
     }
   };
@@ -187,7 +190,9 @@ function RegisterPage({ setIsAuth, setToken }) {
             />
           </StyledInputWrapper>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && (
+            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+          )}
 
           <StyledButton type="submit">Зарегистрироваться</StyledButton>
 

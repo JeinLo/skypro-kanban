@@ -18,20 +18,19 @@ const StyledModal = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  text-align: center;
 `;
 
 const StyledLogo = styled.div`
   font-size: 24px;
   font-weight: bold;
   color: #007bff;
-  text-align: center;
   margin-bottom: 20px;
 `;
 
 const StyledTitle = styled.h2`
   font-size: 20px;
   margin-bottom: 20px;
-  text-align: center;
 `;
 
 const StyledForm = styled.form`
@@ -61,6 +60,7 @@ const StyledButton = styled.button`
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+  width: 100%;
   &:hover {
     background-color: #0056b3;
   }
@@ -70,7 +70,7 @@ const StyledFormGroup = styled.div`
   text-align: center;
   margin-top: 10px;
   font-size: 14px;
-  & a {
+  a {
     color: #007bff;
     text-decoration: none;
     &:hover {
@@ -90,11 +90,8 @@ function LoginPage({ setIsAuth, setToken }) {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    setError("");
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -115,6 +112,7 @@ function LoginPage({ setIsAuth, setToken }) {
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/");
     } catch (err) {
+      console.error("Ошибка входа:", err.message);
       setError(err.message);
     }
   };
