@@ -1,7 +1,209 @@
-import AuthForm from "./LoginPage";
+import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { signUp } from "../services/auth";
 
-function RegisterPage({ setIsAuth }) {
-  return <AuthForm isSignUp={true} setIsAuth={setIsAuth} />;
+const StyledBackground = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #eaeef6;
+`;
+
+const StyledModal = styled.div`
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+`;
+
+const StyledLogo = styled.div`
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+const StyledTitle = styled.h2`
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const StyledInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const StyledInput = styled.input`
+  padding: 10px;
+  border: 1px solid ${(props) => (props.$error ? "red" : "#ccc")};
+  border-radius: 4px;
+  font-size: 16px;
+`;
+
+const StyledButton = styled.button`
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const StyledFormGroup = styled.div`
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  & a {
+    color: #007bff;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+function RegisterPage({ setIsAuth, setToken }) {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    login: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({
+    name: false,
+    login: false,
+    password: false,
+  });
+
+  const [error, setError] = useState("");
+
+  const validateForm = () => {
+    let isValid = true;
+
+    const newErrors = { name: false, login: false, password: false };
+
+    if (!formData.name.trim()) {
+      newErrors.name = true;
+      setError("Введите имя");
+      isValid = false;
+    }
+
+    if (!formData.login.trim()) {
+      newErrors.login = true;
+      setError("Введите email");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.login)) {
+      newErrors.login = true;
+      setError("Некорректный email");
+      isValid = false;
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = true;
+      setError("Введите пароль");
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: false });
+    setError("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      const data = await signUp({
+        name: formData.name,
+        login: formData.login,
+        password: formData.password,
+      });
+
+      setIsAuth(true);
+      setToken(data.user?.token || data.token);
+      localStorage.setItem("isAuth", "true");
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      navigate("/");
+    } catch (err) {
+      console.error("Ошибка регистрации:", err.message);
+      setError(err.message);
+    }
+  };
+
+  return (
+    <StyledBackground>
+      <StyledModal>
+        <StyledLogo>SkyPro Kanban</StyledLogo>
+        <StyledTitle>Регистрация</StyledTitle>
+        <StyledForm onSubmit={handleSubmit}>
+          <StyledInputWrapper>
+            <StyledInput
+              type="text"
+              name="name"
+              placeholder="Имя"
+              value={formData.name}
+              onChange={handleChange}
+              $error={errors.name}
+            />
+            <StyledInput
+              type="email"
+              name="login"
+              placeholder="Email"
+              value={formData.login}
+              onChange={handleChange}
+              $error={errors.login}
+            />
+            <StyledInput
+              type="password"
+              name="password"
+              placeholder="Пароль"
+              value={formData.password}
+              onChange={handleChange}
+              $error={errors.password}
+            />
+          </StyledInputWrapper>
+
+          {error && (
+            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+          )}
+
+          <StyledButton type="submit">Зарегистрироваться</StyledButton>
+
+          <StyledFormGroup>
+            <p>Уже есть аккаунт?</p>
+            <Link to="/login">Войдите здесь</Link>
+          </StyledFormGroup>
+        </StyledForm>
+      </StyledModal>
+    </StyledBackground>
+  );
 }
 
 export default RegisterPage;

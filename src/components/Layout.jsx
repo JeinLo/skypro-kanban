@@ -13,7 +13,9 @@ function Layout({ setIsAuth }) {
   return (
     <StyledLayout>
       <Header setIsAuth={setIsAuth} />
-      <Outlet />
+      <main style={{ flexGrow: 1 }}>
+        <Outlet />
+      </main>
     </StyledLayout>
   );
 }

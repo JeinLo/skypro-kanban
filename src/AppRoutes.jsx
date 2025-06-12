@@ -13,33 +13,49 @@ import Layout from "./components/Layout";
 function AppRoutes() {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const authStatus = localStorage.getItem("isAuth") === "true";
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (userInfo) {
+      try {
+        const parsed = JSON.parse(userInfo);
+        setToken(parsed.user?.token || parsed.token);
+      } catch (err) {
+        console.error("Parse userInfo error:", err);
+      }
+    }
+
     setIsAuth(authStatus);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("isAuth", isAuth);
+    localStorage.setItem("isAuth", String(isAuth));
   }, [isAuth]);
 
   return (
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
         <Route element={<Layout setIsAuth={setIsAuth} />}>
-          <Route path="/" element={<MainPage loading={loading} />} />
-          <Route path="/card/add" element={<NewCardPage />} />
-          <Route path="/card/:id" element={<CardPage />} />
+          <Route
+            path="/"
+            element={<MainPage loading={loading} token={token} />}
+          />
+          <Route path="/card/add" element={<NewCardPage token={token} />} />
+          <Route path="/card/:id" element={<CardPage token={token} />} />
           <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />
         </Route>
       </Route>
-      <Route path="/login" element={<LoginPage setIsAuth={setIsAuth} />} />
+      <Route
+        path="/login"
+        element={<LoginPage setIsAuth={setIsAuth} setToken={setToken} />}
+      />
       <Route
         path="/register"
-        element={<RegisterPage setIsAuth={setIsAuth} />}
+        element={<RegisterPage setIsAuth={setIsAuth} setToken={setToken} />}
       />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

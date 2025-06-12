@@ -43,7 +43,6 @@ export const StyledButton = styled.button`
   border-radius: 4px;
   width: 100%;
   cursor: pointer;
-  font-size: 14px;
   &:hover {
     background-color: #c82333;
   }
