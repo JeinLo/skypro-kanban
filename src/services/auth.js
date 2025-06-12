@@ -2,57 +2,39 @@ import axios from "axios";
 
 const API_URL = "https://wedev-api.sky.pro/api/user";
 
-axios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("isAuth");
-      localStorage.removeItem("userInfo");
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
-
 export async function signIn({ login, password }) {
   try {
-    console.log("signIn request:", { login, password });
-    const response = await axios.post(
-      `${API_URL}/login`,
-      { login, password },
-      {
-        headers: {
-          "Content-Type": "",
-        },
-      }
-    );
-    console.log("signIn response:", response.data);
+    const formData = new URLSearchParams();
+    formData.append("login", login);
+    formData.append("password", password);
+
+    const response = await axios.post(`${API_URL}/login`, formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
     return response.data;
-  } catch (error) {
-    console.error("signIn error:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.error || error.message);
+  } catch (err) {
+    throw new Error("Ошибка входа");
   }
 }
 
 export async function signUp({ name, login, password }) {
   try {
-    console.log("signUp request:", { name, login, password });
-    const response = await axios.post(
-      API_URL,
-      { name, login, password },
-      {
-        headers: {
-          "Content-Type": "",
-        },
-      }
-    );
-    console.log("signUp response:", response.data);
+    const formData = new URLSearchParams();
+    formData.append("name", name);
+    formData.append("login", login);
+    formData.append("password", password);
+
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
     return response.data;
-  } catch (error) {
-    console.error(
-      "signUp error:",
-      error.response?.data?.error || error.message
-    );
-    throw new Error(error.response?.data?.error || error.message);
+  } catch (err) {
+    throw new Error("Ошибка регистрации");
   }
 }

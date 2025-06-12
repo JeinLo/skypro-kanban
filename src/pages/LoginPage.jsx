@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { signIn, signUp } from "../services/auth";
+import { useNavigate } from "react-router-dom";
+import { signIn } from "../services/auth";
 
 const StyledBackground = styled.div`
   display: flex;
@@ -48,7 +48,7 @@ const StyledInputWrapper = styled.div`
 
 const StyledInput = styled.input`
   padding: 10px;
-  border: 1px solid ${(props) => (props.$error ? "red" : "#ccc")};
+  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
 `;
@@ -80,67 +80,43 @@ const StyledFormGroup = styled.div`
   }
 `;
 
-const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
+function LoginPage({ setIsAuth, setToken }) {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: "",
     login: "",
     password: "",
   });
-  const [errors, setErrors] = useState({
-    name: false,
-    login: false,
-    password: false,
-  });
+
   const [error, setError] = useState("");
 
-  const validateForm = () => {
-    const newErrors = { name: false, login: false, password: false };
-    let isValid = true;
-
-    if (isSignUp && !formData.name.trim()) {
-      newErrors.name = true;
-      setError("Заполните имя");
-      isValid = false;
-    }
-    if (!formData.login.trim()) {
-      newErrors.login = true;
-      setError("Заполните логин");
-      isValid = false;
-    }
-    if (!formData.password.trim()) {
-      newErrors.password = true;
-      setError("Заполните пароль");
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
-    setErrors({ ...errors, [name]: false });
-    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    setError("");
+
+    const { login, password } = formData;
+
+    if (!login || !password) {
+      setError("Введите email и пароль");
+      return;
+    }
 
     try {
-      const data = isSignUp ? await signUp(formData) : await signIn(formData);
+      const data = await signIn({ login, password });
       setIsAuth(true);
-      setToken(data.token);
+      setToken(data.user?.token || data.token);
+      localStorage.setItem("isAuth", "true");
       localStorage.setItem("userInfo", JSON.stringify(data));
-      localStorage.setItem("isAuth", true);
       navigate("/");
     } catch (err) {
-      setError(err.message || "Ошибка авторизации");
+      setError(err.message);
     }
   };
 
@@ -148,26 +124,15 @@ const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
     <StyledBackground>
       <StyledModal>
         <StyledLogo>SkyPro Kanban</StyledLogo>
-        <StyledTitle>{isSignUp ? "Регистрация" : "Вход"}</StyledTitle>
+        <StyledTitle>Вход</StyledTitle>
         <StyledForm onSubmit={handleSubmit}>
           <StyledInputWrapper>
-            {isSignUp && (
-              <StyledInput
-                type="text"
-                name="name"
-                placeholder="Имя"
-                value={formData.name}
-                onChange={handleChange}
-                $error={errors.name}
-              />
-            )}
             <StyledInput
               type="text"
               name="login"
-              placeholder="Логин"
+              placeholder="Email"
               value={formData.login}
               onChange={handleChange}
-              $error={errors.login}
             />
             <StyledInput
               type="password"
@@ -175,37 +140,22 @@ const AuthForm = ({ isSignUp, setIsAuth, setToken }) => {
               placeholder="Пароль"
               value={formData.password}
               onChange={handleChange}
-              $error={errors.password}
             />
           </StyledInputWrapper>
+
           {error && (
             <p style={{ color: "red", textAlign: "center" }}>{error}</p>
           )}
-          <StyledButton type="submit">
-            {isSignUp ? "Зарегистрироваться" : "Войти"}
-          </StyledButton>
-          {!isSignUp && (
-            <StyledFormGroup>
-              <p>Нужно зарегистрироваться?</p>
-              <Link to="/register">Регистрируйтесь здесь</Link>
-            </StyledFormGroup>
-          )}
-          {isSignUp && (
-            <StyledFormGroup>
-              <p>
-                Есть аккаунт? <Link to="/login">Войдите здесь</Link>
-              </p>
-            </StyledFormGroup>
-          )}
+
+          <StyledButton type="submit">Войти</StyledButton>
+
+          <StyledFormGroup>
+            <p>Нужно зарегистрироваться?</p>
+            <a href="/register">Регистрация</a>
+          </StyledFormGroup>
         </StyledForm>
       </StyledModal>
     </StyledBackground>
-  );
-};
-
-function LoginPage({ setIsAuth, setToken }) {
-  return (
-    <AuthForm isSignUp={false} setIsAuth={setIsAuth} setToken={setToken} />
   );
 }
 
