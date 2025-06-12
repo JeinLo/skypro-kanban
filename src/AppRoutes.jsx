@@ -1,14 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import MainPage from "./pages/MainPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import RegisterPage from "./pages/RegisterPage.jsx";
-import CardPage from "./pages/CardPage.jsx";
-import NewCardPage from "./pages/NewCardPage.jsx";
-import ExitPage from "./pages/ExitPage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
-import PrivateRoute from "./PrivateRoute.jsx";
-import Layout from "./components/Layout.jsx";
+import MainPage from "./pages/MainPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import CardPage from "./pages/CardPage";
+import NewCardPage from "./pages/NewCardPage";
+import ExitPage from "./pages/ExitPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import PrivateRoute from "./PrivateRoute";
+import Layout from "./components/Layout";
 
 function AppRoutes() {
   const [isAuth, setIsAuth] = useState(false);
@@ -18,23 +18,23 @@ function AppRoutes() {
   useEffect(() => {
     const authStatus = localStorage.getItem("isAuth") === "true";
     const userInfo = localStorage.getItem("userInfo");
+
     if (userInfo) {
       try {
         const parsed = JSON.parse(userInfo);
-        setToken(parsed.user?.token || parsed.token || null);
+        setToken(parsed.user?.token || parsed.token);
       } catch (err) {
         console.error("Parse userInfo error:", err);
       }
     }
+
     setIsAuth(authStatus);
     setLoading(false);
-    console.log("AppRoutes init:", { isAuth: authStatus, token });
   }, []);
 
   useEffect(() => {
     localStorage.setItem("isAuth", String(isAuth));
-    console.log("isAuth updated:", isAuth, "token:", token);
-  }, [isAuth, token]);
+  }, [isAuth]);
 
   return (
     <Routes>

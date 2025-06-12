@@ -1,4 +1,4 @@
-const themes = {
+export default {
   text: {
     primary: "#000000",
     secondary: "#94A6BE",
@@ -6,14 +6,6 @@ const themes = {
   background: {
     white: "#FFFFFF",
     main: "#EAEEF6",
-  },
-  primary: {
-    background: "#565EEF",
-    color: "#FFFFFF",
-  },
-  hover: {
-    primary: "#3F53D8",
-    text: "#000000",
   },
   card: {
     webDesign: {
@@ -30,5 +22,3 @@ const themes = {
     },
   },
 };
-
-export default themes;

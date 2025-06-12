@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Header from "./Header/Header.jsx";
+import Header from "./Header/Header";
 import { Outlet } from "react-router-dom";
 
 const StyledLayout = styled.div`
@@ -13,7 +13,9 @@ function Layout({ setIsAuth }) {
   return (
     <StyledLayout>
       <Header setIsAuth={setIsAuth} />
-      <Outlet />
+      <main style={{ flexGrow: 1 }}>
+        <Outlet />
+      </main>
     </StyledLayout>
   );
 }

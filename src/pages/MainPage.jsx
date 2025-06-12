@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Column from "../components/Column/Column";
 import { fetchTasks } from "../services/api";
 
 const StyledMain = styled.div`
@@ -16,18 +17,6 @@ const StyledLoading = styled.p`
   text-align: center;
 `;
 
-const StyledTaskList = styled.ul`
-  list-style: none;
-  padding: 0;
-`;
-
-const StyledTaskItem = styled.li`
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  border-radius: 4px;
-`;
-
 function MainPage({ loading, token }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState("");
@@ -40,30 +29,34 @@ function MainPage({ loading, token }) {
         const fetchedTasks = await fetchTasks({ token });
         setTasks(fetchedTasks || []);
       } catch (err) {
-        setError(err.message || "Ошибка загрузки задач");
-        if (err.message.includes("401")) {
-          setError("Требуется авторизация");
-        }
+        setError(err.message);
       }
     }
 
     loadTasks();
   }, [loading, token]);
 
+  if (loading) return <StyledLoading>Данные загружаются...</StyledLoading>;
   if (error) return <StyledError>{error}</StyledError>;
+
+  const statuses = [
+    "Без статуса",
+    "Нужно сделать",
+    "В работе",
+    "Тестирование",
+    "Готово",
+  ];
 
   return (
     <StyledMain>
       <h2>Канбан-доска</h2>
-      {tasks.length === 0 ? (
-        <p>Нет задач</p>
-      ) : (
-        <StyledTaskList>
-          {tasks.map((task) => (
-            <StyledTaskItem key={task._id}>{task.title}</StyledTaskItem>
-          ))}
-        </StyledTaskList>
-      )}
+      {statuses.map((status) => (
+        <Column
+          key={status}
+          title={status}
+          cards={tasks.filter((task) => task.status === status)}
+        />
+      ))}
     </StyledMain>
   );
 }

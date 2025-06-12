@@ -1,6 +1,6 @@
 import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { signIn } from "../services/auth";
 
 const StyledBackground = styled.div`
@@ -61,7 +61,6 @@ const StyledButton = styled.button`
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  width: 100%;
   &:hover {
     background-color: #0056b3;
   }
@@ -95,11 +94,11 @@ function LoginPage({ setIsAuth, setToken }) {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     const { login, password } = formData;
 
@@ -128,7 +127,7 @@ function LoginPage({ setIsAuth, setToken }) {
         <StyledForm onSubmit={handleSubmit}>
           <StyledInputWrapper>
             <StyledInput
-              type="text"
+              type="email"
               name="login"
               placeholder="Email"
               value={formData.login}
@@ -143,15 +142,13 @@ function LoginPage({ setIsAuth, setToken }) {
             />
           </StyledInputWrapper>
 
-          {error && (
-            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
-          )}
+          {error && <p style={{ color: "red" }}>{error}</p>}
 
           <StyledButton type="submit">Войти</StyledButton>
 
           <StyledFormGroup>
             <p>Нужно зарегистрироваться?</p>
-            <a href="/register">Регистрация</a>
+            <Link to="/register">Регистрация</Link>
           </StyledFormGroup>
         </StyledForm>
       </StyledModal>

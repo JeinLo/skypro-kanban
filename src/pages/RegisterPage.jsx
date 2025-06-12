@@ -1,6 +1,6 @@
 import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { signUp } from "../services/auth";
 
 const StyledBackground = styled.div`
@@ -61,7 +61,6 @@ const StyledButton = styled.button`
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  width: 100%;
   &:hover {
     background-color: #0056b3;
   }
@@ -140,7 +139,11 @@ function RegisterPage({ setIsAuth, setToken }) {
     if (!validateForm()) return;
 
     try {
-      const data = await signUp(formData);
+      const data = await signUp({
+        name: formData.name,
+        login: formData.login,
+        password: formData.password,
+      });
       setIsAuth(true);
       setToken(data.user?.token || data.token);
       localStorage.setItem("isAuth", "true");
@@ -167,7 +170,7 @@ function RegisterPage({ setIsAuth, setToken }) {
               $error={errors.name}
             />
             <StyledInput
-              type="text"
+              type="email"
               name="login"
               placeholder="Email"
               value={formData.login}
@@ -184,15 +187,13 @@ function RegisterPage({ setIsAuth, setToken }) {
             />
           </StyledInputWrapper>
 
-          {error && (
-            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
-          )}
+          {error && <p style={{ color: "red" }}>{error}</p>}
 
           <StyledButton type="submit">Зарегистрироваться</StyledButton>
 
           <StyledFormGroup>
             <p>Уже есть аккаунт?</p>
-            <a href="/login">Войдите здесь</a>
+            <Link to="/login">Войдите здесь</Link>
           </StyledFormGroup>
         </StyledForm>
       </StyledModal>
