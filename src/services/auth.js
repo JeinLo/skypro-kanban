@@ -21,7 +21,7 @@ export async function signIn({ login, password }) {
       { login, password },
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "",
         },
       }
     );
@@ -38,7 +38,7 @@ export async function signUp({ name, login, password }) {
       { name, login, password },
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "",
         },
       }
     );

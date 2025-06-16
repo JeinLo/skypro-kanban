@@ -6,7 +6,7 @@ function Column({ title, cards }) {
     <div className="column">
       <h3>{title}</h3>
       {cards.map((card) => (
-        <Card key={card._id} {...card} />
+        <Card key={card.id} {...card} />
       ))}
     </div>
   );

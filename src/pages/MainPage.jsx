@@ -20,23 +20,36 @@ const StyledLoading = styled.p`
 function MainPage({ loading, token }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (loading || !token) return;
+    if (loading) return;
 
     async function loadTasks() {
       try {
-        const fetchedTasks = await fetchTasks({ token });
-        setTasks(fetchedTasks || []);
+        console.log("Loading tasks with token:", token);
+        const tasks = await fetchTasks({ token });
+        setTasks(tasks || []);
+        setIsLoading(false);
       } catch (err) {
-        setError(err.message);
+        console.error("Load tasks error:", err.message);
+        setError(err.message || "Ошибка загрузки задач");
+        setIsLoading(false);
+        if (err.message.includes("401")) {
+          setError("Требуется авторизация");
+        }
       }
     }
 
-    loadTasks();
+    if (token) {
+      loadTasks();
+    } else {
+      setError("Требуется авторизация");
+      setIsLoading(false);
+    }
   }, [loading, token]);
 
-  if (loading) return <StyledLoading>Данные загружаются...</StyledLoading>;
+  if (isLoading) return <StyledLoading>Загрузка...</StyledLoading>;
   if (error) return <StyledError>{error}</StyledError>;
 
   const statuses = [
