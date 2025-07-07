@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Column from "../components/Column/Column";
-import { fetchTasks } from "../services/api";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { fetchTasks, editTask } from "../services/api";
 
 const StyledMain = styled.div`
   padding: 20px;
-  flex-grow: 1;
-`;
-
-const StyledError = styled.p`
-  color: red;
-  text-align: center;
-`;
-
-const StyledLoading = styled.p`
-  text-align: center;
+  display: flex;
+  gap: 20px;
 `;
 
 function MainPage({ loading, token }) {
@@ -24,7 +16,6 @@ function MainPage({ loading, token }) {
 
   useEffect(() => {
     if (loading) return;
-
     async function loadTasks() {
       try {
         console.log("Loading tasks with token:", token);
@@ -40,7 +31,6 @@ function MainPage({ loading, token }) {
         }
       }
     }
-
     if (token) {
       loadTasks();
     } else {
@@ -49,28 +39,80 @@ function MainPage({ loading, token }) {
     }
   }, [loading, token]);
 
-  if (isLoading) return <StyledLoading>Загрузка...</StyledLoading>;
-  if (error) return <StyledError>{error}</StyledError>;
+  // Обработка завершения перетаскивания
+  const handleDragEnd = async (result) => {
+    const { destination, source } = result;
 
-  const statuses = [
-    "Без статуса",
-    "Нужно сделать",
-    "В работе",
-    "Тестирование",
-    "Готово",
-  ];
+    if (!destination || destination.droppableId === source.droppableId) return;
+
+    const statuses = ["Без статуса", "Нужно сделать", "В работе", "Тестирование", "Готово"];
+    const draggedTask = tasks.find((task) => task.id === Number(result.draggableId));
+
+    if (!draggedTask) return;
+
+    const newStatus = destination.droppableId;
+    const updatedTask = { ...draggedTask, status: newStatus };
+
+    try {
+      await editTask({ token, task: updatedTask, id: draggedTask.id });
+      setTasks(
+        tasks.map((task) =>
+          task.id === draggedTask.id ? updatedTask : task
+        )
+      );
+    } catch (err) {
+      setError("Не удалось обновить статус задачи");
+      console.error("Error updating task status:", err);
+    }
+  };
+
+  if (isLoading) return <div>Загрузка...</div>;
+  if (error) return <div>{error}</div>;
+
+  const columns = {
+    "Без статуса": [],
+    "Нужно сделать": [],
+    "В работе": [],
+    "Тестирование": [],
+    "Готово": [],
+  };
+
+  tasks.forEach((task) => {
+    if (columns[task.status]) {
+      columns[task.status].push(task);
+    }
+  });
 
   return (
-    <StyledMain>
-      <h2>Канбан-доска</h2>
-      {statuses.map((status) => (
-        <Column
-          key={status}
-          title={status}
-          cards={tasks.filter((task) => task.status === status)}
-        />
-      ))}
-    </StyledMain>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <StyledMain>
+        {Object.entries(columns).map(([status, columnTasks]) => (
+          <Droppable key={status} droppableId={status}>
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <h3>{status}</h3>
+                <div>
+                  {columnTasks.map((card, index) => (
+                    <Draggable key={card.id} draggableId={card.id} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <Card {...card} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              </div>
+            )}
+          </Droppable>
+        ))}
+      </StyledMain>
+    </DragDropContext>
   );
 }
 

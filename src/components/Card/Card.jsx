@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import themes from "../../styles/theme";
 
 const StyledCard = styled.div`
   width: 220px;
@@ -8,6 +9,8 @@ const StyledCard = styled.div`
   border-radius: 10px;
   padding: 15px;
   margin: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 `;
 
 const StyledHeader = styled.div`
@@ -18,8 +21,9 @@ const StyledHeader = styled.div`
 
 const StyledTopic = styled.div`
   padding: 5px 10px;
-  background-color: #ffe4c2;
-  color: #ff6d00;
+  background-color: ${(props) =>
+    themes.card[props.topic]?.background || "#ffffff"};
+  color: ${(props) => themes.card[props.topic]?.color || "#000000"};
   border-radius: 18px;
   font-size: 10px;
 `;
@@ -30,6 +34,7 @@ const StyledMenu = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  cursor: pointer;
   div {
     width: 4px;
     height: 4px;
@@ -61,12 +66,12 @@ const StyledDate = styled.div`
   }
 `;
 
-function Card({ topic, title, date }) {
+function Card({ topic, title, date, id, index }) {
   return (
     <StyledCard>
       <StyledHeader>
-        <StyledTopic>{topic}</StyledTopic>
-        <StyledMenu>
+        <StyledTopic theme={topic}>{topic}</StyledTopic>
+        <StyledMenu onClick={(e) => e.stopPropagation()}>
           <div></div>
           <div></div>
           <div></div>
