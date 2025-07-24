@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext } from "@hello-pangea/dnd";
+import Column from "../components/Column/Column";
 import { fetchTasks, editTask } from "../services/api";
 
 const StyledMain = styled.div`
@@ -39,13 +40,11 @@ function MainPage({ loading, token }) {
     }
   }, [loading, token]);
 
-  // Обработка завершения перетаскивания
   const handleDragEnd = async (result) => {
     const { destination, source } = result;
 
     if (!destination || destination.droppableId === source.droppableId) return;
 
-    const statuses = ["Без статуса", "Нужно сделать", "В работе", "Тестирование", "Готово"];
     const draggedTask = tasks.find((task) => task.id === Number(result.draggableId));
 
     if (!draggedTask) return;
@@ -55,61 +54,40 @@ function MainPage({ loading, token }) {
 
     try {
       await editTask({ token, task: updatedTask, id: draggedTask.id });
-      setTasks(
-        tasks.map((task) =>
-          task.id === draggedTask.id ? updatedTask : task
-        )
-      );
+      setTasks(tasks.map((task) => (task.id === draggedTask.id ? updatedTask : task)));
     } catch (err) {
       setError("Не удалось обновить статус задачи");
       console.error("Error updating task status:", err);
     }
   };
 
-  if (isLoading) return <div>Загрузка...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <StyledMain>Загрузка...</StyledMain>;
+  if (error) return <StyledMain>{error}</StyledMain>;
 
   const columns = {
-    "Без статуса": [],
-    "Нужно сделать": [],
-    "В работе": [],
-    "Тестирование": [],
-    "Готово": [],
+    "Без статуса": { title: "Без статуса", cards: [] },
+    "Нужно сделать": { title: "Нужно сделать", cards: [] },
+    "В работе": { title: "В работе", cards: [] },
+    "Тестирование": { title: "Тестирование", cards: [] },
+    "Готово": { title: "Готово", cards: [] },
   };
 
   tasks.forEach((task) => {
     if (columns[task.status]) {
-      columns[task.status].push(task);
+      columns[task.status].cards.push(task);
     }
   });
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <StyledMain>
-        {Object.entries(columns).map(([status, columnTasks]) => (
-          <Droppable key={status} droppableId={status}>
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                <h3>{status}</h3>
-                <div>
-                  {columnTasks.map((card, index) => (
-                    <Draggable key={card.id} draggableId={card.id} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <Card {...card} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              </div>
-            )}
-          </Droppable>
+        {Object.entries(columns).map(([status, column]) => (
+          <Column
+            key={status}
+            columnId={status}
+            title={column.title}
+            cards={column.cards}
+          />
         ))}
       </StyledMain>
     </DragDropContext>

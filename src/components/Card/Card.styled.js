@@ -1,28 +1,28 @@
 import styled from "styled-components";
-import theme from "../../styles/theme";
 
-export const StyledCards = styled.div`
-  width: 100%;
-  display: block;
-`;
-
-export const StyledCardItem = styled.div`
+export const CardItem = styled.div`
   padding: 5px;
+  animation: cardAnimation 500ms linear;
 `;
 
-export const StyledCard = styled.div`
+export const CardStyled = styled.div`
   width: 220px;
   height: 130px;
-  background-color: ${theme.background.white};
+  background-color: #FFFFFF;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: stretch;
   padding: 15px 13px 19px;
+
+  @media screen and (max-width: 1200px) {
+    width: 220px;
+    height: 130px;
+  }
 `;
 
-export const StyledCardGroup = styled.div`
+export const CardGroup = styled.div`
   width: 100%;
   height: 20px;
   margin-bottom: 12px;
@@ -31,14 +31,36 @@ export const StyledCardGroup = styled.div`
   justify-content: space-between;
 `;
 
-export const StyledCardTheme = styled.div`
+export const CardTheme = styled.div`
   width: auto;
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
-  background-color: ${(props) =>
-    theme.card[props.theme]?.background || "#ffffff"};
-  color: ${(props) => theme.card[props.theme]?.color || "#000000"};
+  background-color: ${({ themeType }) => {
+    switch (themeType) {
+      case "_orange":
+        return "#FFE4C2";
+      case "_green":
+        return "#B4FDD1";
+      case "_purple":
+        return "#E9D4FF";
+      default:
+        return "#FFF";
+    }
+  }};
+  color: ${({ themeType }) => {
+    switch (themeType) {
+      case "_orange":
+        return "#FF6D00";
+      case "_green":
+        return "#06B16E";
+      case "_purple":
+        return "#9A48F1";
+      default:
+        return "#000";
+    }
+  }};
+
   p {
     font-size: 10px;
     font-weight: 600;
@@ -46,22 +68,24 @@ export const StyledCardTheme = styled.div`
   }
 `;
 
-export const StyledCardBtn = styled.a`
+export const CardButton = styled.a`
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: space-around;
   padding: 2px;
+  text-decoration: none;
+
   div {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: ${theme.text.secondary};
+    background-color: #94A6BE;
   }
 `;
 
-export const StyledCardContent = styled.div`
+export const CardContent = styled.div`
   height: 64px;
   display: flex;
   flex-direction: column;
@@ -69,26 +93,42 @@ export const StyledCardContent = styled.div`
   justify-content: space-between;
 `;
 
-export const StyledCardTitle = styled.h3`
+export const CardTitle = styled.a`
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
-  color: ${theme.text.primary};
+  color: #000000;
   margin-bottom: 10px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
-export const StyledCardDate = styled.div`
+export const CardDate = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+
   svg {
     width: 13px;
+    height: 13px;
+    fill: #94A6BE;
   }
+
   p {
     margin-left: 6px;
     font-size: 10px;
     line-height: 13px;
-    color: ${theme.text.secondary};
+    color: #94A6BE;
     letter-spacing: 0.2px;
+  }
+`;
+
+export const cardAnimation = `
+  @keyframes cardAnimation {
+    0% { height: 0; opacity: 0; }
+    100% { height: auto; opacity: 1; }
   }
 `;

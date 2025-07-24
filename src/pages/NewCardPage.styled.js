@@ -46,31 +46,6 @@ export const StyledButton = styled.button`
   }
 `;
 
-export const StyledCalendar = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 40px);
-  gap: 5px;
-  margin: 10px 0;
-`;
-
-export const StyledDay = styled.div`
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? "#007bff" : "#f8f9fa")};
-  color: ${(props) => (props.isSelected ? "#ffffff" : "#000000")};
-  border-radius: 4px;
-  font-weight: ${(props) => (props.isToday ? "bold" : "normal")};
-  &:hover {
-    background-color: #e0e0e0;
-  }
-`;
-
-export const StyledDateLabel = styled.div`
-  font-size: 16px;
-  margin-top: 10px;
-`;
-
 export const StyledCategoryWrapper = styled.div`
   display: flex;
   gap: 10px;
@@ -88,4 +63,14 @@ export const StyledCategory = styled.button`
   &:hover {
     background-color: ${(props) => (props.isActive ? "#0056b3" : "#e0e0e0")};
   }
+`;
+
+export const StyledError = styled.p`
+  color: red;
+  text-align: center;
+  font-size: 14px;
+`;
+
+export const StyledCalendarWrapper = styled.div`
+  margin: 10px 0;
 `;

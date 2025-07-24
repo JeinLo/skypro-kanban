@@ -1,16 +1,17 @@
 import { useState } from "react";
+import styled from "styled-components";
 import {
   StyledNewCardPage,
   StyledTitle,
   StyledForm,
   StyledInput,
   StyledButton,
-  StyledCalendar,
-  StyledDay,
-  StyledDateLabel,
   StyledCategoryWrapper,
   StyledCategory,
+  StyledError,
+  StyledCalendarWrapper,
 } from "./NewCardPage.styled";
+import Calendar from "../components/Calendar/Calendar";
 import { postTask } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -25,12 +26,11 @@ function NewCardPage({ token }) {
   });
   const [error, setError] = useState("");
 
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  const today = new Date().getDate();
   const categories = ["Web Design", "Research", "Copywriting"];
 
-  const handleDateClick = (day) => {
-    setSelectedDate(day);
+  const handleDateSelect = (isoDate) => {
+    const date = new Date(isoDate);
+    setSelectedDate(date.getDate());
   };
 
   const handleCategoryClick = (category) => {
@@ -90,22 +90,9 @@ function NewCardPage({ token }) {
           value={formData.description}
           onChange={handleChange}
         />
-        <StyledCalendar>
-          {days.map((day) => (
-            <StyledDay
-              key={day}
-              isToday={day === today}
-              isSelected={day === selectedDate}
-              onClick={() => handleDateClick(day)}
-            >
-              {day}
-            </StyledDay>
-          ))}
-        </StyledCalendar>
-        <StyledDateLabel>
-          Выберите срок исполнения:{" "}
-          {selectedDate ? `10.${selectedDate}.2025` : "Не выбрано"}
-        </StyledDateLabel>
+        <StyledCalendarWrapper>
+          <Calendar onDateSelect={handleDateSelect} />
+        </StyledCalendarWrapper>
         <StyledCategoryWrapper>
           {categories.map((category) => (
             <StyledCategory
@@ -117,7 +104,7 @@ function NewCardPage({ token }) {
             </StyledCategory>
           ))}
         </StyledCategoryWrapper>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <StyledError>{error}</StyledError>}
         <StyledButton type="submit">Создать задачу</StyledButton>
       </StyledForm>
     </StyledNewCardPage>

@@ -37,9 +37,30 @@ const StyledButton = styled.button`
   }
 `;
 
+const StyledDeleteButton = styled(StyledButton)`
+  background-color: #dc3545;
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
 const StyledError = styled.p`
   color: red;
   text-align: center;
+`;
+
+const StyledDescription = styled.div`
+  margin-top: 20px;
+  text-align: left;
+`;
+
+const StyledDescriptionTitle = styled.h3`
+  margin-bottom: 10px;
+`;
+
+const StyledStatusTitle = styled.h3`
+  margin-top: 20px;
+  margin-bottom: 10px;
 `;
 
 function CardPage({ token }) {
@@ -88,27 +109,24 @@ function CardPage({ token }) {
   return (
     <StyledCardPage>
       <StyledCardContainer>
-        <Card topic={task.topic} title={task.title} date={task.date} />
+        <Card topic={task.topic} title={task.title} date={task.date} id={task.id} />
 
         <StyledActions>
           <StyledButton onClick={() => navigate(`/card/${id}/edit`)}>
             Редактировать
           </StyledButton>
-          <StyledButton
-            onClick={() => navigate("/")}
-            style={{ backgroundColor: "#dc3545" }}
-          >
+          <StyledDeleteButton onClick={() => navigate("/")}>
             Удалить
-          </StyledButton>
+          </StyledDeleteButton>
         </StyledActions>
 
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h3>Описание:</h3>
+        <StyledDescription>
+          <StyledDescriptionTitle>Описание:</StyledDescriptionTitle>
           <p>{task.description || "Нет описания"}</p>
 
-          <h3 style={{ marginTop: "10px" }}>Статус:</h3>
+          <StyledStatusTitle>Статус:</StyledStatusTitle>
           <p>{task.status || "Не указан"}</p>
-        </div>
+        </StyledDescription>
       </StyledCardContainer>
     </StyledCardPage>
   );

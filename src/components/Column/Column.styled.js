@@ -1,24 +1,21 @@
 import styled from "styled-components";
-import themes from "../../styles/theme";
 
 export const StyledColumn = styled.div`
-  width: 20%;
-  margin: 0 auto;
-  display: block;
-
-  @media screen and (max-width: 1200px) {
-    width: 100%;
-    display: block;
-  }
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
-export const ColumnTitle = styled.div`
-  padding: 0 10px;
-  margin: 15px 0;
-  p {
-    color: ${themes.text.secondary};
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
+export const StyledTitle = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 10px;
+`;
+
+export const StyledCardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;

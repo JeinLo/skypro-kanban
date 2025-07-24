@@ -9,13 +9,17 @@ const StyledLayout = styled.div`
   width: 100%;
 `;
 
+const StyledMain = styled.main`
+  flex-grow: 1;
+`;
+
 function Layout({ setIsAuth }) {
   return (
     <StyledLayout>
       <Header setIsAuth={setIsAuth} />
-      <main style={{ flexGrow: 1 }}>
+      <StyledMain>
         <Outlet />
-      </main>
+      </StyledMain>
     </StyledLayout>
   );
 }
