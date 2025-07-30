@@ -42,8 +42,9 @@ export const CardTheme = styled.div`
         return "#FFE4C2";
       case "_green":
         return "#B4FDD1";
-      case "_purple":
+      case "_purple": // Copywriting
         return "#E9D4FF";
+      case "_default":
       default:
         return "#FFF";
     }
@@ -54,8 +55,9 @@ export const CardTheme = styled.div`
         return "#FF6D00";
       case "_green":
         return "#06B16E";
-      case "_purple":
+      case "_purple": // Copywriting
         return "#9A48F1";
+      case "_default":
       default:
         return "#000";
     }

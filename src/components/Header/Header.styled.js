@@ -11,9 +11,10 @@ export const SHeader = styled.header`
 `;
 
 export const Logo = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: #007bff;
+  img {
+    height: 24px;
+    width: auto;
+  }
 `;
 
 export const StyledActions = styled.div`
@@ -23,11 +24,15 @@ export const StyledActions = styled.div`
 `;
 
 export const StyledTaskLink = styled(Link)`
-  color: #007bff;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 4px;
   text-decoration: none;
   font-size: 16px;
+  display: inline-block;
   &:hover {
-    text-decoration: underline;
+    background-color: #0056b3;
   }
 `;
 

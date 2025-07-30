@@ -28,7 +28,9 @@ function Card({ topic, title, date, id, index }) {
                     ? "_orange"
                     : topic === "Research"
                     ? "_green"
-                    : "_purple"
+                    : topic === "Copywriting"
+                    ? "_purple"
+                    : "_default"
                 }
               >
                 <p>{topic}</p>

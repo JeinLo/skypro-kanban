@@ -1,103 +1,90 @@
 import styled from "styled-components";
 
-export const StyledCalendar = styled.div`
+export const CalendarWrapper = styled.div`
   width: 100%;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  margin-bottom: 16px;
 `;
 
-export const CalendarTitle = styled.p`
-  font-size: 18px;
-  font-weight: 600;
-  color: #000000;
-  margin-bottom: 15px;
-`;
-
-export const CalendarBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const CalendarNav = styled.div`
+export const CalendarHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `;
 
-export const CalendarMonth = styled.div`
-  font-size: 16px;
-  font-weight: 500;
-  color: #333333;
-`;
-
-export const NavActions = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-export const NavAction = styled.div`
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const Button = styled.button`
+  background: transparent;
+  border: none;
+  font-size: 18px;
   cursor: pointer;
-  font-size: 16px;
-  color: #565eef;
+  user-select: none;
 
   &:hover {
-    color: #33399b;
-    background-color: #e6e8ff;
-    border-radius: 50%;
+    color: #565eef;
+  }
+
+  &:focus {
+    outline: 2px solid #565eef;
   }
 `;
 
-export const CalendarWeek = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 10px;
+export const MonthYear = styled.div`
+  font-weight: 600;
+  font-size: 16px;
 `;
 
-export const DayName = styled.div`
+export const DaysOfWeek = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
   font-size: 14px;
-  font-weight: 400;
-  color: ${({ isWeekend }) => (isWeekend ? "#ff6d00" : "#94a6be")};
+  color: #666;
+  margin-bottom: 4px;
+`;
+
+export const DaysOfWeekItem = styled.div`
+  width: 32px;
   text-align: center;
 `;
 
-export const CalendarCells = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+export const DaysGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
-export const CalendarCell = styled.div`
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: ${({ isOtherMonth, isSelected }) => (isSelected ? "#ffffff" : isOtherMonth ? "#94a6be" : "#000000")};
-  background-color: ${({ isSelected }) => (isSelected ? "#565eef" : "transparent")};
-  cursor: ${({ isOtherMonth }) => (isOtherMonth ? "default" : "pointer")};
+export const Day = styled.div`
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
   border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
 
-  &:hover:not([isOtherMonth]) {
-    background-color: #e6e8ff;
+  ${({ isToday }) =>
+    isToday &&
+    `
+    border: 1px solid #565eef;
+  `}
+
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    background-color: #565eef;
+    color: white;
+  `}
+
+  &:hover {
+    background-color: #c6c8ff;
+  }
+
+  &:focus {
+    outline: 2px solid #565eef;
   }
 `;
 
-export const CalendarPeriod = styled.div`
-  margin-top: 10px;
-  font-size: 14px;
-  color: #000000;
-`;
-
-export const DateControl = styled.span`
-  font-weight: 500;
-  color: #565eef;
+export const EmptyDay = styled.div`
+  width: 32px;
+  height: 32px;
 `;

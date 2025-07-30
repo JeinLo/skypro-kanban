@@ -14,9 +14,11 @@ function Header({ setIsAuth }) {
 
   return (
     <SHeader>
-      <Logo>SkyPro</Logo>
+      <Logo>
+        <img src="/images/logo.png" alt="SkyPro Logo" />
+      </Logo>
       <StyledActions>
-        <StyledTaskLink to="/card/add">Создать задание</StyledTaskLink>
+        <StyledTaskLink to="/card/add">Создать новую задачу</StyledTaskLink>
         <StyledUserLink onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
           Ivan Ivanov <StyledArrow>▼</StyledArrow>
         </StyledUserLink>

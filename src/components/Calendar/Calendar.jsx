@@ -1,101 +1,125 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  StyledCalendar,
-  CalendarTitle,
-  CalendarBlock,
-  CalendarNav,
-  CalendarMonth,
-  NavActions,
-  NavAction,
-  CalendarWeek,
-  DayName,
-  CalendarCells,
-  CalendarCell,
-  CalendarPeriod,
-  DateControl,
+  CalendarWrapper,
+  CalendarHeader,
+  Button,
+  MonthYear,
+  DaysOfWeek,
+  Day,
+  DaysOfWeekItem,
+  DaysGrid,
+  EmptyDay,
 } from "./Calendar.styled";
 
-function Calendar({ isBrowse, onDateSelect }) {
-  const [currentDate, setCurrentDate] = useState(new Date(2023, 8)); // Сентябрь 2023
-  const [selectedDate, setSelectedDate] = useState(null);
+const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
-  const daysOfWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
-  const daysInMonth = 30; // Для сентября 2023
-  const firstDayOfMonth = new Date(2023, 8, 1).getDay();
-  const startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // Смещение для начала месяца
-  const days = [
-    ...Array(startOffset).fill(null), // Пустые ячейки до начала месяца
-    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-    ...Array(35 - (startOffset + daysInMonth)).fill(null), // Пустые ячейки после
-  ];
+function Calendar({ value, onChange = () => {} }) {
+  const [currentDate, setCurrentDate] = useState(() =>
+    value ? new Date(value) : new Date()
+  );
 
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-  };
-
-  const handleDateClick = (day) => {
-    if (day) {
-      setSelectedDate(day);
-      if (onDateSelect) {
-        onDateSelect(new Date(2023, 8, day).toISOString());
-      }
+  useEffect(() => {
+    if (value) {
+      setCurrentDate(new Date(value));
     }
+  }, [value]);
+
+  const startOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1
+  );
+  const endOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0
+  );
+  const startDay = (startOfMonth.getDay() + 6) % 7; // понедельник = 0
+  const daysInMonth = endOfMonth.getDate();
+
+  const days = [];
+
+  for (let i = 0; i < startDay; i++) {
+    days.push(null);
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    days.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), day));
+  }
+
+  const isSameDay = (d1, d2) =>
+    d1 &&
+    d2 &&
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate();
+
+  const today = new Date();
+
+  const prevMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    );
+  };
+
+  const nextMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    );
+  };
+
+  const handleDayClick = (day) => {
+    if (day) onChange(day);
   };
 
   return (
-    <StyledCalendar>
-      <CalendarTitle>Даты</CalendarTitle>
-      <CalendarBlock>
-        <CalendarNav>
-          <CalendarMonth>
-            {currentDate.toLocaleString("ru-RU", { month: "long", year: "numeric" })}
-          </CalendarMonth>
-          <NavActions>
-            <NavAction data-action="prev" onClick={handlePrevMonth}>
-              ←
-            </NavAction>
-            <NavAction data-action="next" onClick={handleNextMonth}>
-              →
-            </NavAction>
-          </NavActions>
-        </CalendarNav>
-        <CalendarWeek>
-          {daysOfWeek.map((day, index) => (
-            <DayName key={index} isWeekend={index >= 5}>
-              {day}
-            </DayName>
-          ))}
-        </CalendarWeek>
-        <CalendarCells>
-          {days.map((day, index) => (
-            <CalendarCell
-              key={index}
-              isOtherMonth={!day}
-              isWeekend={index % 7 >= 5}
-              isSelected={day === selectedDate}
-              onClick={() => handleDateClick(day)}
+    <CalendarWrapper>
+      <CalendarHeader>
+        <Button onClick={prevMonth} aria-label="Предыдущий месяц">
+          &#8592;
+        </Button>
+        <MonthYear>
+          {currentDate.toLocaleString("ru-RU", {
+            month: "long",
+            year: "numeric",
+          })}
+        </MonthYear>
+        <Button onClick={nextMonth} aria-label="Следующий месяц">
+          &#8594;
+        </Button>
+      </CalendarHeader>
+
+      <DaysOfWeek>
+        {daysOfWeek.map((day) => (
+          <DaysOfWeekItem key={day}>{day}</DaysOfWeekItem>
+        ))}
+      </DaysOfWeek>
+
+      <DaysGrid>
+        {days.map((day, i) =>
+          day ? (
+            <Day
+              key={i}
+              isToday={isSameDay(day, today)}
+              isSelected={isSameDay(day, value)}
+              onClick={() => handleDayClick(day)}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleDayClick(day);
+                }
+              }}
+              aria-label={`Выбрать ${day.toLocaleDateString("ru-RU")}`}
+              role="button"
             >
-              {day || ""}
-            </CalendarCell>
-          ))}
-        </CalendarCells>
-        <CalendarPeriod>
-          {isBrowse ? (
-            <p>
-              Срок исполнения: <DateControl>{selectedDate ? `09.${selectedDate}.2023` : "Не выбрано"}</DateControl>
-            </p>
+              {day.getDate()}
+            </Day>
           ) : (
-            <p>
-              Выберите срок исполнения: <DateControl>{selectedDate ? `09.${selectedDate}.2023` : "Не выбрано"}</DateControl>
-            </p>
-          )}
-        </CalendarPeriod>
-      </CalendarBlock>
-    </StyledCalendar>
+            <EmptyDay key={i} />
+          )
+        )}
+      </DaysGrid>
+    </CalendarWrapper>
   );
 }
 
