@@ -8,6 +8,7 @@ const StyledMain = styled.div`
   padding: 20px;
   display: flex;
   gap: 20px;
+  min-height: 100vh;
 `;
 
 const gradientAnimation = keyframes`
@@ -25,6 +26,18 @@ const Loader = styled.div`
   background: linear-gradient(270deg, #e0e7ff, #c7d2fe, #e0e7ff);
   background-size: 600% 600%;
   animation: ${gradientAnimation} 3s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #000000;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 16px;
+  padding: 20px;
 `;
 
 function MainPage({ loading, token }) {
@@ -34,14 +47,20 @@ function MainPage({ loading, token }) {
 
   useEffect(() => {
     if (loading) return;
+
     async function loadTasks() {
+      if (!token) {
+        setError("Требуется авторизация");
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        console.log("Loading tasks with token:", token);
         const tasks = await fetchTasks({ token });
         setTasks(tasks || []);
         setIsLoading(false);
       } catch (err) {
-        console.error("Load tasks error:", err.message);
+        console.error("Ошибка загрузки задач:", err.message);
         setError(err.message || "Ошибка загрузки задач");
         setIsLoading(false);
         if (err.message.includes("401")) {
@@ -49,12 +68,8 @@ function MainPage({ loading, token }) {
         }
       }
     }
-    if (token) {
-      loadTasks();
-    } else {
-      setError("Требуется авторизация");
-      setIsLoading(false);
-    }
+
+    loadTasks();
   }, [loading, token]);
 
   const handleDragEnd = async (result) => {
@@ -74,12 +89,12 @@ function MainPage({ loading, token }) {
       setTasks(tasks.map((task) => (task.id === draggedTask.id ? updatedTask : task)));
     } catch (err) {
       setError("Не удалось обновить статус задачи");
-      console.error("Error updating task status:", err);
+      console.error("Ошибка обновления статуса задачи:", err);
     }
   };
 
-  if (isLoading) return <Loader />;
-  if (error) return <StyledMain>{error}</StyledMain>;
+  if (isLoading) return <Loader>Загрузка...</Loader>;
+  if (error) return <ErrorMessage>{error}</ErrorMessage>;
 
   const columns = {
     "Без статуса": { title: "Без статуса", cards: [] },

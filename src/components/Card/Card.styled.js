@@ -8,7 +8,7 @@ export const CardItem = styled.div`
 export const CardStyled = styled.div`
   width: 220px;
   height: 130px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -36,26 +36,26 @@ export const CardTheme = styled.div`
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
-  background-color: ${({ themeType }) => {
-    switch (themeType) {
+  background-color: ${({ $themeType }) => {
+    switch ($themeType) {
       case "_orange":
         return "#FFE4C2";
       case "_green":
         return "#B4FDD1";
-      case "_purple": // Copywriting
+      case "_purple":
         return "#E9D4FF";
       case "_default":
       default:
         return "#FFF";
     }
   }};
-  color: ${({ themeType }) => {
-    switch (themeType) {
+  color: ${({ $themeType }) => {
+    switch ($themeType) {
       case "_orange":
         return "#FF6D00";
       case "_green":
         return "#06B16E";
-      case "_purple": // Copywriting
+      case "_purple":
         return "#9A48F1";
       case "_default":
       default:

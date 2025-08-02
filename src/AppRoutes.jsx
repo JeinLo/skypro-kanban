@@ -24,7 +24,7 @@ function AppRoutes() {
         const parsed = JSON.parse(userInfo);
         setToken(parsed.user?.token || parsed.token);
       } catch (err) {
-        console.error("Parse userInfo error:", err);
+        console.error("Ошибка парсинга userInfo:", err);
       }
     }
 

@@ -16,9 +16,17 @@ import {
 } from "./PopUser.styled";
 import { useNavigate } from "react-router-dom";
 
-function PopUser({ isOpen, setIsAuth, userName = "Ivan Ivanov", userEmail = "ivan.ivanov@gmail.com", theme, onToggleTheme }) {
+function PopUser({
+  isOpen,
+  setIsAuth,
+  userName = "Пользователь",
+  userEmail = "email@example.com",
+  theme,
+  onToggleTheme = () => {},
+}) {
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(theme === "dark");
 
   const handleLogoutClick = () => {
     setConfirmOpen(true);
@@ -36,6 +44,11 @@ function PopUser({ isOpen, setIsAuth, userName = "Ivan Ivanov", userEmail = "iva
     setConfirmOpen(false);
   };
 
+  const handleThemeToggle = () => {
+    setIsDarkTheme(!isDarkTheme);
+    onToggleTheme(!isDarkTheme ? "dark" : "light");
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -48,8 +61,8 @@ function PopUser({ isOpen, setIsAuth, userName = "Ivan Ivanov", userEmail = "iva
           <StyledToggleSwitch
             id="theme-toggle"
             type="checkbox"
-            checked={theme === "dark"}
-            onChange={onToggleTheme}
+            checked={isDarkTheme}
+            onChange={handleThemeToggle}
           />
         </StyledThemeToggleWrapper>
         <StyledLogoutButton onClick={handleLogoutClick}>Выйти</StyledLogoutButton>
@@ -61,7 +74,9 @@ function PopUser({ isOpen, setIsAuth, userName = "Ivan Ivanov", userEmail = "iva
             <ModalTitle id="logout-title">Вы уверены, что хотите выйти?</ModalTitle>
             <ModalButtons>
               <ModalButton onClick={handleConfirmLogout}>Да, выйти</ModalButton>
-              <ModalCancelButton onClick={handleCancelLogout}>Нет, остаться</ModalCancelButton>
+              <ModalCancelButton onClick={handleCancelLogout}>
+                Нет, остаться
+              </ModalCancelButton>
             </ModalButtons>
           </ModalWrapper>
         </Overlay>

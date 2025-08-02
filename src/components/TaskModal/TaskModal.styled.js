@@ -6,7 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(234, 238, 246, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,13 +14,15 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background: #fff;
-  width: 700px;
-  max-width: 90vw;
-  border-radius: 12px;
-  padding: 24px;
-  box-sizing: border-box;
-  position: relative;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 `;
 
 export const ModalHeader = styled.div`
@@ -32,8 +34,9 @@ export const ModalHeader = styled.div`
 
 export const ModalTitle = styled.h2`
   margin: 0;
-  font-weight: 700;
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
 `;
 
 export const CloseButton = styled.button`
@@ -42,6 +45,7 @@ export const CloseButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   line-height: 1;
+  color: #94a6be;
 
   &:hover {
     color: #565eef;
@@ -50,30 +54,15 @@ export const CloseButton = styled.button`
 
 export const Form = styled.form`
   display: flex;
-  gap: 24px;
-`;
-
-export const LeftColumn = styled.div`
-  flex: 1;
-`;
-
-export const RightColumn = styled.div`
-  flex: 1;
-  display: flex;
   flex-direction: column;
-`;
-
-export const Label = styled.label`
-  margin-bottom: 8px;
-  font-weight: 600;
+  gap: 15px;
 `;
 
 export const Input = styled.input`
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
-  margin-bottom: 16px;
+  border-radius: 4px;
+  font-size: 16px;
 
   &:focus {
     outline: 2px solid #565eef;
@@ -81,25 +70,12 @@ export const Input = styled.input`
 `;
 
 export const Textarea = styled.textarea`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
   resize: vertical;
   min-height: 60px;
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 16px;
-
-  &:focus {
-    outline: 2px solid #565eef;
-  }
-`;
-
-export const Select = styled.select`
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 16px;
 
   &:focus {
     outline: 2px solid #565eef;
@@ -107,29 +83,45 @@ export const Select = styled.select`
 `;
 
 export const Button = styled.button`
-  background-color: #565eef;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 8px;
+  background-color: #28a745;
+  color: #ffffff;
+  padding: 10px;
   border: none;
+  border-radius: 4px;
+  font-size: 16px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-  margin-top: auto; /* кнопка прижата к низу правой колонки */
 
-  &:hover:not(:disabled) {
-    background-color: #3a3fcf;
-  }
-
-  &:disabled {
-    background-color: #a3a3a3;
-    cursor: default;
+  &:hover {
+    background-color: #218838;
   }
 `;
 
-export const Hint = styled.p`
-  font-size: 12px;
-  color: #888;
-  margin-top: 4px;
+export const CategoryWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+`;
+
+export const Category = styled.button`
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: ${(props) => (props.$isActive ? "#007bff" : "#f8f9fa")};
+  color: ${(props) => (props.$isActive ? "#ffffff" : "#000000")};
+  opacity: ${(props) => (props.$isActive ? 1 : 0.5)};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => (props.$isActive ? "#0056b3" : "#e0e0e0")};
+  }
+`;
+
+export const Error = styled.p`
+  color: red;
+  text-align: center;
+  font-size: 14px;
+`;
+
+export const CalendarWrapper = styled.div`
+  margin: 10px 0;
 `;
