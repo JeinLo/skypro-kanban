@@ -23,14 +23,12 @@ function Card({ topic, title, date, id, index }) {
           <CardStyled>
             <CardGroup>
               <CardTheme
-                $themeType={
+                themeType={
                   topic === "Web Design"
                     ? "_orange"
                     : topic === "Research"
                     ? "_green"
-                    : topic === "Copywriting"
-                    ? "_purple"
-                    : "_default"
+                    : "_purple"
                 }
               >
                 <p>{topic}</p>

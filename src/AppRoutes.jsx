@@ -10,10 +10,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
 
-function AppRoutes() {
-  const [isAuth, setIsAuth] = useState(false);
+function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme }) {
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const authStatus = localStorage.getItem("isAuth") === "true";
@@ -30,7 +28,7 @@ function AppRoutes() {
 
     setIsAuth(authStatus);
     setLoading(false);
-  }, []);
+  }, [setIsAuth, setToken]);
 
   useEffect(() => {
     localStorage.setItem("isAuth", String(isAuth));
@@ -39,25 +37,39 @@ function AppRoutes() {
   return (
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
-        <Route element={<Layout setIsAuth={setIsAuth} />}>
+        <Route
+          element={<Layout setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} />}
+        >
           <Route
             path="/"
-            element={<MainPage loading={loading} token={token} />}
+            element={<MainPage loading={loading} token={token} theme={theme} />}
           />
-          <Route path="/card/add" element={<NewCardPage token={token} />} />
-          <Route path="/card/:id" element={<CardPage token={token} />} />
-          <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />
+          <Route
+            path="/card/add"
+            element={<NewCardPage token={token} theme={theme} />}
+          />
+          <Route
+            path="/card/:id"
+            element={<CardPage token={token} theme={theme} />}
+          />
+          <Route
+            path="/exit"
+            element={<ExitPage setIsAuth={setIsAuth} theme={theme} />}
+          />
         </Route>
       </Route>
       <Route
         path="/login"
-        element={<LoginPage setIsAuth={setIsAuth} setToken={setToken} />}
+        element={<LoginPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />}
       />
       <Route
         path="/register"
-        element={<RegisterPage setIsAuth={setIsAuth} setToken={setToken} />}
+        element={<RegisterPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />}
       />
-      <Route path="*" element={<NotFoundPage />} />
+      <Route
+        path="*"
+        element={<NotFoundPage theme={theme} />}
+      />
     </Routes>
   );
 }

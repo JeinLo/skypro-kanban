@@ -1,20 +1,42 @@
 import styled from "styled-components";
 import GlobalStyle from "./styles/GlobalStyles";
 import AppRoutes from "./AppRoutes";
+import { useState, useEffect } from "react";
 
 const StyledApp = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#ffffff")};
 `;
 
 function App() {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [isAuth, setIsAuth] = useState(!!localStorage.getItem("isAuth"));
+  const [token, setToken] = useState(localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")).token : null);
+
+  useEffect(() => {
+    document.body.style.backgroundColor = theme === "dark" ? "#1a1a1a" : "#ffffff";
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const handleToggleTheme = (newTheme) => {
+    setTheme(newTheme);
+  };
+
   return (
     <>
-      <GlobalStyle />
-      <StyledApp>
-        <AppRoutes />
+      <GlobalStyle theme={theme} />
+      <StyledApp theme={theme}>
+        <AppRoutes
+          isAuth={isAuth}
+          setIsAuth={setIsAuth}
+          token={token}
+          setToken={setToken}
+          theme={theme}
+          onToggleTheme={handleToggleTheme}
+        />
       </StyledApp>
     </>
   );

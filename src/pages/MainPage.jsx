@@ -2,45 +2,43 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../components/Column/Column";
-import { fetchTasks, editTask } from "../services/api";
+import { fetchTasks, postTask } from "../services/api";
 
 const StyledMain = styled.div`
   padding: 20px;
   display: flex;
   gap: 20px;
   min-height: 100vh;
+  position: relative;
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#e5e7eb")};
 `;
 
 const gradientAnimation = keyframes`
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 100% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 `;
 
 const Loader = styled.div`
   width: 100%;
   height: 100vh;
-  background: linear-gradient(270deg, #e0e7ff, #c7d2fe, #e0e7ff);
+  background: linear-gradient(270deg, ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#e0e7ff")}, ${({ theme }) => (theme === "dark" ? "#333" : "#c7d2fe")}, ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#e0e7ff")});
   background-size: 600% 600%;
   animation: ${gradientAnimation} 3s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 16px;
-  color: #000000;
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
 `;
 
 const ErrorMessage = styled.div`
-  color: red;
+  color: ${({ theme }) => (theme === "dark" ? "#ff6666" : "red")};
   text-align: center;
   font-size: 16px;
   padding: 20px;
 `;
 
-function MainPage({ loading, token }) {
+function MainPage({ loading, token, theme }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -72,36 +70,29 @@ function MainPage({ loading, token }) {
     loadTasks();
   }, [loading, token]);
 
-  const handleDragEnd = async (result) => {
-    const { destination, source } = result;
-
-    if (!destination || destination.droppableId === source.droppableId) return;
-
-    const draggedTask = tasks.find((task) => task.id === Number(result.draggableId));
-
-    if (!draggedTask) return;
-
-    const newStatus = destination.droppableId;
-    const updatedTask = { ...draggedTask, status: newStatus };
+  const handleCreateTask = async (task) => {
+    if (!token) {
+      setError("Требуется авторизация");
+      return;
+    }
 
     try {
-      await editTask({ token, task: updatedTask, id: draggedTask.id });
-      setTasks(tasks.map((task) => (task.id === draggedTask.id ? updatedTask : task)));
+      const newTask = await postTask({ token, task });
+      setTasks((prevTasks) => [...prevTasks, newTask]);
     } catch (err) {
-      setError("Не удалось обновить статус задачи");
-      console.error("Ошибка обновления статуса задачи:", err);
+      setError(err.message || "Ошибка создания задачи");
     }
   };
 
-  if (isLoading) return <Loader>Загрузка...</Loader>;
-  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (isLoading) return <Loader theme={theme}>Загрузка...</Loader>;
+  if (error) return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
 
   const columns = {
-    "Без статуса": { title: "Без статуса", cards: [] },
-    "Нужно сделать": { title: "Нужно сделать", cards: [] },
-    "В работе": { title: "В работе", cards: [] },
-    "Тестирование": { title: "Тестирование", cards: [] },
-    "Готово": { title: "Готово", cards: [] },
+    "Без статуса": { title: "БЕЗ СТАТУСА", cards: [] },
+    "Нужно сделать": { title: "НУЖНО СДЕЛАТЬ", cards: [] },
+    "В работе": { title: "В РАБОТЕ", cards: [] },
+    "Тестирование": { title: "ТЕСТИРОВАНИЕ", cards: [] },
+    "Готово": { title: "ГОТОВО", cards: [] },
   };
 
   tasks.forEach((task) => {
@@ -111,14 +102,15 @@ function MainPage({ loading, token }) {
   });
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <StyledMain>
+    <DragDropContext>
+      <StyledMain theme={theme}>
         {Object.entries(columns).map(([status, column]) => (
           <Column
             key={status}
             columnId={status}
             title={column.title}
             cards={column.cards}
+            theme={theme}
           />
         ))}
       </StyledMain>

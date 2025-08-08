@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   StyledPopUser,
   StyledName,
@@ -28,6 +28,10 @@ function PopUser({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(theme === "dark");
 
+  useEffect(() => {
+    setIsDarkTheme(theme === "dark");
+  }, [theme]);
+
   const handleLogoutClick = () => {
     setConfirmOpen(true);
   };
@@ -45,36 +49,44 @@ function PopUser({
   };
 
   const handleThemeToggle = () => {
+    const newTheme = !isDarkTheme ? "dark" : "light";
     setIsDarkTheme(!isDarkTheme);
-    onToggleTheme(!isDarkTheme ? "dark" : "light");
+    onToggleTheme(newTheme);
   };
 
   if (!isOpen) return null;
 
   return (
     <>
-      <StyledPopUser>
-        <StyledName>{userName}</StyledName>
-        <StyledEmail>{userEmail}</StyledEmail>
-        <StyledThemeToggleWrapper>
+      <StyledPopUser $isDarkTheme={isDarkTheme}>
+        <StyledName $isDarkTheme={isDarkTheme}>{userName}</StyledName>
+        <StyledEmail $isDarkTheme={isDarkTheme}>{userEmail}</StyledEmail>
+        <StyledThemeToggleWrapper $isDarkTheme={isDarkTheme}>
           <StyledThemeLabel htmlFor="theme-toggle">Темная тема</StyledThemeLabel>
           <StyledToggleSwitch
             id="theme-toggle"
             type="checkbox"
             checked={isDarkTheme}
             onChange={handleThemeToggle}
+            $isDarkTheme={isDarkTheme}
           />
         </StyledThemeToggleWrapper>
-        <StyledLogoutButton onClick={handleLogoutClick}>Выйти</StyledLogoutButton>
+        <StyledLogoutButton $isDarkTheme={isDarkTheme} onClick={handleLogoutClick}>
+          Выйти
+        </StyledLogoutButton>
       </StyledPopUser>
 
       {confirmOpen && (
-        <Overlay role="dialog" aria-modal="true" aria-labelledby="logout-title">
-          <ModalWrapper>
-            <ModalTitle id="logout-title">Вы уверены, что хотите выйти?</ModalTitle>
+        <Overlay $isDarkTheme={isDarkTheme} role="dialog" aria-modal="true" aria-labelledby="logout-title">
+          <ModalWrapper $isDarkTheme={isDarkTheme}>
+            <ModalTitle $isDarkTheme={isDarkTheme} id="logout-title">
+              Выйти из аккаунта?
+            </ModalTitle>
             <ModalButtons>
-              <ModalButton onClick={handleConfirmLogout}>Да, выйти</ModalButton>
-              <ModalCancelButton onClick={handleCancelLogout}>
+              <ModalButton $isDarkTheme={isDarkTheme} onClick={handleConfirmLogout}>
+                Да, выйти
+              </ModalButton>
+              <ModalCancelButton $isDarkTheme={isDarkTheme} onClick={handleCancelLogout}>
                 Нет, остаться
               </ModalCancelButton>
             </ModalButtons>

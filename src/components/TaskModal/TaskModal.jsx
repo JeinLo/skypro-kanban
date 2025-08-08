@@ -6,13 +6,19 @@ import {
   ModalTitle,
   CloseButton,
   Form,
+  InputWrapper,
+  InputLabel,
   Input,
+  TextareaWrapper,
+  TextareaLabel,
   Textarea,
+  CalendarWrapper,
+  CalendarLabel,
+  SelectedDateText,
   Button,
   CategoryWrapper,
   Category,
   Error,
-  CalendarWrapper,
 } from "./TaskModal.styled";
 import Calendar from "../Calendar/Calendar";
 
@@ -22,30 +28,15 @@ const categories = [
   { id: 3, name: "Copywriting" },
 ];
 
-function TaskModal({ isOpen, onClose, onCreateTask, initialTask }) {
-  const [name, setName] = useState("");
+function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (initialTask) {
-      setName(initialTask.title || "");
-      setDescription(initialTask.description || "");
-      setCategory(
-        categories.some((cat) => cat.name === initialTask.topic)
-          ? initialTask.topic
-          : null
-      );
-      setDueDate(initialTask.date ? new Date(initialTask.date) : null);
-    }
-  }, [initialTask]);
-
-  if (!isOpen) return null;
-
   const handleCategoryClick = (cat) => {
-    setCategory(cat);
+    setCategory(cat === category ? null : cat);
     setError("");
   };
 
@@ -56,70 +47,81 @@ function TaskModal({ isOpen, onClose, onCreateTask, initialTask }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name.trim() || !category || !dueDate) {
+    if (!title.trim() || !category || !dueDate) {
       setError("Заполните все поля: название, категория, дата");
       return;
     }
     onCreateTask({
-      title: name,
+      title,
       description,
       topic: category,
       date: dueDate.toISOString(),
-      status: initialTask?.status || "Без статуса",
+      status: "Без статуса",
     });
-    if (!initialTask) {
-      setName("");
-      setDescription("");
-      setCategory(null);
-      setDueDate(null);
-      setError("");
-    }
+    setTitle("");
+    setDescription("");
+    setCategory(null);
+    setDueDate(null);
+    setError("");
   };
 
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay isOpen={isOpen} $isDarkTheme={theme === "dark"} onClick={onClose}>
+      <ModalContent $isDarkTheme={theme === "dark"} onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <ModalTitle>{initialTask ? "Редактировать задачу" : "Создать задачу"}</ModalTitle>
-          <CloseButton onClick={onClose} aria-label="Закрыть модалку">
+          <ModalTitle $isDarkTheme={theme === "dark"}>Создание задачи</ModalTitle>
+          <CloseButton $isDarkTheme={theme === "dark"} onClick={onClose} aria-label="Закрыть модалку">
             &times;
           </CloseButton>
         </ModalHeader>
-
-        <Form onSubmit={handleSubmit}>
-          <Input
-            type="text"
-            placeholder="Название задачи"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setError("");
-            }}
-          />
-          <Textarea
-            placeholder="Описание задачи"
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-              setError("");
-            }}
-          />
-          <CalendarWrapper>
-            <Calendar value={dueDate} onChange={handleDateSelect} />
-          </CalendarWrapper>
+        <Form $isDarkTheme={theme === "dark"} onSubmit={handleSubmit}>
+          <div style={{ display: "flex", gap: "20px", flexGrow: 1 }}>
+            <div style={{ flex: 1 }}>
+              <InputWrapper>
+                <InputLabel $isDarkTheme={theme === "dark"}>Название задачи</InputLabel>
+                <Input
+                  $isDarkTheme={theme === "dark"}
+                  type="text"
+                  placeholder="Введите название задачи..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </InputWrapper>
+              <TextareaWrapper>
+                <TextareaLabel $isDarkTheme={theme === "dark"} style={{ marginTop: "20px" }}>Описание задачи</TextareaLabel>
+                <Textarea
+                  $isDarkTheme={theme === "dark"}
+                  placeholder="Введите описание задачи..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </TextareaWrapper>
+            </div>
+            <CalendarWrapper>
+              <CalendarLabel $isDarkTheme={theme === "dark"}>Даты</CalendarLabel>
+              <Calendar value={dueDate} onChange={handleDateSelect} $isDarkTheme={theme === "dark"} />
+              <SelectedDateText $isDarkTheme={theme === "dark"}>
+                {dueDate ? `Срок исполнения: ${dueDate.toLocaleDateString("ru-RU")}` : "Срок исполнения"}
+              </SelectedDateText>
+            </CalendarWrapper>
+          </div>
           <CategoryWrapper>
-            {categories.map((cat) => (
-              <Category
-                key={cat.id}
-                $isActive={cat.name === category}
-                onClick={() => handleCategoryClick(cat.name)}
-              >
-                {cat.name}
-              </Category>
-            ))}
+            <InputLabel $isDarkTheme={theme === "dark"}>Категории</InputLabel>
+            <div style={{ display: "flex", gap: "10px" }}>
+              {categories.map((cat) => (
+                <Category
+                  key={cat.id}
+                  $isActive={cat.name === category}
+                  $isDarkTheme={theme === "dark"}
+                  onClick={() => handleCategoryClick(cat.name)}
+                >
+                  {cat.name}
+                </Category>
+              ))}
+            </div>
           </CategoryWrapper>
-          {error && <Error>{error}</Error>}
-          <Button type="submit">Создать задачу</Button>
+          {error && <Error $isDarkTheme={theme === "dark"}>{error}</Error>}
+          <Button $isDarkTheme={theme === "dark"} type="submit">Создать задачу</Button>
         </Form>
       </ModalContent>
     </ModalOverlay>

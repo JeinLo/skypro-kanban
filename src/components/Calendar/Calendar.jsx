@@ -11,9 +11,9 @@ import {
   EmptyDay,
 } from "./Calendar.styled";
 
-const daysOfWeek = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const daysOfWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
-function Calendar({ value, onChange = () => {} }) {
+function Calendar({ value, onChange = () => {}, $isDarkTheme }) {
   const [currentDate, setCurrentDate] = useState(() =>
     value ? new Date(value) : new Date()
   );
@@ -34,7 +34,7 @@ function Calendar({ value, onChange = () => {} }) {
     currentDate.getMonth() + 1,
     0
   );
-  const startDay = (startOfMonth.getDay() + 6) % 7; // понедельник = 0
+  const startDay = (startOfMonth.getDay() + 6) % 7; // Понедельник = 0
   const daysInMonth = endOfMonth.getDate();
 
   const days = [];
@@ -53,7 +53,7 @@ function Calendar({ value, onChange = () => {} }) {
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 
-  const today = new Date();
+  const today = new Date(); // 04:10 PM EDT, 08.08.2025
 
   const prevMonth = () => {
     setCurrentDate(
@@ -72,25 +72,27 @@ function Calendar({ value, onChange = () => {} }) {
   };
 
   return (
-    <CalendarWrapper>
+    <CalendarWrapper $isDarkTheme={$isDarkTheme}>
       <CalendarHeader>
-        <Button onClick={prevMonth} aria-label="Предыдущий месяц">
-          &#8592;
+        <Button $isDarkTheme={$isDarkTheme} onClick={prevMonth} aria-label="Предыдущий месяц">
+          ←
         </Button>
-        <MonthYear>
+        <MonthYear $isDarkTheme={$isDarkTheme}>
           {currentDate.toLocaleString("ru-RU", {
             month: "long",
             year: "numeric",
-          })}
+          }).replace(/^./, (str) => str.toUpperCase())}
         </MonthYear>
-        <Button onClick={nextMonth} aria-label="Следующий месяц">
-          &#8594;
+        <Button $isDarkTheme={$isDarkTheme} onClick={nextMonth} aria-label="Следующий месяц">
+          →
         </Button>
       </CalendarHeader>
 
       <DaysOfWeek>
         {daysOfWeek.map((day) => (
-          <DaysOfWeekItem key={day}>{day}</DaysOfWeekItem>
+          <DaysOfWeekItem key={day} $isDarkTheme={$isDarkTheme}>
+            {day}
+          </DaysOfWeekItem>
         ))}
       </DaysOfWeek>
 
@@ -99,8 +101,9 @@ function Calendar({ value, onChange = () => {} }) {
           day ? (
             <Day
               key={i}
-              isToday={isSameDay(day, today)}
-              isSelected={isSameDay(day, value)}
+              $isToday={isSameDay(day, today)}
+              $isSelected={isSameDay(day, value)}
+              $isDarkTheme={$isDarkTheme}
               onClick={() => handleDayClick(day)}
               tabIndex={0}
               onKeyDown={(e) => {

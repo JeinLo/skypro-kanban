@@ -7,10 +7,16 @@ const StyledLayout = styled.div`
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#ffffff")};
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+  transition: background-color 0.3s, color 0.3s;
 `;
 
 const StyledMain = styled.main`
   flex-grow: 1;
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#ffffff")};
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+  transition: background-color 0.3s, color 0.3s;
 `;
 
 const GlobalHeaderStyles = createGlobalStyle`
@@ -20,17 +26,25 @@ const GlobalHeaderStyles = createGlobalStyle`
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
     font-size: 14px;
-    color: #94A6BE;
+    color: ${({ theme }) => (theme === "dark" ? "#b0b0b0" : "#94A6BE")};
     margin: 0;
+    transition: color 0.3s;
+  }
+
+  /* Подсветка для всех модальных окон */
+  [role="dialog"] {
+    outline: 2px solid ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
+    box-shadow: 0 0 10px ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
+    transition: outline 0.3s, box-shadow 0.3s;
   }
 `;
 
-function Layout({ setIsAuth }) {
+function Layout({ setIsAuth, theme, onToggleTheme }) {
   return (
-    <StyledLayout>
-      <GlobalHeaderStyles />
-      <Header setIsAuth={setIsAuth} />
-      <StyledMain>
+    <StyledLayout theme={theme}>
+      <GlobalHeaderStyles theme={theme} />
+      <Header setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} />
+      <StyledMain theme={theme}>
         <Outlet />
       </StyledMain>
     </StyledLayout>
