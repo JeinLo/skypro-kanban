@@ -66,7 +66,9 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
   };
 
   return (
-    <ModalOverlay isOpen={isOpen} $isDarkTheme={theme === "dark"} onClick={onClose}>
+    <ModalOverlay isOpen={isOpen} $isDarkTheme={theme === "dark"} onClick={(e) => {
+      if (e.target === e.currentTarget) {onClose ()}
+    }}>
       <ModalContent $isDarkTheme={theme === "dark"} onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle $isDarkTheme={theme === "dark"}>Создание задачи</ModalTitle>
@@ -110,10 +112,13 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
             <div style={{ display: "flex", gap: "10px" }}>
               {categories.map((cat) => (
                 <Category
+                  type="button"
                   key={cat.id}
                   $isActive={cat.name === category}
                   $isDarkTheme={theme === "dark"}
-                  onClick={() => handleCategoryClick(cat.name)}
+                  onClick={(e) => 
+                     {e.stopPropagation()
+                   handleCategoryClick(cat.name)}}
                 >
                   {cat.name}
                 </Category>

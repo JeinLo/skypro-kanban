@@ -33,10 +33,10 @@ export async function postTask({ token, task }) {
     const response = await axios.post(API_URL, task, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "",
       },
     });
-    return response.data.task;
+    return response.data.tasks;
   } catch (err) {
     throw new Error(err.message);
   }

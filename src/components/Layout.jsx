@@ -39,11 +39,11 @@ const GlobalHeaderStyles = createGlobalStyle`
   }
 `;
 
-function Layout({ setIsAuth, theme, onToggleTheme }) {
+function Layout({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   return (
     <StyledLayout theme={theme}>
       <GlobalHeaderStyles theme={theme} />
-      <Header setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} />
+      <Header setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} token={token} setTasks={setTasks}/>
       <StyledMain theme={theme}>
         <Outlet />
       </StyledMain>

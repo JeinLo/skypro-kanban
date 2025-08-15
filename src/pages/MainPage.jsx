@@ -38,8 +38,7 @@ const ErrorMessage = styled.div`
   padding: 20px;
 `;
 
-function MainPage({ loading, token, theme }) {
-  const [tasks, setTasks] = useState([]);
+function MainPage({ loading, token, theme, tasks, setTasks }) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 

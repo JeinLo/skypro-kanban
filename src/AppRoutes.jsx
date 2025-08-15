@@ -12,6 +12,7 @@ import Layout from "./components/Layout";
 
 function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme }) {
   const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const authStatus = localStorage.getItem("isAuth") === "true";
@@ -38,11 +39,11 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
         <Route
-          element={<Layout setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} />}
+          element={<Layout setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} token={token} setTasks={setTasks} />}
         >
           <Route
             path="/"
-            element={<MainPage loading={loading} token={token} theme={theme} />}
+            element={<MainPage loading={loading} token={token} theme={theme} tasks={tasks} setTasks={setTasks}/>}
           />
           <Route
             path="/card/add"

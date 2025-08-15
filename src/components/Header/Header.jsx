@@ -9,8 +9,9 @@ import {
 import { useState, useEffect } from "react";
 import PopUser from "../popups/PopUser/PopUser";
 import TaskModal from "../TaskModal/TaskModal";
+import { postTask } from "../../services/api";
 
-function Header({ setIsAuth, theme, onToggleTheme }) {
+function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   const [isPopUserOpen, setIsPopUserOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [userName, setUserName] = useState("Ivan Ivanov");
@@ -55,8 +56,11 @@ function Header({ setIsAuth, theme, onToggleTheme }) {
         <TaskModal
           isOpen={isTaskModalOpen}
           onClose={closeTaskModal}
-          onCreateTask={(task) => {
-            closeTaskModal();
+          onCreateTask={(task) =>
+             { postTask({ token, task }).then((newTasks)=>{
+              setTasks(newTasks); 
+              closeTaskModal()
+             });
           }}
           theme={theme}
         />
