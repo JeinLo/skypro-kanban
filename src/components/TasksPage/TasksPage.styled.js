@@ -10,7 +10,7 @@ export const Title = styled.h1`
 `;
 
 export const CreateButton = styled.button`
-  background-color: #565eef;
+  background-color: #565EEF;
   color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
@@ -21,7 +21,7 @@ export const CreateButton = styled.button`
   margin-bottom: 20px;
 
   &:hover {
-    background-color: #3a3fcf;
+    background-color: #3f53d8; /* Темнее при наведении */
   }
 `;
 

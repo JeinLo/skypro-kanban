@@ -4,7 +4,6 @@ import {
   StyledActions,
   StyledTaskLink,
   StyledUserLink,
-  StyledArrow,
 } from "./Header.styled";
 import { useState, useEffect } from "react";
 import PopUser from "../popups/PopUser/PopUser";
@@ -44,7 +43,7 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
           Создать новую задачу
         </StyledTaskLink>
         <StyledUserLink theme={theme} onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
-          {userName} <StyledArrow theme={theme}>▼</StyledArrow>
+          {userName}
         </StyledUserLink>
         <PopUser
           isOpen={isPopUserOpen}
@@ -57,11 +56,11 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
           isOpen={isTaskModalOpen}
           onClose={closeTaskModal}
           onCreateTask={(task) =>
-             { postTask({ token, task }).then((newTasks)=>{
-              setTasks(newTasks); 
-              closeTaskModal()
-             });
-          }}
+            postTask({ token, task }).then((newTasks) => {
+              setTasks(newTasks);
+              closeTaskModal();
+            })
+          }
           theme={theme}
         />
       </StyledActions>

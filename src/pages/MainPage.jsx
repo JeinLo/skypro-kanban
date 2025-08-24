@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../components/Column/Column";
-import { fetchTasks, postTask } from "../services/api";
+import { fetchTasks, editTask } from "../services/api";
+import { useOutletContext } from "react-router-dom";
 
 const StyledMain = styled.div`
   padding: 20px;
@@ -38,78 +39,95 @@ const ErrorMessage = styled.div`
   padding: 20px;
 `;
 
-function MainPage({ loading, token, theme, tasks, setTasks }) {
+function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }) {
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(initialLoading);
+  const { setTasks } = useOutletContext();
 
   useEffect(() => {
-    if (loading) return;
-
-    async function loadTasks() {
-      if (!token) {
-        setError("Требуется авторизация");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const tasks = await fetchTasks({ token });
-        setTasks(tasks || []);
-        setIsLoading(false);
-      } catch (err) {
-        console.error("Ошибка загрузки задач:", err.message);
-        setError(err.message || "Ошибка загрузки задач");
-        setIsLoading(false);
-        if (err.message.includes("401")) {
-          setError("Требуется авторизация");
-        }
-      }
+    if (!initialLoading && token && initialTasks.length === 0) {
+      setIsLoading(true);
+      fetchTasks({ token })
+        .then((tasksData) => {
+          console.log("Данные из fetchTasks:", tasksData);
+          setTasks(tasksData);
+        })
+        .catch((err) => {
+          console.error("Ошибка загрузки задач:", err.message);
+          setError(err.message || "Ошибка загрузки задач");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-
-    loadTasks();
-  }, [loading, token]);
-
-  const handleCreateTask = async (task) => {
-    if (!token) {
-      setError("Требуется авторизация");
-      return;
-    }
-
-    try {
-      const newTask = await postTask({ token, task });
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-    } catch (err) {
-      setError(err.message || "Ошибка создания задачи");
-    }
-  };
+  }, [initialLoading, token, initialTasks.length, setTasks]);
 
   if (isLoading) return <Loader theme={theme}>Загрузка...</Loader>;
   if (error) return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
 
-  const columns = {
-    "Без статуса": { title: "БЕЗ СТАТУСА", cards: [] },
-    "Нужно сделать": { title: "НУЖНО СДЕЛАТЬ", cards: [] },
-    "В работе": { title: "В РАБОТЕ", cards: [] },
-    "Тестирование": { title: "ТЕСТИРОВАНИЕ", cards: [] },
-    "Готово": { title: "ГОТОВО", cards: [] },
+  const columnTitles = [
+    "Без статуса",
+    "Нужно сделать",
+    "В работе",
+    "Тестирование",
+    "Готово",
+  ];
+
+  const handleDragEnd = async (result) => {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) return;
+
+    const sourceColumnIndex = parseInt(source.droppableId);
+    const destColumnIndex = parseInt(destination.droppableId);
+    const sourceColumnTitle = columnTitles[sourceColumnIndex];
+    const destColumnTitle = columnTitles[destColumnIndex];
+
+    const movedCard = initialTasks.find((task, index) =>
+      task.status.toLowerCase() === sourceColumnTitle.toLowerCase() &&
+      index === source.index
+    );
+
+    if (!movedCard) {
+      console.error("Задача не найдена:", source.index, sourceColumnTitle);
+      return;
+    }
+
+    const updatedCard = {
+      ...movedCard,
+      status: destColumnTitle,
+      userId: movedCard.userId, // Передаем userId
+      title: movedCard.title,
+      topic: movedCard.topic,
+      date: new Date(movedCard.date).toISOString(), // Формат ISO для даты
+      description: movedCard.description || "",
+    };
+
+    console.log("Отправляемые данные в editTask:", { id: movedCard._id, task: updatedCard });
+
+    try {
+      const updatedTasks = await editTask({ id: movedCard._id, token, task: updatedCard });
+      setTasks(updatedTasks);
+    } catch (err) {
+      console.error("Ошибка при сохранении статуса задачи:", err.message);
+      setError(`Ошибка при сохранении статуса задачи: ${err.message}`);
+    }
   };
 
-  tasks.forEach((task) => {
-    if (columns[task.status]) {
-      columns[task.status].cards.push(task);
-    }
-  });
-
   return (
-    <DragDropContext>
+    <DragDropContext onDragEnd={handleDragEnd}>
       <StyledMain theme={theme}>
-        {Object.entries(columns).map(([status, column]) => (
+        {columnTitles.map((title, index) => (
           <Column
-            key={status}
-            columnId={status}
-            title={column.title}
-            cards={column.cards}
+            key={index}
+            columnId={String(index)}
+            title={title}
+            cards={initialTasks}
             theme={theme}
+            token={token}
           />
         ))}
       </StyledMain>

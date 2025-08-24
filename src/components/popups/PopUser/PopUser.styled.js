@@ -22,6 +22,7 @@ export const StyledName = styled.div`
   font-weight: 700;
   margin-bottom: 6px;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
+  text-align: center;
 `;
 
 export const StyledEmail = styled.div`
@@ -29,6 +30,7 @@ export const StyledEmail = styled.div`
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94a6be")};
   margin-bottom: 16px;
   word-break: break-word;
+  text-align: center;
 `;
 
 export const StyledThemeToggleWrapper = styled.label`
@@ -84,7 +86,7 @@ export const StyledLogoutButton = styled.button`
   padding: 8px 0;
   font-weight: 600;
   font-size: 14px;
-  border: 1.5px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#565eef")};
+  border: 1.5px solid #565EEF;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -103,7 +105,7 @@ export const StyledLogoutButton = styled.button`
 export const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(234, 238, 246, 0.8)")};
+  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.5)")};
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -119,11 +121,16 @@ export const ModalWrapper = styled.div`
   max-width: 400px;
   text-align: center;
   transition: background-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Центрируем содержимое вертикально */
+  align-items: center; /* Центрируем содержимое горизонтально */
+  height: 200px; /* Фиксированная высота для центрирования */
 `;
 
 export const ModalTitle = styled.h2`
   font-size: 20px;
-  margin: 20px 0;
+  margin: 0 0 20px 0;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
   text-align: center;
   transition: color 0.3s;
@@ -132,36 +139,47 @@ export const ModalTitle = styled.h2`
 export const ModalButtons = styled.div`
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 10px;
+  margin-top: 20px; /* Отступ от текста */
 `;
 
 export const ModalButton = styled.button`
-  padding: 10px 24px;
+  width: 153px;
+  height: 30px;
+  padding: 8px 10px;
   font-weight: 600;
   font-size: 14px;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
-  border: 1.5px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#565eef")};
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#000000" : "#565eef")};
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#ffffff")};
+  border: 1.5px solid #565EEF;
+  background-color: #565EEF;
+  color: #ffffff;
+  display: flex;
+  justify-content: center; /* Центрируем текст внутри кнопки */
+  align-items: center; /* Центрируем текст внутри кнопки */
   transition: background-color 0.2s ease, color 0.2s ease;
 
   &:hover,
   &:active {
-    background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#3f53d8")};
-    border-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#3f53d8")};
+    background-color: #3f53d8;
+    border-color: #3f53d8;
   }
 `;
 
 export const ModalCancelButton = styled.button`
-  padding: 10px 24px;
+  width: 153px;
+  height: 30px;
+  padding: 8px 10px;
   font-weight: 600;
   font-size: 14px;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
-  border: 1.5px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#565eef")};
+  border: 1.5px solid #565EEF;
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#000000" : "#ffffff")};
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#565eef")};
+  display: flex;
+  justify-content: center; /* Центрируем текст внутри кнопки */
+  align-items: center; /* Центрируем текст внутри кнопки */
   transition: background-color 0.2s ease, color 0.2s ease;
 
   &:hover,

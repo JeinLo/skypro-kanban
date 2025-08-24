@@ -43,9 +43,9 @@ function Layout({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   return (
     <StyledLayout theme={theme}>
       <GlobalHeaderStyles theme={theme} />
-      <Header setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} token={token} setTasks={setTasks}/>
+      <Header setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} token={token} setTasks={setTasks} />
       <StyledMain theme={theme}>
-        <Outlet />
+        <Outlet context={{ setTasks }} /> {/* Передаем setTasks через контекст */}
       </StyledMain>
     </StyledLayout>
   );

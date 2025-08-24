@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
@@ -9,6 +9,7 @@ import ExitPage from "./pages/ExitPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
+import { fetchTasks } from "./services/api";
 
 function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme }) {
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,22 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
     localStorage.setItem("isAuth", String(isAuth));
   }, [isAuth]);
 
+  useEffect(() => {
+    if (token) {
+      setLoading(true);
+      fetchTasks({ token })
+        .then((tasksData) => {
+          setTasks(tasksData); // Используем данные от сервера
+        })
+        .catch((err) => {
+          console.error("Ошибка загрузки задач:", err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [token]);
+
   return (
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
@@ -43,7 +60,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
         >
           <Route
             path="/"
-            element={<MainPage loading={loading} token={token} theme={theme} tasks={tasks} setTasks={setTasks}/>}
+            element={<MainPage loading={loading} token={token} theme={theme} tasks={tasks} />}
           />
           <Route
             path="/card/add"

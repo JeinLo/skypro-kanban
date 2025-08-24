@@ -13,19 +13,19 @@ const StyledBackground = styled.div`
 
 const StyledModal = styled.div`
   background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
-  padding: 40px;
-  border-radius: 8px;
+  width: 400px; /* Увеличен размер окна */
+  height: 380px; /* Увеличен размер окна */
+  border-radius: 10px;
+  gap: 10px;
+  top: 285px;
+  left: 536px;
+  border: 0.7px solid ${({ theme }) => (theme === "dark" ? "#333" : "#ccc")};
+  padding: 50px 60px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
   text-align: center;
-`;
-
-const StyledLogo = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const StyledTitle = styled.h2`
@@ -38,53 +38,73 @@ const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  align-items: center;
 `;
 
 const StyledInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: center;
 `;
 
 const StyledInput = styled.input`
-  padding: 10px;
-  border: 1px solid ${({ theme }) => (theme === "dark" ? "#333" : "#ccc")};
-  border-radius: 4px;
+  width: 248px;
+  height: 30px;
+  border-radius: 8px;
+  gap: 10px;
+  border: 0.7px solid ${({ theme, $error }) => ($error ? "#F84D4D" : (theme === "dark" ? "#333" : "#ccc"))};
+  padding: 8px 10px;
   font-size: 16px;
   background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#ffffff")};
   color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
 
   &:focus {
-    outline: 2px solid ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
+    outline: 2px solid ${({ theme }) => (theme === "dark" ? "#565EEF" : "#565EEF")};
   }
 
   &::placeholder {
-    color: ${({ theme }) => (theme === "dark" ? "#b0b0b0" : "#94a6be")};
+    color: #94A6BE;
   }
 `;
 
 const StyledButton = styled.button`
-  background-color: ${({ theme }) => (theme === "dark" ? "#000000" : "#007bff")};
-  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#ffffff")};
-  padding: 10px;
-  border: 2px solid ${({ theme }) => (theme === "dark" ? "#ffffff" : "#007bff")};
+  width: 248px;
+  height: 30px;
   border-radius: 4px;
+  gap: 10px;
+  padding: 8px 10px;
+  background-color: ${({ $disabled, theme }) => ($disabled ? "#94A6BE" : "#565EEF")};
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#ffffff")};
+  border: 0.7px solid ${({ $disabled, theme }) => ($disabled ? "#94A6BE" : "#565EEF")};
   font-size: 16px;
-  cursor: pointer;
-  width: 100%;
+  cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
 
-  &:hover,
-  &:active {
-    background-color: ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#0056b3")};
-    border-color: ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#0056b3")};
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background-color: #3f53d8;
+    border-color: #3f53d8;
   }
 `;
 
 const StyledFormGroup = styled.div`
   text-align: center;
-  margin-top: 10px;
+  margin-top: 5px; /* Уменьшен отступ */
+  font-family: Roboto;
+  font-weight: 400;
   font-size: 14px;
-  color: ${({ theme }) => (theme === "dark" ? "#b0b0b0" : "#000000")};
+  line-height: 150%;
+  color: ${({ theme }) => (theme === "dark" ? "#94A6BE66" : "#94A6BE66")};
+`;
+
+const StyledLink = styled(Link)`
+  color: #94A6BE66;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 function LoginPage({ setIsAuth, setToken, theme }) {
@@ -96,24 +116,46 @@ function LoginPage({ setIsAuth, setToken, theme }) {
   });
 
   const [error, setError] = useState("");
+  const [errors, setErrors] = useState({ login: false, password: false });
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { login: false, password: false };
+
+    if (!formData.login.trim()) {
+      newErrors.login = true;
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.login)) {
+      newErrors.login = true;
+      isValid = false;
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = true;
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    setError(isValid ? "" : "Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.");
+    return isValid;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: false });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { login, password } = formData;
-
-    if (!login || !password) {
-      setError("Введите email и пароль");
+    if (!validateForm()) {
       return;
     }
 
     try {
-      const data = await signIn({ login, password });
+      const data = await signIn({ login: formData.login, password: formData.password });
       setIsAuth(true);
       setToken(data.user?.token || data.token);
       localStorage.setItem("isAuth", "true");
@@ -122,8 +164,11 @@ function LoginPage({ setIsAuth, setToken, theme }) {
     } catch (err) {
       console.error("Ошибка входа:", err.message);
       setError(err.message);
+      setErrors({ login: true, password: true }); // Предполагаем ошибку во всех полях при неверных данных
     }
   };
+
+  const isFormInvalid = errors.login || errors.password || error;
 
   return (
     <StyledBackground theme={theme}>
@@ -135,9 +180,10 @@ function LoginPage({ setIsAuth, setToken, theme }) {
               theme={theme}
               type="email"
               name="login"
-              placeholder="Email"
+              placeholder="Эл. почта"
               value={formData.login}
               onChange={handleChange}
+              $error={errors.login}
             />
             <StyledInput
               theme={theme}
@@ -146,16 +192,19 @@ function LoginPage({ setIsAuth, setToken, theme }) {
               placeholder="Пароль"
               value={formData.password}
               onChange={handleChange}
+              $error={errors.password}
             />
           </StyledInputWrapper>
 
-          {error && <p style={{ color: theme === "dark" ? "#ff6666" : "red" }}>{error}</p>}
+          {error && <p style={{ color: "#F84D4D", textAlign: "center" }}>{error}</p>}
 
-          <StyledButton theme={theme} type="submit">Войти</StyledButton>
+          <StyledButton theme={theme} type="submit" $disabled={isFormInvalid}>
+            Войти
+          </StyledButton>
 
           <StyledFormGroup theme={theme}>
             <p>Нужно зарегистрироваться?</p>
-            <Link to="/register">Регистрация</Link>
+            <StyledLink to="/register">Регистрируйтесь здесь</StyledLink>
           </StyledFormGroup>
         </StyledForm>
       </StyledModal>

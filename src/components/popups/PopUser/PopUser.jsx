@@ -59,7 +59,9 @@ function PopUser({
   return (
     <>
       <StyledPopUser $isDarkTheme={isDarkTheme}>
-        <StyledName $isDarkTheme={isDarkTheme}>{userName}</StyledName>
+        <StyledName $isDarkTheme={isDarkTheme}>
+          {userName}
+        </StyledName>
         <StyledEmail $isDarkTheme={isDarkTheme}>{userEmail}</StyledEmail>
         <StyledThemeToggleWrapper $isDarkTheme={isDarkTheme}>
           <StyledThemeLabel htmlFor="theme-toggle">Темная тема</StyledThemeLabel>

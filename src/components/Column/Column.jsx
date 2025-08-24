@@ -1,37 +1,47 @@
 import React from "react";
-import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
 import Card from "../Card/Card";
-import {
-  StyledColumn,
-  StyledTitle,
-  StyledCardContainer,
-} from "./Column.styled";
+import { ColumnMain, ColumnTitle, Cards } from "./Column.styled";
 
-function Column({ columnId, title, cards }) {
+function Column({ columnId, title, cards, theme, token }) {
+  const validStatuses = [
+    "без статуса",
+    "нужно сделать",
+    "в работе",
+    "тестирование",
+    "готово",
+  ].map((status) => status.toLowerCase());
+
+  const filteredCards = cards.filter((card) =>
+    card.status && validStatuses.includes(card.status.toLowerCase())
+  );
+
+  console.log(`Рендер Column "${title}", filteredCards:`, filteredCards);
+
   return (
-    <Droppable droppableId={columnId}>
-      {(provided) => (
-        <StyledColumn {...provided.droppableProps} ref={provided.innerRef}>
-          <StyledTitle>{title}</StyledTitle>
-          <StyledCardContainer>
-            {cards.map((card, index) => (
-              <Draggable key={String(card.id)} draggableId={String(card.id)} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <Card {...card} index={index} />
-                  </div>
-                )}
-              </Draggable>
-            ))}
+    <ColumnMain $column={{ theme }}>
+      <ColumnTitle>
+        <p>{title}</p>
+      </ColumnTitle>
+      <Droppable droppableId={columnId}>
+        {(provided) => (
+          <Cards ref={provided.innerRef} {...provided.droppableProps}>
+            {filteredCards
+              .filter((card) => card.status.toLowerCase() === title.toLowerCase())
+              .map((card, index) => (
+                <Card
+                  key={card._id}
+                  card={card}
+                  index={index}
+                  theme={theme}
+                  token={token}
+                />
+              ))}
             {provided.placeholder}
-          </StyledCardContainer>
-        </StyledColumn>
-      )}
-    </Droppable>
+          </Cards>
+        )}
+      </Droppable>
+    </ColumnMain>
   );
 }
 

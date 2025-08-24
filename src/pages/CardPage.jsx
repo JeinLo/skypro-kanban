@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import Card from "../components/Card/Card";
-import { fetchTaskById } from "../services/api";
+import { getTask } from "../services/api"; // Заменили fetchTaskById на getTask
 
 const StyledCardPage = styled.div`
   display: flex;
@@ -80,7 +80,7 @@ function CardPage({ token }) {
       }
 
       try {
-        const data = await fetchTaskById({ token, id });
+        const data = await getTask({ token, id }); // Используем getTask
         setTask(data);
         setLoading(false);
       } catch (err) {
@@ -109,7 +109,7 @@ function CardPage({ token }) {
   return (
     <StyledCardPage>
       <StyledCardContainer>
-        <Card topic={task.topic} title={task.title} date={task.date} id={task.id} />
+        <Card topic={task.topic} title={task.title} date={task.date} id={task.id} token={token} />
 
         <StyledActions>
           <StyledButton onClick={() => navigate(`/card/${id}/edit`)}>

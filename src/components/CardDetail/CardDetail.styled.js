@@ -86,6 +86,7 @@ export const Input = styled.input`
   font-size: 14px;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
   font-family: "Roboto", sans-serif;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
 
   &:focus {
     outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
@@ -122,6 +123,7 @@ export const Textarea = styled.textarea`
   resize: none;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
   font-family: "Roboto", sans-serif;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
 
   &:focus {
     outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
@@ -170,10 +172,11 @@ export const Category = styled.button`
   border-radius: 24px;
   font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   user-select: none;
   transition: opacity 0.2s ease;
   font-family: "Roboto", sans-serif;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 
   ${({ $isActive, $isDarkTheme, children }) => {
     switch (children) {
@@ -189,18 +192,14 @@ export const Category = styled.button`
   }}
 
   &:hover {
-    ${({ $isDarkTheme, children }) => {
-      switch (children) {
-        case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#664d26" : "#ffbf69"};`;
-        case "Research":
-          return `background-color: ${$isDarkTheme ? "#26664d" : "#97d8b4"};`;
-        case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#66266d" : "#cdb3ff"};`;
-        default:
-          return `background-color: ${$isDarkTheme ? "#333" : "#e0e0e0"};`;
-      }
-    }}
+    ${({ $isDarkTheme, children, disabled }) =>
+      !disabled &&
+      {
+        "Web Design": `background-color: ${$isDarkTheme ? "#664d26" : "#ffbf69"};`,
+        "Research": `background-color: ${$isDarkTheme ? "#26664d" : "#97d8b4"};`,
+        "Copywriting": `background-color: ${$isDarkTheme ? "#66266d" : "#cdb3ff"};`,
+        default: `background-color: ${$isDarkTheme ? "#333" : "#e0e0e0"};`,
+      }[children] || ""};
   }
 `;
 
@@ -235,9 +234,80 @@ export const Button = styled.button`
   }
 `;
 
-export const Error = styled.p`
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ff6666" : "red")};
-  text-align: center;
+export const TaskInfo = styled.div`
+  margin-top: 20px;
+  padding: 10px;
+  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#f4f5f7")};
+  border-radius: 8px;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+
+  p {
+    margin: 5px 0;
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+  }
+`;
+
+export const EditButton = styled.button`
+  width: 132px;
+  height: 30px;
+  padding: 10px 14px;
+  border: 2px solid #565EEF;
+  border-radius: 4px;
+  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#000000" : "#ffffff")};
+  color: #565EEF;
   font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: "Roboto", sans-serif;
+  white-space: nowrap;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover,
+  &:active {
+    background-color: #565EEF;
+    color: #ffffff;
+    border-color: #3f53d8;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const DeleteButton = styled.button`
+  width: 132px;
+  height: 30px;
+  padding: 10px 14px;
+  border: 2px solid #ff4444;
+  border-radius: 4px;
+  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#000000" : "#ffffff")};
+  color: #ff4444;
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Roboto", sans-serif;
+  white-space: nowrap;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover,
+  &:active {
+    background-color: #ff4444;
+    color: #ffffff;
+    border-color: #cc0000;
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
