@@ -7,7 +7,7 @@ export const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.5)")};
-  display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -72,7 +72,7 @@ export const InputLabel = styled.label`
   font-size: 14px;
   font-weight: 500;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  font-family: "Roboto", sans-serif";
+  font-family: "Roboto", sans-serif;
 `;
 
 export const Input = styled.input`
@@ -146,7 +146,7 @@ export const CalendarLabel = styled.label`
   font-size: 14px;
   font-weight: 500;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  font-family: "Roboto", sans-serif";
+  font-family: "Roboto", sans-serif;
 `;
 
 export const SelectedDateText = styled.p`

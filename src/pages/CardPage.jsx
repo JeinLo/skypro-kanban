@@ -1,134 +1,183 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
-import Card from "../components/Card/Card";
-import { getTask } from "../services/api"; // Заменили fetchTaskById на getTask
+import { getTask, editTask, deleteTask } from "../services/api";
+import {
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  CloseButton,
+  Form,
+  InputWrapper,
+  InputLabel,
+  Input,
+  TextareaWrapper,
+  TextareaLabel,
+  Textarea,
+  CalendarWrapper,
+  CalendarLabel,
+  SelectedDateText,
+  Button,
+  CategoryWrapper,
+  Category,
+  TaskInfo,
+  EditButton,
+  DeleteButton,
+} from "./CardPage.styled";
+import Calendar from "../components/Calendar/Calendar";
 
-const StyledCardPage = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  min-height: 100vh;
-  background-color: #eaeef6;
-`;
+const categories = [
+  { id: 1, name: "Web Design" },
+  { id: 2, name: "Research" },
+  { id: 3, name: "Copywriting" },
+];
 
-const StyledCardContainer = styled.div`
-  width: 100%;
-  max-width: 600px;
-`;
-
-const StyledActions = styled.div`
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const StyledButton = styled.button`
-  background-color: #565eef;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: #3f53d8;
-  }
-`;
-
-const StyledDeleteButton = styled(StyledButton)`
-  background-color: #dc3545;
-  &:hover {
-    background-color: #c82333;
-  }
-`;
-
-const StyledError = styled.p`
-  color: red;
-  text-align: center;
-`;
-
-const StyledDescription = styled.div`
-  margin-top: 20px;
-  text-align: left;
-`;
-
-const StyledDescriptionTitle = styled.h3`
-  margin-bottom: 10px;
-`;
-
-const StyledStatusTitle = styled.h3`
-  margin-top: 20px;
-  margin-bottom: 10px;
-`;
-
-function CardPage({ token }) {
+function CardPage({ token, theme, tasks, setTasks }) {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [isEditing, setIsEditing] = useState(false);
   const [task, setTask] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState(null);
+  const [dueDate, setDueDate] = useState(null);
+  const [status, setStatus] = useState("Без статуса");
 
   useEffect(() => {
-    async function loadTask() {
-      if (!token) {
-        setError("Ошибка доступа: требуется авторизация");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const data = await getTask({ token, id }); // Используем getTask
-        setTask(data);
-        setLoading(false);
-      } catch (err) {
-        console.error("Ошибка загрузки задачи:", err.message);
-        setError(err.message || "Задача не найдена");
-        setLoading(false);
-      }
+    if (token) {
+      getTask({ id, token })
+        .then((data) => {
+          setTask(data);
+          setTitle(data.title || "");
+          setDescription(data.description || "");
+          setCategory(data.topic || null);
+          setDueDate(data.date ? new Date(data.date) : null);
+          setStatus(data.status || "Без статуса");
+        })
+        .catch((err) => console.error("Ошибка загрузки задачи:", err.message));
     }
+  }, [id, token]);
 
-    loadTask();
-  }, [token, id]);
+  if (!task) return null;
 
-  if (loading) {
-    return <StyledCardPage>Загрузка...</StyledCardPage>;
-  }
+  const handleCategoryClick = (cat) => {
+    if (isEditing) setCategory(cat === category ? null : cat);
+  };
 
-  if (error) {
-    return (
-      <StyledCardPage>
-        <StyledError>{error}</StyledError>
-        <StyledButton onClick={() => navigate(-1)}>Назад</StyledButton>
-      </StyledCardPage>
-    );
-  }
+  const handleDateSelect = (date) => {
+    if (isEditing) setDueDate(date);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!title.trim() || !category || !dueDate || !token) {
+      return;
+    }
+    editTask({ id, token, task: { title, description, topic: category, date: dueDate.toISOString(), status } })
+      .then((updatedTasks) => {
+        setTasks(updatedTasks);
+        setIsEditing(false);
+        navigate("/");
+      })
+      .catch((err) => console.error("Ошибка редактирования:", err.message));
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Вы уверены, что хотите удалить задачу?") && token) {
+      deleteTask({ id, token })
+        .then((updatedTasks) => {
+          setTasks(updatedTasks);
+          navigate("/");
+        })
+        .catch((err) => {
+          if (err.message.includes("Ошибка авторизации")) {
+            navigate("/login");
+          } else {
+            console.error("Ошибка удаления:", err.message);
+          }
+        });
+    }
+  };
 
   return (
-    <StyledCardPage>
-      <StyledCardContainer>
-        <Card topic={task.topic} title={task.title} date={task.date} id={task.id} token={token} />
-
-        <StyledActions>
-          <StyledButton onClick={() => navigate(`/card/${id}/edit`)}>
-            Редактировать
-          </StyledButton>
-          <StyledDeleteButton onClick={() => navigate("/")}>
-            Удалить
-          </StyledDeleteButton>
-        </StyledActions>
-
-        <StyledDescription>
-          <StyledDescriptionTitle>Описание:</StyledDescriptionTitle>
-          <p>{task.description || "Нет описания"}</p>
-
-          <StyledStatusTitle>Статус:</StyledStatusTitle>
-          <p>{task.status || "Не указан"}</p>
-        </StyledDescription>
-      </StyledCardContainer>
-    </StyledCardPage>
+    <ModalOverlay $isDarkTheme={theme === "dark"} onClick={() => navigate("/")}>
+      <ModalContent $isDarkTheme={theme === "dark"} onClick={(e) => e.stopPropagation()}>
+        <ModalHeader>
+          <ModalTitle $isDarkTheme={theme === "dark"}>Просмотр задачи</ModalTitle>
+          <CloseButton $isDarkTheme={theme === "dark"} onClick={() => navigate("/")} aria-label="Закрыть модалку">
+            &times;
+          </CloseButton>
+        </ModalHeader>
+        <Form $isDarkTheme={theme === "dark"} onSubmit={handleSubmit}>
+          <div style={{ display: "flex", gap: "20px", flexGrow: 1 }}>
+            <div style={{ flex: 1 }}>
+              <InputWrapper>
+                <InputLabel $isDarkTheme={theme === "dark"}>Название задачи</InputLabel>
+                <Input
+                  $isDarkTheme={theme === "dark"}
+                  type="text"
+                  value={title}
+                  onChange={(e) => isEditing && setTitle(e.target.value)}
+                  disabled={!isEditing}
+                />
+              </InputWrapper>
+              <TextareaWrapper>
+                <TextareaLabel $isDarkTheme={theme === "dark"} style={{ marginTop: "20px" }}>Описание задачи</TextareaLabel>
+                <Textarea
+                  $isDarkTheme={theme === "dark"}
+                  value={description}
+                  onChange={(e) => isEditing && setDescription(e.target.value)}
+                  disabled={!isEditing}
+                />
+              </TextareaWrapper>
+            </div>
+            <CalendarWrapper>
+              <CalendarLabel $isDarkTheme={theme === "dark"}>Даты</CalendarLabel>
+              <Calendar
+                value={dueDate}
+                onChange={handleDateSelect}
+                $isDarkTheme={theme === "dark"}
+                disabled={!isEditing}
+              />
+              <SelectedDateText $isDarkTheme={theme === "dark"}>
+                {dueDate ? `Срок исполнения: ${dueDate.toLocaleDateString("ru-RU")}` : "Срок исполнения"}
+              </SelectedDateText>
+            </CalendarWrapper>
+          </div>
+          <CategoryWrapper>
+            <InputLabel $isDarkTheme={theme === "dark"}>Категории</InputLabel>
+            <div style={{ display: "flex", gap: "10px" }}>
+              {categories.map((cat) => (
+                <Category
+                  key={cat.id}
+                  $isActive={cat.name === category}
+                  $isDarkTheme={theme === "dark"}
+                  onClick={() => handleCategoryClick(cat.name)}
+                  disabled={!isEditing}
+                >
+                  {cat.name}
+                </Category>
+              ))}
+            </div>
+          </CategoryWrapper>
+          <TaskInfo $isDarkTheme={theme === "dark"}>
+            <p>Статус: {status}</p>
+            <p>Срок исполнения: {dueDate ? dueDate.toLocaleDateString("ru-RU") : "Не указан"}</p>
+            <p>Описание: {description || "Не указано"}</p>
+          </TaskInfo>
+          {!isEditing ? (
+            <EditButton $isDarkTheme={theme === "dark"} onClick={handleEdit}>Редактировать задачу</EditButton>
+          ) : (
+            <Button $isDarkTheme={theme === "dark"} type="submit">Сохранить</Button>
+          )}
+          <DeleteButton $isDarkTheme={theme === "dark"} onClick={handleDelete}>Удалить задачу</DeleteButton>
+        </Form>
+      </ModalContent>
+    </ModalOverlay>
   );
 }
 

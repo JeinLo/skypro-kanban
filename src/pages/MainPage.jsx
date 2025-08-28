@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../components/Column/Column";
-import { fetchTasks, editTask } from "../services/api";
+import { fetchTasks, editTask, deleteTask } from "../services/api";
 import { useOutletContext } from "react-router-dom";
 
 const StyledMain = styled.div`
@@ -99,18 +99,21 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
     const updatedCard = {
       ...movedCard,
       status: destColumnTitle,
-      userId: movedCard.userId, // Передаем userId
+      userId: movedCard.userId, // Убедимся, что userId передается
       title: movedCard.title,
       topic: movedCard.topic,
-      date: new Date(movedCard.date).toISOString(), // Формат ISO для даты
-      description: movedCard.description || "",
+      date: movedCard.date,
     };
 
-    console.log("Отправляемые данные в editTask:", { id: movedCard._id, task: updatedCard });
+    console.log("Отправляемые данные в editTask:", { id: movedCard._id, task: updatedCard }); // Логирование для отладки
 
     try {
-      const updatedTasks = await editTask({ id: movedCard._id, token, task: updatedCard });
-      setTasks(updatedTasks);
+      await editTask({ id: movedCard._id, token, task: updatedCard });
+      setTasks(
+        initialTasks
+          .filter((t) => t._id !== movedCard._id)
+          .concat(updatedCard)
+      );
     } catch (err) {
       console.error("Ошибка при сохранении статуса задачи:", err.message);
       setError(`Ошибка при сохранении статуса задачи: ${err.message}`);

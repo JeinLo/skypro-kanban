@@ -3,8 +3,8 @@ import axios from "axios";
 const API_URL = "https://wedev-api.sky.pro/api/kanban/";
 
 // Глобальная настройка Axios для предотвращения добавления Content-Type
-axios.defaults.headers.put["Content-Type"] = undefined; // Отключаем Content-Type для PUT-запросов
-axios.defaults.headers.post["Content-Type"] = undefined; // Отключаем для POST, на всякий случай
+axios.defaults.headers.put["Content-Type"] = ""; // Отключаем Content-Type для PUT-запросов
+axios.defaults.headers.post["Content-Type"] = ""; // Отключаем для POST, на всякий случай
 
 // Получение списка задач
 export async function fetchTasks({ token }) {

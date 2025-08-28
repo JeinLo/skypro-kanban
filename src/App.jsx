@@ -16,14 +16,13 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem("isAuth"));
   const [token, setToken] = useState(localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")).token : null);
-  const [tasks, setTasks] = useState([]); // Инициализация состояния для задач
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     document.body.style.backgroundColor = theme === "dark" ? "#1a1a1a" : "#ffffff";
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Загрузка задач при монтировании, если пользователь авторизован
   useEffect(() => {
     if (isAuth && token) {
       fetchTasks({ token })
@@ -55,8 +54,8 @@ function App() {
           setToken={setToken}
           theme={theme}
           onToggleTheme={handleToggleTheme}
-          tasks={tasks} // Передаем задачи
-          setTasks={setTasks} // Передаем функцию обновления задач
+          tasks={tasks}
+          setTasks={setTasks}
         />
       </StyledApp>
     </>

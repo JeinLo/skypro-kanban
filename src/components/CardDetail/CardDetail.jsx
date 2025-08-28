@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getTask, editTask, deleteTask } from "../api";
 import {
   ModalOverlay,
   ModalContent,
@@ -30,21 +32,30 @@ const categories = [
   { id: 3, name: "Copywriting" },
 ];
 
-function CardDetail({ task, isOpen, onClose, onUpdate, onDelete, theme, token }) {
+function CardDetail({ token }) {
+  const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(task.title || "");
-  const [description, setDescription] = useState(task.description || "");
-  const [category, setCategory] = useState(task.topic || null);
-  const [dueDate, setDueDate] = useState(task.date ? new Date(task.date) : null);
-  const [status, setStatus] = useState(task.status || "Без статуса");
+  const [task, setTask] = useState(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState(null);
+  const [dueDate, setDueDate] = useState(null);
+  const [status, setStatus] = useState("Без статуса");
 
   useEffect(() => {
-    setTitle(task.title || "");
-    setDescription(task.description || "");
-    setCategory(task.topic || null);
-    setDueDate(task.date ? new Date(task.date) : null);
-    setStatus(task.status || "Без статуса");
-  }, [task]);
+    getTask({ id, token })
+      .then((data) => {
+        setTask(data);
+        setTitle(data.title || "");
+        setDescription(data.description || "");
+        setCategory(data.topic || null);
+        setDueDate(data.date ? new Date(data.date) : null);
+        setStatus(data.status || "Без статуса");
+      })
+      .catch((err) => console.error("Ошибка загрузки задачи:", err.message));
+  }, [id, token]);
+
+  if (!task) return null;
 
   const handleCategoryClick = (cat) => {
     if (isEditing) setCategory(cat === category ? null : cat);
@@ -63,44 +74,41 @@ function CardDetail({ task, isOpen, onClose, onUpdate, onDelete, theme, token })
     if (!title.trim() || !category || !dueDate) {
       return;
     }
-    onUpdate({
-      ...task,
-      title,
-      description,
-      topic: category,
-      date: dueDate.toISOString(),
-      status,
-    });
-    setIsEditing(false);
+    editTask({ id, token, task: { title, description, topic: category, date: dueDate.toISOString(), status } })
+      .then(() => setIsEditing(false))
+      .catch((err) => console.error("Ошибка редактирования:", err.message));
   };
 
   const handleDelete = () => {
     if (window.confirm("Вы уверены, что хотите удалить задачу?")) {
-      onDelete();
-      onClose();
+      deleteTask({ id, token })
+        .then(() => window.history.back())
+        .catch((err) => {
+          if (err.message.includes("Ошибка авторизации")) {
+            window.location.href = "/login"; // Переход на вход при 401
+          } else {
+            console.error("Ошибка удаления:", err.message);
+          }
+        });
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <ModalOverlay $isDarkTheme={theme === "dark"} onClick={(e) => {
-      if (e.target === e.currentTarget) onClose();
-    }}>
-      <ModalContent $isDarkTheme={theme === "dark"} onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay $isDarkTheme={false} onClick={() => window.history.back()}>
+      <ModalContent $isDarkTheme={false} onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <ModalTitle $isDarkTheme={theme === "dark"}>Просмотр задачи</ModalTitle>
-          <CloseButton $isDarkTheme={theme === "dark"} onClick={onClose} aria-label="Закрыть модалку">
+          <ModalTitle $isDarkTheme={false}>Просмотр задачи</ModalTitle>
+          <CloseButton $isDarkTheme={false} onClick={() => window.history.back()} aria-label="Закрыть модалку">
             &times;
           </CloseButton>
         </ModalHeader>
-        <Form $isDarkTheme={theme === "dark"} onSubmit={handleSubmit}>
+        <Form $isDarkTheme={false} onSubmit={handleSubmit}>
           <div style={{ display: "flex", gap: "20px", flexGrow: 1 }}>
             <div style={{ flex: 1 }}>
               <InputWrapper>
-                <InputLabel $isDarkTheme={theme === "dark"}>Название задачи</InputLabel>
+                <InputLabel $isDarkTheme={false}>Название задачи</InputLabel>
                 <Input
-                  $isDarkTheme={theme === "dark"}
+                  $isDarkTheme={false}
                   type="text"
                   value={title}
                   onChange={(e) => isEditing && setTitle(e.target.value)}
@@ -108,9 +116,9 @@ function CardDetail({ task, isOpen, onClose, onUpdate, onDelete, theme, token })
                 />
               </InputWrapper>
               <TextareaWrapper>
-                <TextareaLabel $isDarkTheme={theme === "dark"} style={{ marginTop: "20px" }}>Описание задачи</TextareaLabel>
+                <TextareaLabel $isDarkTheme={false} style={{ marginTop: "20px" }}>Описание задачи</TextareaLabel>
                 <Textarea
-                  $isDarkTheme={theme === "dark"}
+                  $isDarkTheme={false}
                   value={description}
                   onChange={(e) => isEditing && setDescription(e.target.value)}
                   disabled={!isEditing}
@@ -118,26 +126,26 @@ function CardDetail({ task, isOpen, onClose, onUpdate, onDelete, theme, token })
               </TextareaWrapper>
             </div>
             <CalendarWrapper>
-              <CalendarLabel $isDarkTheme={theme === "dark"}>Даты</CalendarLabel>
+              <CalendarLabel $isDarkTheme={false}>Даты</CalendarLabel>
               <Calendar
                 value={dueDate}
                 onChange={handleDateSelect}
-                $isDarkTheme={theme === "dark"}
+                $isDarkTheme={false}
                 disabled={!isEditing}
               />
-              <SelectedDateText $isDarkTheme={theme === "dark"}>
+              <SelectedDateText $isDarkTheme={false}>
                 {dueDate ? `Срок исполнения: ${dueDate.toLocaleDateString("ru-RU")}` : "Срок исполнения"}
               </SelectedDateText>
             </CalendarWrapper>
           </div>
           <CategoryWrapper>
-            <InputLabel $isDarkTheme={theme === "dark"}>Категории</InputLabel>
+            <InputLabel $isDarkTheme={false}>Категории</InputLabel>
             <div style={{ display: "flex", gap: "10px" }}>
               {categories.map((cat) => (
                 <Category
                   key={cat.id}
                   $isActive={cat.name === category}
-                  $isDarkTheme={theme === "dark"}
+                  $isDarkTheme={false}
                   onClick={() => handleCategoryClick(cat.name)}
                   disabled={!isEditing}
                 >
@@ -146,17 +154,17 @@ function CardDetail({ task, isOpen, onClose, onUpdate, onDelete, theme, token })
               ))}
             </div>
           </CategoryWrapper>
-          <TaskInfo $isDarkTheme={theme === "dark"}>
+          <TaskInfo $isDarkTheme={false}>
             <p>Статус: {status}</p>
             <p>Срок исполнения: {dueDate ? dueDate.toLocaleDateString("ru-RU") : "Не указан"}</p>
             <p>Описание: {description || "Не указано"}</p>
           </TaskInfo>
           {!isEditing ? (
-            <EditButton $isDarkTheme={theme === "dark"} onClick={handleEdit}>Редактировать задачу</EditButton>
+            <EditButton $isDarkTheme={false} onClick={handleEdit}>Редактировать задачу</EditButton>
           ) : (
-            <Button $isDarkTheme={theme === "dark"} type="submit">Сохранить</Button>
+            <Button $isDarkTheme={false} type="submit">Сохранить</Button>
           )}
-          <DeleteButton $isDarkTheme={theme === "dark"} onClick={handleDelete}>Удалить задачу</DeleteButton>
+          <DeleteButton $isDarkTheme={false} onClick={handleDelete}>Удалить задачу</DeleteButton>
         </Form>
       </ModalContent>
     </ModalOverlay>

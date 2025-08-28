@@ -1,4 +1,4 @@
-import { Routes, Route, useOutletContext } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
@@ -9,11 +9,10 @@ import ExitPage from "./pages/ExitPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
-import { fetchTasks } from "./services/api";
+import { fetchTasks, editTask } from "./services/api";
 
-function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme }) {
+function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, tasks, setTasks }) {
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const authStatus = localStorage.getItem("isAuth") === "true";
@@ -41,7 +40,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
       setLoading(true);
       fetchTasks({ token })
         .then((tasksData) => {
-          setTasks(tasksData); // Используем данные от сервера
+          setTasks(tasksData);
         })
         .catch((err) => {
           console.error("Ошибка загрузки задач:", err.message);
@@ -50,7 +49,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
           setLoading(false);
         });
     }
-  }, [token]);
+  }, [token, setTasks]);
 
   return (
     <Routes>
@@ -60,7 +59,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
         >
           <Route
             path="/"
-            element={<MainPage loading={loading} token={token} theme={theme} tasks={tasks} />}
+            element={<MainPage loading={loading} token={token} theme={theme} tasks={tasks} setTasks={setTasks} />}
           />
           <Route
             path="/card/add"
@@ -68,7 +67,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme })
           />
           <Route
             path="/card/:id"
-            element={<CardPage token={token} theme={theme} />}
+            element={<CardPage token={token} theme={theme} tasks={tasks} setTasks={setTasks} />}
           />
           <Route
             path="/exit"
