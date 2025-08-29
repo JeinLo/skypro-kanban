@@ -84,7 +84,7 @@ function Card({ card, index, theme, token }) {
                       </clipPath>
                     </defs>
                   </svg>
-                  <p>{formattedDate(card.date)}</p>
+                  <p>{card.date ? formattedDate(card.date) : "Без даты"}</p>
                 </CardDate>
               </CardContent>
             </CardStyled>
