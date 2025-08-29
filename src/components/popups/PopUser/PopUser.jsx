@@ -7,12 +7,6 @@ import {
   StyledThemeLabel,
   StyledToggleSwitch,
   StyledLogoutButton,
-  Overlay,
-  ModalWrapper,
-  ModalTitle,
-  ModalButtons,
-  ModalButton,
-  ModalCancelButton,
 } from "./PopUser.styled";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +19,6 @@ function PopUser({
   onToggleTheme = () => {},
 }) {
   const navigate = useNavigate();
-  const [confirmOpen, setConfirmOpen] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(theme === "dark");
 
   useEffect(() => {
@@ -33,19 +26,7 @@ function PopUser({
   }, [theme]);
 
   const handleLogoutClick = () => {
-    setConfirmOpen(true);
-  };
-
-  const handleConfirmLogout = () => {
-    setConfirmOpen(false);
-    setIsAuth(false);
-    localStorage.removeItem("isAuth");
-    localStorage.removeItem("userInfo");
-    navigate("/login");
-  };
-
-  const handleCancelLogout = () => {
-    setConfirmOpen(false);
+    navigate("/exit"); // Сразу переходим на /exit
   };
 
   const handleThemeToggle = () => {
@@ -57,45 +38,23 @@ function PopUser({
   if (!isOpen) return null;
 
   return (
-    <>
-      <StyledPopUser $isDarkTheme={isDarkTheme}>
-        <StyledName $isDarkTheme={isDarkTheme}>
-          {userName}
-        </StyledName>
-        <StyledEmail $isDarkTheme={isDarkTheme}>{userEmail}</StyledEmail>
-        <StyledThemeToggleWrapper $isDarkTheme={isDarkTheme}>
-          <StyledThemeLabel htmlFor="theme-toggle">Темная тема</StyledThemeLabel>
-          <StyledToggleSwitch
-            id="theme-toggle"
-            type="checkbox"
-            checked={isDarkTheme}
-            onChange={handleThemeToggle}
-            $isDarkTheme={isDarkTheme}
-          />
-        </StyledThemeToggleWrapper>
-        <StyledLogoutButton $isDarkTheme={isDarkTheme} onClick={handleLogoutClick}>
-          Выйти
-        </StyledLogoutButton>
-      </StyledPopUser>
-
-      {confirmOpen && (
-        <Overlay $isDarkTheme={isDarkTheme} role="dialog" aria-modal="true" aria-labelledby="logout-title">
-          <ModalWrapper $isDarkTheme={isDarkTheme}>
-            <ModalTitle $isDarkTheme={isDarkTheme} id="logout-title">
-              Выйти из аккаунта?
-            </ModalTitle>
-            <ModalButtons>
-              <ModalButton $isDarkTheme={isDarkTheme} onClick={handleConfirmLogout}>
-                Да, выйти
-              </ModalButton>
-              <ModalCancelButton $isDarkTheme={isDarkTheme} onClick={handleCancelLogout}>
-                Нет, остаться
-              </ModalCancelButton>
-            </ModalButtons>
-          </ModalWrapper>
-        </Overlay>
-      )}
-    </>
+    <StyledPopUser $isDarkTheme={isDarkTheme}>
+      <StyledName $isDarkTheme={isDarkTheme}>{userName}</StyledName>
+      <StyledEmail $isDarkTheme={isDarkTheme}>{userEmail}</StyledEmail>
+      <StyledThemeToggleWrapper $isDarkTheme={isDarkTheme}>
+        <StyledThemeLabel htmlFor="theme-toggle">Темная тема</StyledThemeLabel>
+        <StyledToggleSwitch
+          id="theme-toggle"
+          type="checkbox"
+          checked={isDarkTheme}
+          onChange={handleThemeToggle}
+          $isDarkTheme={isDarkTheme}
+        />
+      </StyledThemeToggleWrapper>
+      <StyledLogoutButton $isDarkTheme={isDarkTheme} onClick={handleLogoutClick}>
+        Выйти
+      </StyledLogoutButton>
+    </StyledPopUser>
   );
 }
 

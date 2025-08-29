@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const StyledExitPage = styled.div`
   display: flex;
@@ -7,6 +7,7 @@ const StyledExitPage = styled.div`
   align-items: center;
   min-height: 100vh;
   background-color: #eaeef6;
+  z-index: 1000; /* Добавлено для видимости */
 `;
 
 const StyledModal = styled.div`
@@ -45,13 +46,14 @@ const StyledCancelButton = styled(StyledButton)`
   }
 `;
 
-function ExitPage({ setIsAuth }) {
+function ExitPage({ setIsAuth, theme }) {
+  console.log("ExitPage рендерится, props:", { setIsAuth, theme }); // Отладка
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsAuth(false);
     localStorage.removeItem("isAuth");
     localStorage.removeItem("userInfo");
+    setIsAuth(false);
     navigate("/login");
   };
 
@@ -61,7 +63,7 @@ function ExitPage({ setIsAuth }) {
 
   return (
     <StyledExitPage>
-      <StyledModal>
+      <StyledModal onClick={(e) => e.stopPropagation()}>
         <StyledTitle>Вы уверены, что хотите выйти?</StyledTitle>
         <StyledButton onClick={handleLogout}>Да, выйти</StyledButton>
         <StyledCancelButton onClick={handleCancel}>

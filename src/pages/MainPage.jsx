@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../components/Column/Column";
-import { fetchTasks, editTask, deleteTask } from "../services/api";
+import { fetchTasks, editTask } from "../services/api";
 import { useOutletContext } from "react-router-dom";
 
 const StyledMain = styled.div`
@@ -74,49 +74,50 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
   ];
 
   const handleDragEnd = async (result) => {
-    const { source, destination } = result;
+    const { source, destination, draggableId } = result;
     if (!destination) return;
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) return;
 
-    const sourceColumnIndex = parseInt(source.droppableId);
-    const destColumnIndex = parseInt(destination.droppableId);
-    const sourceColumnTitle = columnTitles[sourceColumnIndex];
-    const destColumnTitle = columnTitles[destColumnIndex];
+    const sourceColumnTitle = columnTitles[parseInt(source.droppableId)];
+    const destColumnTitle = columnTitles[parseInt(destination.droppableId)];
 
-    const movedCard = initialTasks.find((task, index) =>
-      task.status.toLowerCase() === sourceColumnTitle.toLowerCase() &&
-      index === source.index
-    );
-
+    // Находим карточку по _id
+    const movedCard = initialTasks.find((task) => task._id === draggableId);
     if (!movedCard) {
-      console.error("Задача не найдена:", source.index, sourceColumnTitle);
+      console.error("Задача не найдена:", draggableId);
       return;
     }
 
+    // Проверяем, что карточка находится в исходной колонке
+    if (movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()) {
+      console.error("Статус карточки не соответствует исходной колонке:", movedCard.status, sourceColumnTitle);
+      return;
+    }
+
+    // Формируем обновленную карточку
     const updatedCard = {
       ...movedCard,
       status: destColumnTitle,
-      userId: movedCard.userId, // Убедимся, что userId передается
+      userId: movedCard.userId,
       title: movedCard.title,
       topic: movedCard.topic,
       date: movedCard.date,
     };
 
-    console.log("Отправляемые данные в editTask:", { id: movedCard._id, task: updatedCard }); // Логирование для отладки
+    // Оптимистичное обновление состояния
+    const optimisticTasks = initialTasks.map((task) =>
+      task._id === movedCard._id ? updatedCard : task
+    );
+    setTasks(optimisticTasks);
 
+    // Запрос к бэкенду
     try {
       await editTask({ id: movedCard._id, token, task: updatedCard });
-      setTasks(
-        initialTasks
-          .filter((t) => t._id !== movedCard._id)
-          .concat(updatedCard)
-      );
+      console.log("Статус задачи успешно обновлен");
     } catch (err) {
       console.error("Ошибка при сохранении статуса задачи:", err.message);
       setError(`Ошибка при сохранении статуса задачи: ${err.message}`);
+      // Откатываем оптимистичное обновление в случае ошибки
+      setTasks(initialTasks);
     }
   };
 

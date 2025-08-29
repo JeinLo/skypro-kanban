@@ -1,15 +1,15 @@
-import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import CardPage from "./pages/CardPage";
-import NewCardPage from "./pages/NewCardPage";
 import ExitPage from "./pages/ExitPage";
+import TaskModal from "./components/TaskModal/TaskModal";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
-import { fetchTasks, editTask } from "./services/api";
+import { fetchTasks, postTask } from "./services/api";
 
 function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, tasks, setTasks }) {
   const [loading, setLoading] = useState(true);
@@ -55,38 +55,78 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
         <Route
-          element={<Layout setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} token={token} setTasks={setTasks} />}
+          element={
+            <Layout
+              setIsAuth={setIsAuth}
+              theme={theme}
+              onToggleTheme={onToggleTheme}
+              token={token}
+              setTasks={setTasks}
+            />
+          }
         >
           <Route
             path="/"
-            element={<MainPage loading={loading} token={token} theme={theme} tasks={tasks} setTasks={setTasks} />}
-          />
-          <Route
-            path="/card/add"
-            element={<NewCardPage token={token} theme={theme} />}
-          />
-          <Route
-            path="/card/:id"
-            element={<CardPage token={token} theme={theme} tasks={tasks} setTasks={setTasks} />}
-          />
-          <Route
-            path="/exit"
-            element={<ExitPage setIsAuth={setIsAuth} theme={theme} />}
-          />
+            element={
+              <>
+                <MainPage
+                  loading={loading}
+                  token={token}
+                  theme={theme}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
+                <Outlet />
+              </>
+            }
+          >
+            <Route
+              path="createcard"
+              element={
+                <TaskModal
+                  isOpen={true}
+                  onClose={() => window.history.back()}
+                  onCreateTask={(task) =>
+                    postTask({ token, task }).then((newTasks) => {
+                      setTasks(newTasks);
+                      window.history.back();
+                    })
+                  }
+                  theme={theme}
+                />
+              }
+            />
+            <Route
+              path="cardview/:id"
+              element={
+                <CardPage
+                  token={token}
+                  theme={theme}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
+              }
+            />
+            <Route
+              path="exit"
+              element={<ExitPage setIsAuth={setIsAuth} theme={theme} />}
+            />
+          </Route>
         </Route>
       </Route>
       <Route
         path="/login"
-        element={<LoginPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />}
+        element={
+          <LoginPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />
+        }
       />
       <Route
         path="/register"
-        element={<RegisterPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />}
+        element={
+          <RegisterPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />
+        }
       />
-      <Route
-        path="*"
-        element={<NotFoundPage theme={theme} />}
-      />
+      <Route path="*" element={<NotFoundPage theme={theme} />} />
     </Routes>
   );
 }

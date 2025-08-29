@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   SHeader,
   Logo,
@@ -5,14 +6,11 @@ import {
   StyledTaskLink,
   StyledUserLink,
 } from "./Header.styled";
-import { useState, useEffect } from "react";
 import PopUser from "../popups/PopUser/PopUser";
-import TaskModal from "../TaskModal/TaskModal";
-import { postTask } from "../../services/api";
+import { Link } from "react-router-dom";
 
 function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   const [isPopUserOpen, setIsPopUserOpen] = useState(false);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [userName, setUserName] = useState("Ivan Ivanov");
 
   useEffect(() => {
@@ -27,9 +25,6 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
     }
   }, []);
 
-  const openTaskModal = () => setIsTaskModalOpen(true);
-  const closeTaskModal = () => setIsTaskModalOpen(false);
-
   return (
     <SHeader theme={theme}>
       <Logo theme={theme}>
@@ -39,7 +34,7 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
         />
       </Logo>
       <StyledActions>
-        <StyledTaskLink theme={theme} onClick={openTaskModal}>
+        <StyledTaskLink as={Link} to="/createcard" theme={theme}>
           Создать новую задачу
         </StyledTaskLink>
         <StyledUserLink theme={theme} onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
@@ -51,17 +46,6 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
           userName={userName}
           theme={theme}
           onToggleTheme={onToggleTheme}
-        />
-        <TaskModal
-          isOpen={isTaskModalOpen}
-          onClose={closeTaskModal}
-          onCreateTask={(task) =>
-            postTask({ token, task }).then((newTasks) => {
-              setTasks(newTasks);
-              closeTaskModal();
-            })
-          }
-          theme={theme}
         />
       </StyledActions>
     </SHeader>

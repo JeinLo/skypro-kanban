@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ModalOverlay,
   ModalContent,
@@ -22,57 +23,82 @@ import {
 } from "./TaskModal.styled";
 import Calendar from "../Calendar/Calendar";
 
-const categories = [
-  { id: 1, name: "Web Design" },
-  { id: 2, name: "Research" },
-  { id: 3, name: "Copywriting" },
-];
+const categories = ["Web Design", "Research", "Copywriting"];
 
 function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(null);
-  const [dueDate, setDueDate] = useState(null);
+  console.log("TaskModal props:", { isOpen, theme, onCreateTask }); // Отладка
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    status: "Без статуса",
+  });
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleCategoryClick = (cat) => {
-    setCategory(cat === category ? null : cat);
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
     setError("");
   };
 
-  const handleDateSelect = (date) => {
-    setDueDate(date);
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category === selectedCategory ? null : category);
+    setError("");
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
     setError("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title.trim() || !category || !dueDate) {
+    if (!formData.title || !selectedCategory || !selectedDate) {
       setError("Заполните все поля: название, категория, дата");
       return;
     }
+    console.log("Submitting task:", { formData, selectedCategory, selectedDate }); // Отладка
     onCreateTask({
-      title,
-      description,
-      topic: category,
-      date: dueDate.toISOString(),
-      status: "Без статуса",
+      title: formData.title,
+      description: formData.description,
+      topic: selectedCategory,
+      date: selectedDate.toISOString(),
+      status: formData.status,
     });
-    setTitle("");
-    setDescription("");
-    setCategory(null);
-    setDueDate(null);
-    setError("");
   };
 
+  if (!isOpen) {
+    console.log("TaskModal не рендерится, isOpen=false");
+    return null;
+  }
+
   return (
-    <ModalOverlay isOpen={isOpen} $isDarkTheme={theme === "dark"} onClick={(e) => {
-      if (e.target === e.currentTarget) {onClose ()}
-    }}>
-      <ModalContent $isDarkTheme={theme === "dark"} onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay
+      $isDarkTheme={theme === "dark"}
+      onClick={() => {
+        console.log("Закрытие TaskModal через фон");
+        onClose();
+      }}
+    >
+      <ModalContent
+        $isDarkTheme={theme === "dark"}
+        onClick={(e) => e.stopPropagation()}
+      >
         <ModalHeader>
-          <ModalTitle $isDarkTheme={theme === "dark"}>Создание задачи</ModalTitle>
-          <CloseButton $isDarkTheme={theme === "dark"} onClick={onClose} aria-label="Закрыть модалку">
+          <ModalTitle $isDarkTheme={theme === "dark"}>Добавить новую задачу</ModalTitle>
+          <CloseButton
+            $isDarkTheme={theme === "dark"}
+            onClick={() => {
+              console.log("Закрытие TaskModal через крестик");
+              onClose();
+            }}
+            aria-label="Закрыть модалку"
+          >
             &times;
           </CloseButton>
         </ModalHeader>
@@ -84,26 +110,36 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
                 <Input
                   $isDarkTheme={theme === "dark"}
                   type="text"
-                  placeholder="Введите название задачи..."
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  name="title"
+                  placeholder="Название задачи"
+                  value={formData.title}
+                  onChange={handleChange}
                 />
               </InputWrapper>
               <TextareaWrapper>
-                <TextareaLabel $isDarkTheme={theme === "dark"} style={{ marginTop: "20px" }}>Описание задачи</TextareaLabel>
+                <TextareaLabel $isDarkTheme={theme === "dark"} style={{ marginTop: "20px" }}>
+                  Описание задачи
+                </TextareaLabel>
                 <Textarea
                   $isDarkTheme={theme === "dark"}
-                  placeholder="Введите описание задачи..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  name="description"
+                  placeholder="Описание задачи"
+                  value={formData.description}
+                  onChange={handleChange}
                 />
               </TextareaWrapper>
             </div>
             <CalendarWrapper>
               <CalendarLabel $isDarkTheme={theme === "dark"}>Даты</CalendarLabel>
-              <Calendar value={dueDate} onChange={handleDateSelect} $isDarkTheme={theme === "dark"} />
+              <Calendar
+                value={selectedDate}
+                onChange={handleDateSelect}
+                $isDarkTheme={theme === "dark"}
+              />
               <SelectedDateText $isDarkTheme={theme === "dark"}>
-                {dueDate ? `Срок исполнения: ${dueDate.toLocaleDateString("ru-RU")}` : "Срок исполнения"}
+                {selectedDate
+                  ? `Срок исполнения: ${selectedDate.toLocaleDateString("ru-RU")}`
+                  : "Срок исполнения"}
               </SelectedDateText>
             </CalendarWrapper>
           </div>
@@ -113,20 +149,20 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
               {categories.map((cat) => (
                 <Category
                   type="button"
-                  key={cat.id}
-                  $isActive={cat.name === category}
+                  key={cat}
+                  $isActive={cat === selectedCategory}
                   $isDarkTheme={theme === "dark"}
-                  onClick={(e) => 
-                     {e.stopPropagation()
-                   handleCategoryClick(cat.name)}}
+                  onClick={() => handleCategoryClick(cat)}
                 >
-                  {cat.name}
+                  {cat}
                 </Category>
               ))}
             </div>
           </CategoryWrapper>
           {error && <Error $isDarkTheme={theme === "dark"}>{error}</Error>}
-          <Button $isDarkTheme={theme === "dark"} type="submit">Создать задачу</Button>
+          <Button $isDarkTheme={theme === "dark"} type="submit">
+            Создать задачу
+          </Button>
         </Form>
       </ModalContent>
     </ModalOverlay>
