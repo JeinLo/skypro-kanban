@@ -9,7 +9,10 @@ import {
   Form,
   InputWrapper,
   InputLabel,
+<<<<<<< HEAD
   Input,
+=======
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
   StatusButton,
   TextareaWrapper,
   TextareaLabel,
@@ -20,7 +23,10 @@ import {
   ButtonGroup,
   Button,
   Category,
+<<<<<<< HEAD
   CategoryWrapper,
+=======
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
   FormContent,
 } from "./CardPage.styled";
 import Calendar from "../components/Calendar/Calendar";
@@ -82,8 +88,12 @@ function CardPage({ token, theme, tasks, setTasks }) {
   };
 
   const handleEdit = (e) => {
+<<<<<<< HEAD
     e.preventDefault();
     e.stopPropagation(); // Предотвращаем всплытие события
+=======
+    e.stopPropagation(); // Предотвращаем всплытие до ModalOverlay
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
     setIsEditing(true);
     console.log("Переход в режим редактирования, текущее состояние:", {
       title,
@@ -96,7 +106,10 @@ function CardPage({ token, theme, tasks, setTasks }) {
 
   const handleSave = (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     e.stopPropagation();
+=======
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
     if (!title.trim() || !category || !dueDate || !token) return;
     editTask({
       id,
@@ -111,9 +124,13 @@ function CardPage({ token, theme, tasks, setTasks }) {
       .catch((err) => console.error("Ошибка редактирования:", err.message));
   };
 
+<<<<<<< HEAD
   const handleCancel = (e) => {
     e.preventDefault();
     e.stopPropagation();
+=======
+  const handleCancel = () => {
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
     setIsEditing(false);
     setTitle(task.title || "");
     setDescription(task.description || "");
@@ -122,9 +139,13 @@ function CardPage({ token, theme, tasks, setTasks }) {
     setStatus(task.status || "Без статуса");
   };
 
+<<<<<<< HEAD
   const handleDelete = (e) => {
     e.preventDefault();
     e.stopPropagation();
+=======
+  const handleDelete = () => {
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
     if (window.confirm("Вы уверены, что хотите удалить задачу?") && token) {
       deleteTask({ id, token })
         .then((updatedTasks) => {
@@ -142,6 +163,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
   };
 
   return (
+<<<<<<< HEAD
     <ModalOverlay
       $isDarkTheme={theme === "dark"}
       onClick={(e) => {
@@ -156,6 +178,14 @@ function CardPage({ token, theme, tasks, setTasks }) {
           <ModalTitle $isDarkTheme={theme === "dark"}>
             {task.title || "Название задачи"}
           </ModalTitle>
+=======
+    <ModalOverlay $isDarkTheme={theme === "dark"} onClick={(e) => {
+      if (e.target === e.currentTarget && !isEditing) navigate("/"); // Перенаправление только вне модального окна и не в режиме редактирования
+    }}>
+      <ModalContent $isDarkTheme={theme === "dark"} onClick={(e) => e.stopPropagation()}>
+        <ModalHeader>
+          <ModalTitle $isDarkTheme={theme === "dark"}>{task.title || "Название задачи"}</ModalTitle>
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
           {category && (
             <Category $isDarkTheme={theme === "dark"} $isActive={true}>
               {category}
@@ -185,12 +215,17 @@ function CardPage({ token, theme, tasks, setTasks }) {
                 $isActive={true}
                 $isDarkTheme={theme === "dark"}
                 disabled={!isEditing}
+<<<<<<< HEAD
+=======
+                style={{ backgroundColor: "#94A6BE", color: "#fff", width: "200px" }}
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
               >
                 {status}
               </StatusButton>
             )}
           </InputWrapper>
           <FormContent>
+<<<<<<< HEAD
             <div style={{ flex: 1 }}>
               <InputWrapper>
                 <InputLabel $isDarkTheme={theme === "dark"}>
@@ -218,6 +253,18 @@ function CardPage({ token, theme, tasks, setTasks }) {
                 />
               </TextareaWrapper>
             </div>
+=======
+            <TextareaWrapper>
+              <TextareaLabel $isDarkTheme={theme === "dark"}>Описание задачи</TextareaLabel>
+              <Textarea
+                $isDarkTheme={theme === "dark"}
+                value={description}
+                onChange={(e) => isEditing && setDescription(e.target.value)}
+                disabled={!isEditing}
+                placeholder="Введите описание задачи..."
+              />
+            </TextareaWrapper>
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
             <CalendarWrapper>
               <CalendarLabel $isDarkTheme={theme === "dark"}>Даты</CalendarLabel>
               <Calendar
@@ -233,6 +280,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
               </SelectedDateText>
             </CalendarWrapper>
           </FormContent>
+<<<<<<< HEAD
           {isEditing && (
             <CategoryWrapper>
               <InputLabel $isDarkTheme={theme === "dark"}>Категории</InputLabel>
@@ -275,11 +323,24 @@ function CardPage({ token, theme, tasks, setTasks }) {
                   onClick={() => navigate("/")}
                   $isClose
                 >
+=======
+          <ButtonGroup>
+            {!isEditing ? (
+              <>
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleEdit} $isSecondary>
+                  Редактировать задачу
+                </Button>
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleDelete} $isSecondary>
+                  Удалить задачу
+                </Button>
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={() => navigate("/")} $isClose>
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
                   Закрыть
                 </Button>
               </>
             ) : (
               <>
+<<<<<<< HEAD
                 <Button
                   $isDarkTheme={theme === "dark"}
                   type="submit"
@@ -308,6 +369,18 @@ function CardPage({ token, theme, tasks, setTasks }) {
                   onClick={() => navigate("/")}
                   $isClose
                 >
+=======
+                <Button $isDarkTheme={theme === "dark"} type="submit">
+                  Сохранить
+                </Button>
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleCancel} $isCancel>
+                  Отменить
+                </Button>
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleDelete} $isSecondary>
+                  Удалить задачу
+                </Button>
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={() => navigate("/")} $isClose>
+>>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
                   Закрыть
                 </Button>
               </>
