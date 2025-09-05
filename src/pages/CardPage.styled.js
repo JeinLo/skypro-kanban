@@ -63,7 +63,6 @@ export const InputLabel = styled.label`
   color: #333;
 `;
 
-<<<<<<< HEAD
 export const Input = styled.input`
   width: 370px;
   height: 40px;
@@ -88,10 +87,6 @@ export const Input = styled.input`
 
 export const StatusButton = styled.button`
   width: 200px;
-=======
-export const StatusButton = styled.button`
-  width: 200px; /* Увеличена ширина для вмещения текста */
->>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
   height: 30px;
   padding: 6px 16px;
   border-radius: 24px;
@@ -181,7 +176,6 @@ export const Category = styled.div`
   background-color: #ffe4c2;
   color: #ff6d00;
   flex-shrink: 0;
-<<<<<<< HEAD
   cursor: ${({ onClick }) => (onClick ? "pointer" : "default")};
 `;
 
@@ -189,8 +183,6 @@ export const CategoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-=======
->>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
 `;
 
 export const FormContent = styled.div`
@@ -239,29 +231,17 @@ export const Button = styled.button`
       return "#3f53d8";
     }};
     color: ${({ $isCancel, $isSecondary }) => ($isCancel || $isSecondary ? "#fff" : "#fff")};
-<<<<<<< HEAD
   }
 
   ${({ $isClose }) =>
     $isClose &&
     `
-=======
-  };
-
-  ${({ $isClose }) =>
-  $isClose &&
-  `
->>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
     width: 86px;
     height: 30px;
     border-radius: 4px;
     position: absolute;
     bottom: 10px;
-<<<<<<< HEAD
     right: 10px;
-=======
-    right: 10px; 
->>>>>>> 2aa1e8a18524cf86bffad9e9e532bbcb850ddf83
     transform: translate(-11px, -32px);
   `}
 `;
