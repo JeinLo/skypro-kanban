@@ -7,7 +7,7 @@ export const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.5)")};
-  display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -36,10 +36,11 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 600;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
   font-family: "Roboto", sans-serif;
+  font-weight: 600; /* SemiBold */
+  font-style: normal;
+  font-size: 20px;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
 `;
 
 export const CloseButton = styled.button`
@@ -69,10 +70,11 @@ export const InputWrapper = styled.div`
 `;
 
 export const InputLabel = styled.label`
+  font-family: "Roboto", sans-serif;
+  font-weight: 600; /* SemiBold */
+  font-style: normal;
   font-size: 14px;
-  font-weight: 500;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  font-family: "Roboto", sans-serif";
 `;
 
 export const Input = styled.input`
@@ -81,10 +83,10 @@ export const Input = styled.input`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#333" : "#ccc")};
+  border: 0.7px solid #94A6BE66; /* Обводка полей */
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")}; /* Текст чёрный */
   font-family: "Roboto", sans-serif;
 
   &:focus {
@@ -92,7 +94,7 @@ export const Input = styled.input`
   }
 
   &::placeholder {
-    color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94a6be")};
+    color: #94A6BE66; /* Плейсхолдер серый */
   }
 `;
 
@@ -103,10 +105,11 @@ export const TextareaWrapper = styled.div`
 `;
 
 export const TextareaLabel = styled.label`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
   font-family: "Roboto", sans-serif;
+  font-weight: 600; /* SemiBold */
+  font-style: normal;
+  font-size: 14px;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
   margin-top: 20px;
 `;
 
@@ -116,11 +119,11 @@ export const Textarea = styled.textarea`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#333" : "#ccc")};
+  border: 0.7px solid #94A6BE66; /* Обводка полей */
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
   font-size: 14px;
   resize: none;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")}; /* Текст чёрный */
   font-family: "Roboto", sans-serif;
 
   &:focus {
@@ -128,7 +131,7 @@ export const Textarea = styled.textarea`
   }
 
   &::placeholder {
-    color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94a6be")};
+    color: #94A6BE66; /* Плейсхолдер серый */
   }
 `;
 
@@ -141,19 +144,22 @@ export const CalendarWrapper = styled.div`
 `;
 
 export const CalendarLabel = styled.label`
+  font-family: "Roboto", sans-serif;
+  font-weight: 600; /* SemiBold */
+  font-style: normal;
   font-size: 14px;
-  font-weight: 500;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  font-family: "Roboto", sans-serif";
+  margin-bottom: 15px; /* Отступ 15px вниз после текста "Даты" */
 `;
 
 export const SelectedDateText = styled.p`
   font-family: "Roboto", sans-serif;
-  font-weight: 400;
+  font-weight: 400; /* Regular */
+  font-style: normal;
   font-size: 10px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
-  margin-top: 5px;
   text-align: center;
+  vertical-align: middle;
+  color: #94A6BE;
 `;
 
 export const CategoryWrapper = styled.div`
@@ -172,33 +178,47 @@ export const Category = styled.button`
   font-weight: 600;
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.2s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
   font-family: "Roboto", sans-serif;
 
-  ${({ $isActive, $isDarkTheme, children }) => {
-    switch (children) {
-      case "Web Design":
-        return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
-      case "Research":
-        return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
-      case "Copywriting":
-        return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
-      default:
-        return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"}; opacity: 0.6;`;
+  ${({ $isSelected, $isDarkTheme, children }) => {
+    if ($isSelected) {
+      switch (children) {
+        case "Web Design":
+          return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
+        case "Research":
+          return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
+        case "Copywriting":
+          return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+        default:
+          return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"};`;
+      }
+    } else {
+      switch (children) {
+        case "Web Design":
+          return `background-color: ${$isDarkTheme ? "#4d3d1a80" : "#FFE4C280"}; color: ${$isDarkTheme ? "#ffaa6680" : "#FF6D0080"}; opacity: 1;`;
+        case "Research":
+          return `background-color: ${$isDarkTheme ? "#1a4d3d80" : "#B4FDD180"}; color: ${$isDarkTheme ? "#66ffaa80" : "#06B16E80"}; opacity: 1;`;
+        case "Copywriting":
+          return `background-color: ${$isDarkTheme ? "#3d1a4d80" : "#E9D4FF80"}; color: ${$isDarkTheme ? "#aa66ff80" : "#9A48F180"}; opacity: 1;`;
+        default:
+          return `background-color: ${$isDarkTheme ? "#2a2a2a80" : "#f4f5f780"}; color: ${$isDarkTheme ? "#66680" : "#99980"}; opacity: 0.4;`;
+      }
     }
   }}
 
-  &:hover {
+  &:hover,
+  &:active {
     ${({ $isDarkTheme, children }) => {
       switch (children) {
         case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#664d26" : "#ffbf69"};`;
+          return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
         case "Research":
-          return `background-color: ${$isDarkTheme ? "#26664d" : "#97d8b4"};`;
+          return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
         case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#66266d" : "#cdb3ff"};`;
+          return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
         default:
-          return `background-color: ${$isDarkTheme ? "#333" : "#e0e0e0"};`;
+          return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"};`;
       }
     }}
   }
@@ -239,5 +259,5 @@ export const Error = styled.p`
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ff6666" : "red")};
   text-align: center;
   font-size: 14px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto", sans-serif";
 `;

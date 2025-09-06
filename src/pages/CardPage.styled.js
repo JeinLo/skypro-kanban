@@ -63,44 +63,37 @@ export const InputLabel = styled.label`
   color: #333;
 `;
 
-export const Input = styled.input`
-  width: 370px;
-  height: 40px;
-  border-radius: 12px;
-  padding: 12px 14px;
-  border: 1px solid #94a6be;
-  background-color: ${({ disabled }) => (disabled ? "#f0f3f9" : "#f0f3f9")};
-  font-size: 14px;
-  color: #333;
-  font-family: "Roboto", sans-serif;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
-
-  &:focus {
-    outline: 2px solid #565eef;
-    background-color: #fff;
-  }
-
-  &::placeholder {
-    color: #94a6be;
-  }
-`;
-
 export const StatusButton = styled.button`
-  width: 200px;
   height: 30px;
-  padding: 6px 16px;
+  padding: 10px 14px; /* Адаптивная ширина для редактируемых статусов */
   border-radius: 24px;
-  background-color: ${({ $isActive }) => ($isActive ? "#94A6BE" : "#f0f3f9")};
-  color: ${({ $isActive }) => ($isActive ? "#fff" : "#94A6BE")};
+  border: 0.7px solid #94A6BE;
+  background-color: ${({ $isActive }) => ($isActive ? "#94A6BE" : "#ffffff")};
+  color: ${({ $isActive }) => ($isActive ? "#ffffff" : "#94A6BE")};
   font-size: 14px;
   cursor: pointer;
-  border: none;
   font-weight: 600;
   transition: background-color 0.3s, color 0.3s;
+  white-space: nowrap;
+  margin: 0 5px 5px 0;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  &:hover:not(:disabled) {
-    background-color: #565eef;
-    color: #fff;
+  /* Специфический стиль для неактивного статуса (до редактирования) */
+  &:disabled {
+    width: 136px;
+    gap: 7px;
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background-color: #94A6BE;
+    color: #ffffff;
+    border-color: #94A6BE;
   }
 
   &:disabled {
@@ -123,7 +116,7 @@ export const TextareaLabel = styled.label`
 `;
 
 export const Textarea = styled.textarea`
-  width: 370px;
+  width: 100%;
   height: 200px;
   border-radius: 12px;
   padding: 12px 14px;
@@ -173,10 +166,21 @@ export const Category = styled.div`
   font-weight: 600;
   user-select: none;
   white-space: nowrap;
-  background-color: #ffe4c2;
-  color: #ff6d00;
   flex-shrink: 0;
   cursor: ${({ onClick }) => (onClick ? "pointer" : "default")};
+
+  ${({ $isDarkTheme, $category }) => {
+    switch ($category) {
+      case "Web Design":
+        return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
+      case "Research":
+        return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
+      case "Copywriting":
+        return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+      default:
+        return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"}; opacity: 0.6;`;
+    }
+  }}
 `;
 
 export const CategoryWrapper = styled.div`
@@ -214,19 +218,21 @@ export const Button = styled.button`
     return "#565eef";
   }};
   color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-    if ($isDelete || $isCancel) return "#94a6be";
+    if ($isDelete) return "#94a6be";
+    if ($isCancel) return "#565EEF";
     if ($isSecondary) return "#565eef";
     return "#fff";
   }};
   border: ${({ $isCancel, $isSecondary }) => {
-    if ($isCancel) return "1px solid #94a6be";
+    if ($isCancel) return "1px solid #565EEF";
     if ($isSecondary) return "1px solid #565eef";
     return "none";
   }};
 
   &:hover {
     background-color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-      if ($isDelete || $isCancel) return "#d9e0ff";
+      if ($isDelete) return "#d9e0ff";
+      if ($isCancel) return "#565EEF";
       if ($isSecondary) return "#3f53d8";
       return "#3f53d8";
     }};

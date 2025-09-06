@@ -70,6 +70,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
       date: selectedDate.toISOString(),
       status: formData.status,
     });
+    navigate("/"); // Закрытие после создания
   };
 
   if (!isOpen) {
@@ -82,7 +83,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
       $isDarkTheme={theme === "dark"}
       onClick={() => {
         console.log("Закрытие TaskModal через фон");
-        onClose();
+        navigate("/"); // Закрытие через клик вне модального окна
       }}
     >
       <ModalContent
@@ -90,12 +91,12 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
         onClick={(e) => e.stopPropagation()}
       >
         <ModalHeader>
-          <ModalTitle $isDarkTheme={theme === "dark"}>Добавить новую задачу</ModalTitle>
+          <ModalTitle $isDarkTheme={theme === "dark"}>Создание задачи</ModalTitle>
           <CloseButton
             $isDarkTheme={theme === "dark"}
             onClick={() => {
               console.log("Закрытие TaskModal через крестик");
-              onClose();
+              navigate("/"); // Закрытие через крестик
             }}
             aria-label="Закрыть модалку"
           >
@@ -139,7 +140,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
               <SelectedDateText $isDarkTheme={theme === "dark"}>
                 {selectedDate
                   ? `Срок исполнения: ${selectedDate.toLocaleDateString("ru-RU")}`
-                  : "Срок исполнения"}
+                  : "Выберите срок исполнения"}
               </SelectedDateText>
             </CalendarWrapper>
           </div>
@@ -153,6 +154,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
                   $isActive={cat === selectedCategory}
                   $isDarkTheme={theme === "dark"}
                   onClick={() => handleCategoryClick(cat)}
+                  $isSelected={cat === selectedCategory} // Управление состоянием
                 >
                   {cat}
                 </Category>

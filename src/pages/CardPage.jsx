@@ -9,7 +9,6 @@ import {
   Form,
   InputWrapper,
   InputLabel,
-  Input,
   StatusButton,
   TextareaWrapper,
   TextareaLabel,
@@ -20,26 +19,17 @@ import {
   ButtonGroup,
   Button,
   Category,
-  CategoryWrapper,
   FormContent,
 } from "./CardPage.styled";
 import Calendar from "../components/Calendar/Calendar";
 
-const categories = ["Web Design", "Research", "Copywriting"];
-const statuses = [
-  "Без статуса",
-  "Нужно сделать",
-  "В работе",
-  "Тестирование",
-  "Готово",
-];
+const statuses = ["Без статуса", "Нужно сделать", "В работе", "Тестирование", "Готово"];
 
 function CardPage({ token, theme, tasks, setTasks }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [task, setTask] = useState(null);
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
   const [dueDate, setDueDate] = useState(null);
@@ -50,9 +40,8 @@ function CardPage({ token, theme, tasks, setTasks }) {
       getTask({ id, token })
         .then((data) => {
           setTask(data);
-          setTitle(data.title || "");
           setDescription(data.description || "");
-          setCategory(data.topic || null);
+          setCategory(data.topic || null); // Устанавливаем исходную категорию
           setDueDate(data.date ? new Date(data.date) : null);
           setStatus(data.status || "Без статуса");
           console.log("Задача загружена:", data);
@@ -63,15 +52,21 @@ function CardPage({ token, theme, tasks, setTasks }) {
 
   if (!task) return null;
 
-  const handleCategoryClick = (cat) => {
-    if (isEditing) setCategory(cat === category ? null : cat);
+  const handleCategoryClick = (currentCat) => {
+    if (isEditing) {
+      const categories = ["Web Design", "Research", "Copywriting"];
+      const currentIndex = categories.indexOf(currentCat);
+      const nextIndex = (currentIndex + 1) % categories.length;
+      setCategory(categories[nextIndex]);
+    }
   };
 
   const handleStatusClick = (newStatus) => {
     if (isEditing && newStatus !== status) {
       setStatus(newStatus);
+      // Обновляем только статус в tasks, сохраняя исходную категорию
       const updatedTasks = tasks.map((t) =>
-        t._id === task._id ? { ...t, status: newStatus } : t
+        t._id === task._id ? { ...t, status: newStatus, topic: category } : t
       );
       setTasks(updatedTasks);
     }
@@ -83,10 +78,9 @@ function CardPage({ token, theme, tasks, setTasks }) {
 
   const handleEdit = (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Предотвращаем всплытие события
+    e.stopPropagation();
     setIsEditing(true);
     console.log("Переход в режим редактирования, текущее состояние:", {
-      title,
       description,
       category,
       dueDate,
@@ -97,11 +91,16 @@ function CardPage({ token, theme, tasks, setTasks }) {
   const handleSave = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!title.trim() || !category || !dueDate || !token) return;
+    if (!description.trim() || !category || !dueDate || !token) return;
     editTask({
       id,
       token,
-      task: { title, description, topic: category, date: dueDate.toISOString(), status },
+      task: {
+        description,
+        topic: category, // Явно сохраняем текущую категорию
+        date: dueDate.toISOString(),
+        status,
+      },
     })
       .then((updatedTasks) => {
         setTasks(updatedTasks);
@@ -115,9 +114,8 @@ function CardPage({ token, theme, tasks, setTasks }) {
     e.preventDefault();
     e.stopPropagation();
     setIsEditing(false);
-    setTitle(task.title || "");
     setDescription(task.description || "");
-    setCategory(task.topic || null);
+    setCategory(task.topic || null); // Восстанавливаем исходную категорию
     setDueDate(task.date ? new Date(task.date) : null);
     setStatus(task.status || "Без статуса");
   };
@@ -157,7 +155,13 @@ function CardPage({ token, theme, tasks, setTasks }) {
             {task.title || "Название задачи"}
           </ModalTitle>
           {category && (
-            <Category $isDarkTheme={theme === "dark"} $isActive={true}>
+            <Category
+              $isDarkTheme={theme === "dark"}
+              $isActive={true}
+              $category={category}
+              onClick={() => handleCategoryClick(category)} // Циклическое переключение категорий
+              style={{ cursor: isEditing ? "pointer" : "default" }}
+            >
               {category}
             </Category>
           )}
@@ -190,25 +194,12 @@ function CardPage({ token, theme, tasks, setTasks }) {
               </StatusButton>
             )}
           </InputWrapper>
-          <FormContent>
+          <FormContent> {/* Используем FormContent для компоновки */}
             <div style={{ flex: 1 }}>
-              <InputWrapper>
-                <InputLabel $isDarkTheme={theme === "dark"}>
-                  Название задачи
-                </InputLabel>
-                <Input
-                  $isDarkTheme={theme === "dark"}
-                  type="text"
-                  value={title}
-                  onChange={(e) => isEditing && setTitle(e.target.value)}
-                  disabled={!isEditing}
-                  placeholder="Название задачи"
-                />
-              </InputWrapper>
               <TextareaWrapper>
-                <InputLabel $isDarkTheme={theme === "dark"}>
+                <TextareaLabel $isDarkTheme={theme === "dark"}>
                   Описание задачи
-                </InputLabel>
+                </TextareaLabel>
                 <Textarea
                   $isDarkTheme={theme === "dark"}
                   value={description}
@@ -233,23 +224,6 @@ function CardPage({ token, theme, tasks, setTasks }) {
               </SelectedDateText>
             </CalendarWrapper>
           </FormContent>
-          {isEditing && (
-            <CategoryWrapper>
-              <InputLabel $isDarkTheme={theme === "dark"}>Категории</InputLabel>
-              <div style={{ display: "flex", gap: "10px" }}>
-                {categories.map((cat) => (
-                  <Category
-                    key={cat}
-                    $isActive={cat === category}
-                    $isDarkTheme={theme === "dark"}
-                    onClick={() => handleCategoryClick(cat)}
-                  >
-                    {cat}
-                  </Category>
-                ))}
-              </div>
-            </CategoryWrapper>
-          )}
           <ButtonGroup>
             {!isEditing ? (
               <>
