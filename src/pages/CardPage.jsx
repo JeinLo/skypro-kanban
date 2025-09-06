@@ -29,7 +29,8 @@ function CardPage({ token, theme, tasks, setTasks }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [task, setTask] = useState(null);
+  const [originalTask, setOriginalTask] = useState(null); // Сохранение исходных данных
+  const [task, setTask] = useState(null); // Текущее состояние задачи
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
   const [dueDate, setDueDate] = useState(null);
@@ -39,9 +40,10 @@ function CardPage({ token, theme, tasks, setTasks }) {
     if (token) {
       getTask({ id, token })
         .then((data) => {
+          setOriginalTask(data); // Сохраняем исходные данные
           setTask(data);
           setDescription(data.description || "");
-          setCategory(data.topic || null); // Устанавливаем исходную категорию
+          setCategory(data.topic || null);
           setDueDate(data.date ? new Date(data.date) : null);
           setStatus(data.status || "Без статуса");
           console.log("Задача загружена:", data);
@@ -63,12 +65,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
 
   const handleStatusClick = (newStatus) => {
     if (isEditing && newStatus !== status) {
-      setStatus(newStatus);
-      // Обновляем только статус в tasks, сохраняя исходную категорию
-      const updatedTasks = tasks.map((t) =>
-        t._id === task._id ? { ...t, status: newStatus, topic: category } : t
-      );
-      setTasks(updatedTasks);
+      setStatus(newStatus); // Обновляем локальное состояние статуса
     }
   };
 
@@ -92,20 +89,19 @@ function CardPage({ token, theme, tasks, setTasks }) {
     e.preventDefault();
     e.stopPropagation();
     if (!description.trim() || !category || !dueDate || !token) return;
-    editTask({
-      id,
-      token,
-      task: {
-        description,
-        topic: category, // Явно сохраняем текущую категорию
-        date: dueDate.toISOString(),
-        status,
-      },
-    })
+
+    const updatedTaskData = {
+      description,
+      topic: category,
+      date: dueDate.toISOString(),
+      status,
+    };
+
+    editTask({ id, token, task: updatedTaskData })
       .then((updatedTasks) => {
-        setTasks(updatedTasks);
+        setTasks(updatedTasks); // Обновляем глобальное состояние задач
         setIsEditing(false);
-        navigate("/");
+        navigate("/"); // Возвращаемся на главную страницу
       })
       .catch((err) => console.error("Ошибка редактирования:", err.message));
   };
@@ -114,10 +110,13 @@ function CardPage({ token, theme, tasks, setTasks }) {
     e.preventDefault();
     e.stopPropagation();
     setIsEditing(false);
-    setDescription(task.description || "");
-    setCategory(task.topic || null); // Восстанавливаем исходную категорию
-    setDueDate(task.date ? new Date(task.date) : null);
-    setStatus(task.status || "Без статуса");
+    // Восстанавливаем исходные данные из originalTask
+    if (originalTask) {
+      setDescription(originalTask.description || "");
+      setCategory(originalTask.topic || null);
+      setDueDate(originalTask.date ? new Date(originalTask.date) : null);
+      setStatus(originalTask.status || "Без статуса");
+    }
   };
 
   const handleDelete = (e) => {
@@ -152,14 +151,14 @@ function CardPage({ token, theme, tasks, setTasks }) {
       >
         <ModalHeader>
           <ModalTitle $isDarkTheme={theme === "dark"}>
-            {task.title || "Название задачи"}
+            {task.title || "Название задачи"} {/* Используем task.title */}
           </ModalTitle>
           {category && (
             <Category
               $isDarkTheme={theme === "dark"}
               $isActive={true}
               $category={category}
-              onClick={() => handleCategoryClick(category)} // Циклическое переключение категорий
+              onClick={() => handleCategoryClick(category)}
               style={{ cursor: isEditing ? "pointer" : "default" }}
             >
               {category}
@@ -194,7 +193,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
               </StatusButton>
             )}
           </InputWrapper>
-          <FormContent> {/* Используем FormContent для компоновки */}
+          <FormContent>
             <div style={{ flex: 1 }}>
               <TextareaWrapper>
                 <TextareaLabel $isDarkTheme={theme === "dark"}>

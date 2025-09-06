@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ModalOverlay,
@@ -35,18 +35,22 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState("");
+  const [isTaskCreated, setIsTaskCreated] = useState(false); // Состояние успешного создания
   const navigate = useNavigate();
 
+  // Обработка выбора даты
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setError("");
   };
 
+  // Обработка выбора категории
   const handleCategoryClick = (category) => {
     setSelectedCategory(category === selectedCategory ? null : category);
     setError("");
   };
 
+  // Обработка изменений в полях формы
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -56,22 +60,36 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  // Обработка отправки формы
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title || !selectedCategory || !selectedDate) {
       setError("Заполните все поля: название, категория, дата");
       return;
     }
     console.log("Submitting task:", { formData, selectedCategory, selectedDate }); // Отладка
-    onCreateTask({
-      title: formData.title,
-      description: formData.description,
-      topic: selectedCategory,
-      date: selectedDate.toISOString(),
-      status: formData.status,
-    });
-    navigate("/"); // Закрытие после создания
+    try {
+      await onCreateTask({
+        title: formData.title,
+        description: formData.description,
+        topic: selectedCategory,
+        date: selectedDate.toISOString(),
+        status: formData.status,
+      });
+      setIsTaskCreated(true); // Устанавливаем флаг успеха
+    } catch (err) {
+      setError(err.message || "Ошибка при создании задачи!");
+      console.error("Ошибка создания задачи:", err);
+    }
   };
+
+  // Эффект для закрытия модалки при успешном создании
+  useEffect(() => {
+    if (isTaskCreated && isOpen) {
+      onClose(); // Закрываем модальное окно только при успехе и если оно открыто
+      setIsTaskCreated(false); // Сбрасываем флаг после закрытия
+    }
+  }, [isTaskCreated, isOpen, onClose]);
 
   if (!isOpen) {
     console.log("TaskModal не рендерится, isOpen=false");
@@ -83,7 +101,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
       $isDarkTheme={theme === "dark"}
       onClick={() => {
         console.log("Закрытие TaskModal через фон");
-        navigate("/"); // Закрытие через клик вне модального окна
+        onClose(); // Закрытие через клик вне модального окна без navigate
       }}
     >
       <ModalContent
@@ -96,7 +114,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
             $isDarkTheme={theme === "dark"}
             onClick={() => {
               console.log("Закрытие TaskModal через крестик");
-              navigate("/"); // Закрытие через крестик
+              onClose(); // Закрытие через крестик без navigate
             }}
             aria-label="Закрыть модалку"
           >

@@ -44,6 +44,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
         })
         .catch((err) => {
           console.error("Ошибка загрузки задач:", err.message);
+          // Не перенаправляем на /login здесь, только логируем
         })
         .finally(() => {
           setLoading(false);
@@ -85,13 +86,17 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
               element={
                 <TaskModal
                   isOpen={true}
-                  onClose={() => window.history.back()}
-                  onCreateTask={(task) =>
-                    postTask({ token, task }).then((newTasks) => {
+                  onClose={() => window.history.back()} // Сохраняем для совместимости, но улучшим ниже
+                  onCreateTask={async (task) => {
+                    try {
+                      const newTasks = await postTask({ token, task });
                       setTasks(newTasks);
-                      window.history.back();
-                    })
-                  }
+                      return { success: true }; // Указываем успех
+                    } catch (err) {
+                      console.error("Ошибка создания задачи:", err.message);
+                      throw new Error(err.message || "Ошибка при создании задачи");
+                    }
+                  }}
                   theme={theme}
                 />
               }
