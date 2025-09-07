@@ -1,129 +1,215 @@
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { signIn } from "../services/auth";
 
 const StyledBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #eaeef6;
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#eaeef6")};
 `;
 
 const StyledModal = styled.div`
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 8px;
+  background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
+  width: 400px; /* Увеличен размер окна */
+  height: 380px; /* Увеличен размер окна */
+  border-radius: 10px;
+  gap: 10px;
+  top: 285px;
+  left: 536px;
+  border: 0.7px solid ${({ theme }) => (theme === "dark" ? "#333" : "#ccc")};
+  padding: 50px 60px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-`;
-
-const StyledLogo = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: #007bff;
   text-align: center;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const StyledTitle = styled.h2`
   font-size: 20px;
   margin-bottom: 20px;
-  text-align: center;
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
 `;
 
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  align-items: center;
 `;
 
 const StyledInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: center;
 `;
 
 const StyledInput = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 248px;
+  height: 30px;
+  border-radius: 8px;
+  gap: 10px;
+  border: 0.7px solid ${({ theme, $error }) => ($error ? "#F84D4D" : (theme === "dark" ? "#333" : "#ccc"))};
+  padding: 8px 10px;
   font-size: 16px;
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#ffffff")};
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+
+  &:focus {
+    outline: 2px solid ${({ theme }) => (theme === "dark" ? "#565EEF" : "#565EEF")};
+  }
+
+  &::placeholder {
+    color: #94A6BE;
+  }
 `;
 
 const StyledButton = styled.button`
-  background-color: #007bff;
-  color: #ffffff;
-  padding: 10px;
-  border: none;
+  width: 248px;
+  height: 30px;
   border-radius: 4px;
+  gap: 10px;
+  padding: 8px 10px;
+  background-color: ${({ $disabled, theme }) => ($disabled ? "#94A6BE" : "#565EEF")};
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#ffffff")};
+  border: 0.7px solid ${({ $disabled, theme }) => ($disabled ? "#94A6BE" : "#565EEF")};
   font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  &:hover {
-    background-color: #0056b3;
+  cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
+
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    background-color: #3f53d8;
+    border-color: #3f53d8;
   }
 `;
 
 const StyledFormGroup = styled.div`
   text-align: center;
-  margin-top: 10px;
+  margin-top: 5px; /* Уменьшен отступ */
+  font-family: Roboto;
+  font-weight: 400;
   font-size: 14px;
-  & a {
-    color: #007bff;
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
+  line-height: 150%;
+  color: ${({ theme }) => (theme === "dark" ? "#94A6BE66" : "#94A6BE66")};
+`;
+
+const StyledLink = styled(Link)`
+  color: #94A6BE66;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
-const AuthForm = ({ isSignUp, setIsAuth }) => {
+function LoginPage({ setIsAuth, setToken, theme }) {
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setIsAuth(true);
-    navigate("/");
+  const [formData, setFormData] = useState({
+    login: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({ login: false, password: false });
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { login: false, password: false };
+
+    if (!formData.login.trim()) {
+      newErrors.login = true;
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.login)) {
+      newErrors.login = true;
+      isValid = false;
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = true;
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    setError(isValid ? "" : "Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.");
+    return isValid;
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: false });
+    setError("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const data = await signIn({ login: formData.login, password: formData.password });
+      setIsAuth(true);
+      setToken(data.user?.token || data.token);
+      localStorage.setItem("isAuth", "true");
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      navigate("/");
+    } catch (err) {
+      console.error("Ошибка входа:", err.message);
+      setError(err.message);
+      setErrors({ login: true, password: true }); // Предполагаем ошибку во всех полях при неверных данных
+    }
+  };
+
+  const isFormInvalid = errors.login || errors.password || error;
+
   return (
-    <StyledBackground>
-      <StyledModal>
-        <StyledLogo>SkyPro Kanban</StyledLogo>
-        <StyledTitle>{isSignUp ? "Регистрация" : "Вход"}</StyledTitle>
-        <StyledForm onSubmit={handleLogin}>
+    <StyledBackground theme={theme}>
+      <StyledModal theme={theme}>
+        <StyledTitle theme={theme}>Вход</StyledTitle>
+        <StyledForm theme={theme} onSubmit={handleSubmit}>
           <StyledInputWrapper>
-            {isSignUp && (
-              <StyledInput type="text" name="name" placeholder="Имя" />
-            )}
-            <StyledInput type="text" name="login" placeholder="Эл. почта" />
-            <StyledInput type="password" name="password" placeholder="Пароль" />
+            <StyledInput
+              theme={theme}
+              type="email"
+              name="login"
+              placeholder="Эл. почта"
+              value={formData.login}
+              onChange={handleChange}
+              $error={errors.login}
+            />
+            <StyledInput
+              theme={theme}
+              type="password"
+              name="password"
+              placeholder="Пароль"
+              value={formData.password}
+              onChange={handleChange}
+              $error={errors.password}
+            />
           </StyledInputWrapper>
-          <StyledButton type="submit">
-            {isSignUp ? "Зарегистрироваться" : "Войти"}
+
+          {error && <p style={{ color: "#F84D4D", textAlign: "center" }}>{error}</p>}
+
+          <StyledButton theme={theme} type="submit" $disabled={isFormInvalid}>
+            Войти
           </StyledButton>
-          {!isSignUp && (
-            <StyledFormGroup>
-              <p>Нужно зарегистрироваться?</p>
-              <Link to="/register">Регистрируйтесь здесь</Link>
-            </StyledFormGroup>
-          )}
-          {isSignUp && (
-            <StyledFormGroup>
-              <p>
-                Есть аккаунт? <Link to="/login">Войдите здесь</Link>
-              </p>
-            </StyledFormGroup>
-          )}
+
+          <StyledFormGroup theme={theme}>
+            <p>Нужно зарегистрироваться?</p>
+            <StyledLink to="/register">Регистрируйтесь здесь</StyledLink>
+          </StyledFormGroup>
         </StyledForm>
       </StyledModal>
     </StyledBackground>
   );
-};
-
-function LoginPage({ setIsAuth }) {
-  return <AuthForm isSignUp={false} setIsAuth={setIsAuth} />;
 }
 
 export default LoginPage;

@@ -1,34 +1,59 @@
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import {
   StyledPopUser,
   StyledName,
   StyledEmail,
-  StyledSelect,
-  StyledButton,
+  StyledThemeToggleWrapper,
+  StyledThemeLabel,
+  StyledToggleSwitch,
+  StyledLogoutButton,
 } from "./PopUser.styled";
+import { useNavigate } from "react-router-dom";
 
-function PopUser({ isOpen, setIsAuth }) {
+function PopUser({
+  isOpen,
+  setIsAuth,
+  userName = "Пользователь",
+  userEmail = "email@example.com",
+  theme,
+  onToggleTheme = () => {},
+}) {
   const navigate = useNavigate();
+  const [isDarkTheme, setIsDarkTheme] = useState(theme === "dark");
+
+  useEffect(() => {
+    setIsDarkTheme(theme === "dark");
+  }, [theme]);
 
   const handleLogoutClick = () => {
-    if (typeof setIsAuth === "function") {
-      setIsAuth(false);
-      localStorage.setItem("isAuth", false);
-      navigate("/login");
-    } else {
-      console.error("setIsAuth is not a function");
-    }
+    navigate("/exit"); // Сразу переходим на /exit
   };
 
+  const handleThemeToggle = () => {
+    const newTheme = !isDarkTheme ? "dark" : "light";
+    setIsDarkTheme(!isDarkTheme);
+    onToggleTheme(newTheme);
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <StyledPopUser isOpen={isOpen}>
-      <StyledName>Ivan Ivanov</StyledName>
-      <StyledEmail>ivan@example.com</StyledEmail>
-      <StyledSelect>
-        <option value="theme1">Тема 1</option>
-        <option value="theme2">Тема 2</option>
-      </StyledSelect>
-      <StyledButton onClick={handleLogoutClick}>Выйти</StyledButton>
+    <StyledPopUser $isDarkTheme={isDarkTheme}>
+      <StyledName $isDarkTheme={isDarkTheme}>{userName}</StyledName>
+      <StyledEmail $isDarkTheme={isDarkTheme}>{userEmail}</StyledEmail>
+      <StyledThemeToggleWrapper $isDarkTheme={isDarkTheme}>
+        <StyledThemeLabel htmlFor="theme-toggle">Темная тема</StyledThemeLabel>
+        <StyledToggleSwitch
+          id="theme-toggle"
+          type="checkbox"
+          checked={isDarkTheme}
+          onChange={handleThemeToggle}
+          $isDarkTheme={isDarkTheme}
+        />
+      </StyledThemeToggleWrapper>
+      <StyledLogoutButton $isDarkTheme={isDarkTheme} onClick={handleLogoutClick}>
+        Выйти
+      </StyledLogoutButton>
     </StyledPopUser>
   );
 }

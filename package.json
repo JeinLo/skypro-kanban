@@ -1,18 +1,22 @@
 {
-  "name": "sky-words",
+  "name": "skypro-kanban",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.jsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write src/**/*.js src/**/*.jsx"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
     "axios": "^1.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^7.6.1",
-    "styled-components": "^5.3.11"
+    "react-is": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
@@ -23,8 +27,5 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "vite": "^5.2.0"
-  },
-  "resolutions": {
-    "styled-components": "^5"
   }
 }

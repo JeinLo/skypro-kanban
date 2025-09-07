@@ -1,25 +1,47 @@
 import React from "react";
+import { Droppable } from "@hello-pangea/dnd";
 import Card from "../Card/Card";
-import { StyledColumn, ColumnTitle } from "./Column.styled";
+import { ColumnMain, ColumnTitle, Cards } from "./Column.styled";
 
-function Column({ title, cards }) {
+function Column({ columnId, title, cards, theme, token }) {
+  const validStatuses = [
+    "без статуса",
+    "нужно сделать",
+    "в работе",
+    "тестирование",
+    "готово",
+  ].map((status) => status.toLowerCase());
+
+  const filteredCards = cards.filter((card) =>
+    card.status && validStatuses.includes(card.status.toLowerCase())
+  );
+
+  console.log(`Рендер Column "${title}", filteredCards:`, filteredCards);
+
   return (
-    <StyledColumn>
+    <ColumnMain $column={{ theme }}>
       <ColumnTitle>
         <p>{title}</p>
       </ColumnTitle>
-      <div>
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            topic={card.topic}
-            title={card.title}
-            date={card.date}
-            id={card.id} // Передаём id в Card
-          />
-        ))}
-      </div>
-    </StyledColumn>
+      <Droppable droppableId={columnId}>
+        {(provided) => (
+          <Cards ref={provided.innerRef} {...provided.droppableProps}>
+            {filteredCards
+              .filter((card) => card.status.toLowerCase() === title.toLowerCase())
+              .map((card, index) => (
+                <Card
+                  key={card._id}
+                  card={card}
+                  index={index}
+                  theme={theme}
+                  token={token}
+                />
+              ))}
+            {provided.placeholder}
+          </Cards>
+        )}
+      </Droppable>
+    </ColumnMain>
   );
 }
 

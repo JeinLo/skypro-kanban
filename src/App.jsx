@@ -1,22 +1,23 @@
-import styled from "styled-components";
-import GlobalStyle from "./styles/GlobalStyles";
+import { useState } from "react";
 import AppRoutes from "./AppRoutes";
 
-const StyledApp = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`;
-
 function App() {
+  const [isAuth, setIsAuth] = useState(false);
+  const [token, setToken] = useState(null);
+  const [theme, setTheme] = useState("light");
+  const [tasks, setTasks] = useState([]);
+
   return (
-    <>
-      <GlobalStyle />
-      <StyledApp>
-        <AppRoutes />
-      </StyledApp>
-    </>
+    <AppRoutes
+      isAuth={isAuth}
+      setIsAuth={setIsAuth}
+      token={token}
+      setToken={setToken}
+      theme={theme}
+      onToggleTheme={setTheme}
+      tasks={tasks}
+      setTasks={setTasks}
+    />
   );
 }
 

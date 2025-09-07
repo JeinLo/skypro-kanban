@@ -1,47 +1,137 @@
-import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import CardPage from "./pages/CardPage";
-import NewCardPage from "./pages/NewCardPage";
 import ExitPage from "./pages/ExitPage";
+import TaskModal from "./components/TaskModal/TaskModal";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
+import { fetchTasks, postTask } from "./services/api";
 
-function AppRoutes() {
-  const [isAuth, setIsAuth] = useState(false);
+function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, tasks, setTasks }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const authStatus = localStorage.getItem("isAuth") === "true";
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (userInfo) {
+      try {
+        const parsed = JSON.parse(userInfo);
+        setToken(parsed.user?.token || parsed.token);
+      } catch (err) {
+        console.error("Ошибка парсинга userInfo:", err);
+      }
+    }
+
     setIsAuth(authStatus);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
+    setLoading(false);
+  }, [setIsAuth, setToken]);
 
   useEffect(() => {
-    localStorage.setItem("isAuth", isAuth);
+    localStorage.setItem("isAuth", String(isAuth));
   }, [isAuth]);
+
+  useEffect(() => {
+    if (token) {
+      setLoading(true);
+      fetchTasks({ token })
+        .then((tasksData) => {
+          setTasks(tasksData);
+        })
+        .catch((err) => {
+          console.error("Ошибка загрузки задач:", err.message);
+          // Не перенаправляем на /login здесь, только логируем
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [token, setTasks]);
 
   return (
     <Routes>
       <Route element={<PrivateRoute isAuth={isAuth} />}>
-        <Route element={<Layout setIsAuth={setIsAuth} />}>
-          <Route path="/" element={<MainPage loading={loading} />} />
-          <Route path="/card/add" element={<NewCardPage />} />
-          <Route path="/card/:id" element={<CardPage />} />
-          <Route path="/exit" element={<ExitPage setIsAuth={setIsAuth} />} />
+        <Route
+          element={
+            <Layout
+              setIsAuth={setIsAuth}
+              theme={theme}
+              onToggleTheme={onToggleTheme}
+              token={token}
+              setTasks={setTasks}
+            />
+          }
+        >
+          <Route
+            path="/"
+            element={
+              <>
+                <MainPage
+                  loading={loading}
+                  token={token}
+                  theme={theme}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
+                <Outlet />
+              </>
+            }
+          >
+            <Route
+              path="createcard"
+              element={
+                <TaskModal
+                  isOpen={true}
+                  onClose={() => window.history.back()} // Сохраняем для совместимости, но улучшим ниже
+                  onCreateTask={async (task) => {
+                    try {
+                      const newTasks = await postTask({ token, task });
+                      setTasks(newTasks);
+                      return { success: true }; // Указываем успех
+                    } catch (err) {
+                      console.error("Ошибка создания задачи:", err.message);
+                      throw new Error(err.message || "Ошибка при создании задачи");
+                    }
+                  }}
+                  theme={theme}
+                />
+              }
+            />
+            <Route
+              path="cardview/:id"
+              element={
+                <CardPage
+                  token={token}
+                  theme={theme}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
+              }
+            />
+            <Route
+              path="exit"
+              element={<ExitPage setIsAuth={setIsAuth} theme={theme} />}
+            />
+          </Route>
         </Route>
       </Route>
-      <Route path="/login" element={<LoginPage setIsAuth={setIsAuth} />} />
+      <Route
+        path="/login"
+        element={
+          <LoginPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />
+        }
+      />
       <Route
         path="/register"
-        element={<RegisterPage setIsAuth={setIsAuth} />}
+        element={
+          <RegisterPage setIsAuth={setIsAuth} setToken={setToken} theme={theme} />
+        }
       />
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<NotFoundPage theme={theme} />} />
     </Routes>
   );
 }
