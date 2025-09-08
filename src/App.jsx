@@ -1,23 +1,19 @@
 import { useState } from "react";
 import AppRoutes from "./AppRoutes";
+import { AuthProvider } from "./contexts/AuthContext";
+import { TaskProvider } from "./contexts/TaskContext";
+import GlobalStyle from "./styles/GlobalStyles";
 
 function App() {
-  const [isAuth, setIsAuth] = useState(false);
-  const [token, setToken] = useState(null);
   const [theme, setTheme] = useState("light");
-  const [tasks, setTasks] = useState([]);
 
   return (
-    <AppRoutes
-      isAuth={isAuth}
-      setIsAuth={setIsAuth}
-      token={token}
-      setToken={setToken}
-      theme={theme}
-      onToggleTheme={setTheme}
-      tasks={tasks}
-      setTasks={setTasks}
-    />
+    <AuthProvider>
+      <TaskProvider>
+        <GlobalStyle theme={theme} />
+        <AppRoutes theme={theme} onToggleTheme={setTheme} />
+      </TaskProvider>
+    </AuthProvider>
   );
 }
 

@@ -35,17 +35,20 @@ function Card({ card, index, theme, token }) {
 
   return (
     <Draggable draggableId={card._id} index={index}>
-      {(provided) => (
+      {(provided, snapshot) => (
         <CardItem
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
           <Link to={`/cardview/${card._id}`} style={{ textDecoration: "none", color: "inherit" }}>
-            <CardStyled theme={theme}>
+            <CardStyled
+              theme={theme}
+              isDragging={snapshot.isDragging} // Передаём isDragging для стилей
+            >
               <CardGroup>
                 <CardTheme themeType={getThemeType(card.topic)}>
-                  <p>{card.topic}</p>
+                  <p>{card.topic || "Без темы"}</p>
                 </CardTheme>
                 <CardButton>
                   <div></div>
@@ -54,7 +57,7 @@ function Card({ card, index, theme, token }) {
                 </CardButton>
               </CardGroup>
               <CardContent>
-                <CardTitle>{card.title}</CardTitle>
+                <CardTitle theme={theme}>{card.title}</CardTitle>
                 <CardDate>
                   <svg
                     width="13"

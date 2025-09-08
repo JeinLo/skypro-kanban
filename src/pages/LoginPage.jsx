@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { signIn } from "../services/auth";
+import { AuthContext } from "../contexts/AuthContext";
 
 const StyledBackground = styled.div`
   display: flex;
@@ -13,8 +14,8 @@ const StyledBackground = styled.div`
 
 const StyledModal = styled.div`
   background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
-  width: 400px; /* Увеличен размер окна */
-  height: 380px; /* Увеличен размер окна */
+  width: 400px;
+  height: 380px;
   border-radius: 10px;
   gap: 10px;
   top: 285px;
@@ -90,7 +91,7 @@ const StyledButton = styled.button`
 
 const StyledFormGroup = styled.div`
   text-align: center;
-  margin-top: 5px; /* Уменьшен отступ */
+  margin-top: 5px;
   font-family: Roboto;
   font-weight: 400;
   font-size: 14px;
@@ -107,7 +108,14 @@ const StyledLink = styled(Link)`
   }
 `;
 
-function LoginPage({ setIsAuth, setToken, theme }) {
+const StyledError = styled.p`
+  color: #F84D4D;
+  text-align: center;
+  font-size: 14px;
+`;
+
+function LoginPage({ theme }) {
+  const { setIsAuth, setToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -164,7 +172,7 @@ function LoginPage({ setIsAuth, setToken, theme }) {
     } catch (err) {
       console.error("Ошибка входа:", err.message);
       setError(err.message);
-      setErrors({ login: true, password: true }); // Предполагаем ошибку во всех полях при неверных данных
+      setErrors({ login: true, password: true });
     }
   };
 
@@ -196,7 +204,7 @@ function LoginPage({ setIsAuth, setToken, theme }) {
             />
           </StyledInputWrapper>
 
-          {error && <p style={{ color: "#F84D4D", textAlign: "center" }}>{error}</p>}
+          {error && <StyledError>{error}</StyledError>}
 
           <StyledButton theme={theme} type="submit" $disabled={isFormInvalid}>
             Войти

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ModalOverlay,
@@ -20,13 +20,16 @@ import {
   CategoryWrapper,
   Category,
   Error,
+  FormContent,
 } from "./TaskModal.styled";
 import Calendar from "../Calendar/Calendar";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const categories = ["Web Design", "Research", "Copywriting"];
 
 function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
-  console.log("TaskModal props:", { isOpen, theme, onCreateTask }); // Отладка
+  const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -35,22 +38,18 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState("");
-  const [isTaskCreated, setIsTaskCreated] = useState(false); // Состояние успешного создания
-  const navigate = useNavigate();
+  const [isTaskCreated, setIsTaskCreated] = useState(false);
 
-  // Обработка выбора даты
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setError("");
   };
 
-  // Обработка выбора категории
   const handleCategoryClick = (category) => {
     setSelectedCategory(category === selectedCategory ? null : category);
     setError("");
   };
 
-  // Обработка изменений в полях формы
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -60,14 +59,12 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
     setError("");
   };
 
-  // Обработка отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title || !selectedCategory || !selectedDate) {
       setError("Заполните все поля: название, категория, дата");
       return;
     }
-    console.log("Submitting task:", { formData, selectedCategory, selectedDate }); // Отладка
     try {
       await onCreateTask({
         title: formData.title,
@@ -76,33 +73,28 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
         date: selectedDate.toISOString(),
         status: formData.status,
       });
-      setIsTaskCreated(true); // Устанавливаем флаг успеха
+      setIsTaskCreated(true);
     } catch (err) {
       setError(err.message || "Ошибка при создании задачи!");
       console.error("Ошибка создания задачи:", err);
     }
   };
 
-  // Эффект для закрытия модалки при успешном создании
   useEffect(() => {
     if (isTaskCreated && isOpen) {
-      onClose(); // Закрываем модальное окно только при успехе и если оно открыто
-      setIsTaskCreated(false); // Сбрасываем флаг после закрытия
+      onClose();
+      setIsTaskCreated(false);
     }
   }, [isTaskCreated, isOpen, onClose]);
 
   if (!isOpen) {
-    console.log("TaskModal не рендерится, isOpen=false");
     return null;
   }
 
   return (
     <ModalOverlay
       $isDarkTheme={theme === "dark"}
-      onClick={() => {
-        console.log("Закрытие TaskModal через фон");
-        onClose(); // Закрытие через клик вне модального окна без navigate
-      }}
+      onClick={() => onClose()}
     >
       <ModalContent
         $isDarkTheme={theme === "dark"}
@@ -112,17 +104,14 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
           <ModalTitle $isDarkTheme={theme === "dark"}>Создание задачи</ModalTitle>
           <CloseButton
             $isDarkTheme={theme === "dark"}
-            onClick={() => {
-              console.log("Закрытие TaskModal через крестик");
-              onClose(); // Закрытие через крестик без navigate
-            }}
+            onClick={() => onClose()}
             aria-label="Закрыть модалку"
           >
             &times;
           </CloseButton>
         </ModalHeader>
         <Form $isDarkTheme={theme === "dark"} onSubmit={handleSubmit}>
-          <div style={{ display: "flex", gap: "20px", flexGrow: 1 }}>
+          <FormContent>
             <div style={{ flex: 1 }}>
               <InputWrapper>
                 <InputLabel $isDarkTheme={theme === "dark"}>Название задачи</InputLabel>
@@ -161,7 +150,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
                   : "Выберите срок исполнения"}
               </SelectedDateText>
             </CalendarWrapper>
-          </div>
+          </FormContent>
           <CategoryWrapper>
             <InputLabel $isDarkTheme={theme === "dark"}>Категории</InputLabel>
             <div style={{ display: "flex", gap: "10px" }}>
@@ -172,7 +161,7 @@ function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
                   $isActive={cat === selectedCategory}
                   $isDarkTheme={theme === "dark"}
                   onClick={() => handleCategoryClick(cat)}
-                  $isSelected={cat === selectedCategory} // Управление состоянием
+                  $isSelected={cat === selectedCategory}
                 >
                   {cat}
                 </Category>

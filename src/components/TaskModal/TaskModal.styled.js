@@ -37,7 +37,7 @@ export const ModalHeader = styled.div`
 
 export const ModalTitle = styled.h2`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 20px;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
@@ -63,6 +63,12 @@ export const Form = styled.form`
   flex-grow: 1;
 `;
 
+export const FormContent = styled.div`
+  display: flex;
+  gap: 20px;
+  flex-grow: 1;
+`;
+
 export const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -71,7 +77,7 @@ export const InputWrapper = styled.div`
 
 export const InputLabel = styled.label`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
@@ -83,10 +89,10 @@ export const Input = styled.input`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid #94A6BE66; /* Обводка полей */
+  border: 0.7px solid #94A6BE66;
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")}; /* Текст чёрный */
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
   font-family: "Roboto", sans-serif;
 
   &:focus {
@@ -94,7 +100,7 @@ export const Input = styled.input`
   }
 
   &::placeholder {
-    color: #94A6BE66; /* Плейсхолдер серый */
+    color: #94A6BE66;
   }
 `;
 
@@ -106,11 +112,10 @@ export const TextareaWrapper = styled.div`
 
 export const TextareaLabel = styled.label`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  margin-top: 20px;
 `;
 
 export const Textarea = styled.textarea`
@@ -119,11 +124,11 @@ export const Textarea = styled.textarea`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid #94A6BE66; /* Обводка полей */
+  border: 0.7px solid #94A6BE66;
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
   font-size: 14px;
   resize: none;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")}; /* Текст чёрный */
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
   font-family: "Roboto", sans-serif;
 
   &:focus {
@@ -131,7 +136,7 @@ export const Textarea = styled.textarea`
   }
 
   &::placeholder {
-    color: #94A6BE66; /* Плейсхолдер серый */
+    color: #94A6BE66;
   }
 `;
 
@@ -145,16 +150,16 @@ export const CalendarWrapper = styled.div`
 
 export const CalendarLabel = styled.label`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  margin-bottom: 15px; /* Отступ 15px вниз после текста "Даты" */
+  margin-bottom: 15px;
 `;
 
 export const SelectedDateText = styled.p`
   font-family: "Roboto", sans-serif;
-  font-weight: 400; /* Regular */
+  font-weight: 400;
   font-style: normal;
   font-size: 10px;
   text-align: center;
@@ -259,5 +264,5 @@ export const Error = styled.p`
   color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ff6666" : "red")};
   text-align: center;
   font-size: 14px;
-  font-family: "Roboto", sans-serif";
+  font-family: "Roboto", sans-serif;
 `;

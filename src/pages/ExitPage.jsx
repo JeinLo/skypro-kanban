@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import styled from "styled-components";
+import { AuthContext } from "../contexts/AuthContext";
 
 const StyledExitPage = styled.div`
   position: fixed;
@@ -68,7 +70,7 @@ const StyledCancelButton = styled(StyledButton)`
   font-weight: 500;
   font-style: normal;
   font-size: 14px;
-  line-height: 150%
+  line-height: 150%;
   letter-spacing: -1%;
   text-align: center;
 
@@ -79,8 +81,13 @@ const StyledCancelButton = styled(StyledButton)`
   }
 `;
 
-function ExitPage({ setIsAuth, theme }) {
-  console.log("ExitPage рендерится, props:", { setIsAuth, theme });
+const StyledButtonGroup = styled.div`
+  display: flex;
+  gap: 20px;
+`;
+
+function ExitPage({ theme }) {
+  const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -98,10 +105,10 @@ function ExitPage({ setIsAuth, theme }) {
     <StyledExitPage onClick={handleCancel}>
       <StyledModal onClick={(e) => e.stopPropagation()}>
         <StyledTitle>Выйти из аккаунта</StyledTitle>
-        <div style={{ display: "flex", gap: "20px" }}>
+        <StyledButtonGroup>
           <StyledButton onClick={handleLogout}>Да, выйти</StyledButton>
           <StyledCancelButton onClick={handleCancel}>Нет, остаться</StyledCancelButton>
-        </div>
+        </StyledButtonGroup>
       </StyledModal>
     </StyledExitPage>
   );

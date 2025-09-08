@@ -2,11 +2,10 @@ import axios from "axios";
 
 const API_URL = "https://wedev-api.sky.pro/api/kanban/";
 
-// Глобальная настройка Axios для предотвращения добавления Content-Type
-axios.defaults.headers.put["Content-Type"] = ""; // Отключаем Content-Type для PUT-запросов
-axios.defaults.headers.post["Content-Type"] = ""; // Отключаем для POST, на всякий случай
+// Удаляем глобальные настройки Content-Type
+// axios.defaults.headers.put["Content-Type"] = "application/json";
+// axios.defaults.headers.post["Content-Type"] = "application/json";
 
-// Получение списка задач
 export async function fetchTasks({ token }) {
   try {
     const response = await axios.get(API_URL, {
@@ -14,13 +13,14 @@ export async function fetchTasks({ token }) {
         Authorization: "Bearer " + token,
       },
     });
-    return response.data.tasks;
+    console.log("Ответ fetchTasks:", response.data); // Логирование ответа
+    return response.data.tasks || [];
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Ошибка fetchTasks:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || error.message);
   }
 }
 
-// Получение задачи по ID
 export async function getTask({ id, token }) {
   try {
     const response = await axios.get(`${API_URL}${id}`, {
@@ -28,27 +28,34 @@ export async function getTask({ id, token }) {
         Authorization: "Bearer " + token,
       },
     });
+    console.log("Ответ getTask:", response.data); // Логирование ответа
     return response.data.task;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Ошибка getTask:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || error.message);
   }
 }
 
-// Добавление новой задачи
 export async function postTask({ token, task }) {
   try {
-    const response = await axios.post(API_URL, task, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    return response.data.tasks;
+    const response = await axios.post(
+      API_URL,
+      task,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "", // Пустой Content-Type
+        },
+      }
+    );
+    console.log("Ответ postTask:", response.data); // Логирование ответа
+    return response.data.tasks || [];
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Ошибка postTask:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || error.message);
   }
 }
 
-// Редактирование задачи
 export async function editTask({ id, token, task }) {
   try {
     const payload = {
@@ -60,19 +67,24 @@ export async function editTask({ id, token, task }) {
     };
     console.log("Отправляемые данные в editTask:", { id, payload });
 
-    const response = await axios.put(`${API_URL}${id}`, payload, {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    return response.data.tasks;
+    const response = await axios.put(
+      `${API_URL}${id}`,
+      payload,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "", // Пустой Content-Type
+        },
+      }
+    );
+    console.log("Ответ editTask:", response.data); // Логирование ответа
+    return response.data.tasks || [];
   } catch (error) {
-    console.error("Ошибка при редактировании задачи:", error.response?.data || error.message);
+    console.error("Ошибка editTask:", error.response?.data || error.message);
     throw new Error(error.response?.data?.error || error.message);
   }
 }
 
-// Удаление задачи
 export async function deleteTask({ id, token }) {
   try {
     console.log("Отправляемые данные в deleteTask:", { id, token });
@@ -81,9 +93,10 @@ export async function deleteTask({ id, token }) {
         Authorization: "Bearer " + token,
       },
     });
-    return response.data.tasks;
+    console.log("Ответ deleteTask:", response.data); // Логирование ответа
+    return response.data.tasks || [];
   } catch (error) {
-    console.error("Ошибка при удалении задачи:", error.response?.data || error.message);
+    console.error("Ошибка deleteTask:", error.response?.data || error.message);
     if (error.response?.status === 401) {
       throw new Error("Ошибка авторизации. Пожалуйста, войдите снова.");
     }
@@ -91,7 +104,6 @@ export async function deleteTask({ id, token }) {
   }
 }
 
-// Добавляем fetchTaskById как синоним getTask для совместимости
 export async function fetchTaskById({ id, token }) {
   return getTask({ id, token });
 }

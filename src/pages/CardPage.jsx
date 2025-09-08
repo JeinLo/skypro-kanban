@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTask, editTask, deleteTask } from "../services/api";
 import {
@@ -22,15 +22,19 @@ import {
   FormContent,
 } from "./CardPage.styled";
 import Calendar from "../components/Calendar/Calendar";
+import { AuthContext } from "../contexts/AuthContext";
+import { TaskContext } from "../contexts/TaskContext";
 
 const statuses = ["Без статуса", "Нужно сделать", "В работе", "Тестирование", "Готово"];
 
-function CardPage({ token, theme, tasks, setTasks }) {
+function CardPage({ theme }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
+  const { tasks, setTasks } = useContext(TaskContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [originalTask, setOriginalTask] = useState(null); // Сохранение исходных данных
-  const [task, setTask] = useState(null); // Текущее состояние задачи
+  const [originalTask, setOriginalTask] = useState(null);
+  const [task, setTask] = useState(null);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
   const [dueDate, setDueDate] = useState(null);
@@ -40,7 +44,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
     if (token) {
       getTask({ id, token })
         .then((data) => {
-          setOriginalTask(data); // Сохраняем исходные данные
+          setOriginalTask(data);
           setTask(data);
           setDescription(data.description || "");
           setCategory(data.topic || null);
@@ -65,7 +69,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
 
   const handleStatusClick = (newStatus) => {
     if (isEditing && newStatus !== status) {
-      setStatus(newStatus); // Обновляем локальное состояние статуса
+      setStatus(newStatus);
     }
   };
 
@@ -99,9 +103,9 @@ function CardPage({ token, theme, tasks, setTasks }) {
 
     editTask({ id, token, task: updatedTaskData })
       .then((updatedTasks) => {
-        setTasks(updatedTasks); // Обновляем глобальное состояние задач
+        setTasks(updatedTasks);
         setIsEditing(false);
-        navigate("/"); // Возвращаемся на главную страницу
+        navigate("/");
       })
       .catch((err) => console.error("Ошибка редактирования:", err.message));
   };
@@ -110,7 +114,6 @@ function CardPage({ token, theme, tasks, setTasks }) {
     e.preventDefault();
     e.stopPropagation();
     setIsEditing(false);
-    // Восстанавливаем исходные данные из originalTask
     if (originalTask) {
       setDescription(originalTask.description || "");
       setCategory(originalTask.topic || null);
@@ -151,7 +154,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
       >
         <ModalHeader>
           <ModalTitle $isDarkTheme={theme === "dark"}>
-            {task.title || "Название задачи"} {/* Используем task.title */}
+            {task.title || "Название задачи"}
           </ModalTitle>
           {category && (
             <Category

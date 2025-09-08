@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import styled, { keyframes } from "styled-components";
 import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../components/Column/Column";
-import { fetchTasks, editTask } from "../services/api";
-import { useOutletContext } from "react-router-dom";
+import { editTask } from "../services/api";
+import { AuthContext } from "../contexts/AuthContext";
+import { TaskContext } from "../contexts/TaskContext";
+import { useNavigate } from "react-router-dom";
 
 const StyledMain = styled.div`
   padding: 20px;
@@ -39,31 +41,21 @@ const ErrorMessage = styled.div`
   padding: 20px;
 `;
 
-function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }) {
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(initialLoading);
-  const { setTasks } = useOutletContext();
+function MainPage({ theme }) {
+  const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
+  const { tasks, setTasks, loading, error } = useContext(TaskContext);
+  const [dragError, setDragError] = useState(""); // Переименовано для отличия от error из TaskContext
 
-  useEffect(() => {
-    if (!initialLoading && token && initialTasks.length === 0) {
-      setIsLoading(true);
-      fetchTasks({ token })
-        .then((tasksData) => {
-          console.log("Данные из fetchTasks:", tasksData);
-          setTasks(tasksData);
-        })
-        .catch((err) => {
-          console.error("Ошибка загрузки задач:", err.message);
-          setError(err.message || "Ошибка загрузки задач");
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+  if (loading) return <Loader theme={theme}>Загрузка...</Loader>;
+  if (error) {
+    if (error.includes("авторизации")) {
+      navigate("/login"); // Перенаправление на страницу входа при ошибке авторизации
+      return null;
     }
-  }, [initialLoading, token, initialTasks.length, setTasks]);
-
-  if (isLoading) return <Loader theme={theme}>Загрузка...</Loader>;
-  if (error) return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
+    return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
+  }
+  if (dragError) return <ErrorMessage theme={theme}>{dragError}</ErrorMessage>;
 
   const columnTitles = [
     "Без статуса",
@@ -80,20 +72,19 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
     const sourceColumnTitle = columnTitles[parseInt(source.droppableId)];
     const destColumnTitle = columnTitles[parseInt(destination.droppableId)];
 
-    // Находим карточку по _id
-    const movedCard = initialTasks.find((task) => task._id === draggableId);
+    const movedCard = tasks.find((task) => task._id === draggableId);
     if (!movedCard) {
       console.error("Задача не найдена:", draggableId);
+      setDragError("Задача не найдена");
       return;
     }
 
-    // Проверяем, что карточка находится в исходной колонке
-    if (movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()) {
-      console.error("Статус карточки не соответствует исходной колонке:", movedCard.status, sourceColumnTitle);
+    if (!movedCard.status || movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()) {
+      console.error("Некорректный статус задачи или несоответствие колонке:", movedCard.status, sourceColumnTitle);
+      setDragError("Некорректный статус задачи или несоответствие колонке");
       return;
     }
 
-    // Формируем обновленную карточку
     const updatedCard = {
       ...movedCard,
       status: destColumnTitle,
@@ -103,21 +94,19 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
       date: movedCard.date,
     };
 
-    // Оптимистичное обновление состояния
-    const optimisticTasks = initialTasks.map((task) =>
+    const optimisticTasks = tasks.map((task) =>
       task._id === movedCard._id ? updatedCard : task
     );
     setTasks(optimisticTasks);
 
-    // Запрос к бэкенду
     try {
       await editTask({ id: movedCard._id, token, task: updatedCard });
       console.log("Статус задачи успешно обновлен");
+      setDragError(""); // Сбрасываем ошибку при успехе
     } catch (err) {
       console.error("Ошибка при сохранении статуса задачи:", err.message);
-      setError(`Ошибка при сохранении статуса задачи: ${err.message}`);
-      // Откатываем оптимистичное обновление в случае ошибки
-      setTasks(initialTasks);
+      setDragError(`Ошибка при сохранении статуса задачи: ${err.message}`);
+      setTasks(tasks); // Откатываем изменения при ошибке
     }
   };
 
@@ -129,7 +118,7 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
             key={index}
             columnId={String(index)}
             title={title}
-            cards={initialTasks}
+            cards={tasks}
             theme={theme}
             token={token}
           />

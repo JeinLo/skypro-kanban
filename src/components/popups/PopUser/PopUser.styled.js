@@ -7,14 +7,14 @@ export const StyledPopUser = styled.div`
   background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#1a1a1a" : "#ffffff")};
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 220px;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  outline: ${({ $isDarkTheme }) => ($isDarkTheme ? "2px solid #ffffff" : "none")};
-  box-shadow: ${({ $isDarkTheme }) => ($isDarkTheme ? "0 0 10px #ffffff" : "0 4px 8px rgba(0, 0, 0, 0.1)")};
-  transition: outline 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 10px 39px 0px #94A6BE66; /* Рассеянный box-shadow */
+  transition: box-shadow 0.3s;
+
+  /* Удаляем outline, так как он не нужен с новым box-shadow */
 `;
 
 export const StyledName = styled.div`

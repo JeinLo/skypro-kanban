@@ -1,10 +1,8 @@
 import styled, { css, keyframes } from "styled-components";
 
 export const cardAnimation = keyframes`
-  @keyframes cardAnimation {
-    0% { height: 0; opacity: 0; }
-    100% { height: auto; opacity: 1; }
-  }
+  0% { height: 0; opacity: 0; }
+  100% { height: auto; opacity: 1; }
 `;
 
 export const CardItem = styled.div`
@@ -19,15 +17,25 @@ export const CardStyled = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Вернули выравнивание влево */
+  align-items: flex-start;
   justify-content: space-between;
   padding: 15px 13px 19px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
+
+  ${({ isDragging, theme }) =>
+    isDragging &&
+    css`
+      transform: scale(1.02);
+      ${theme === "dark" &&
+      css`
+        box-shadow: 0px 10px 39px 0px #94A6BE66;
+      `}
+    `}
 `;
 
 export const CardGroup = styled.div`
@@ -127,8 +135,8 @@ export const CardDate = styled.div`
   svg {
     width: 13px;
     height: 13px;
-    fill: none; /* Прозрачный фон */
-    stroke: #6a6b6cff; /* Контур календарика */
+    fill: none;
+    stroke: #6a6b6cff;
     stroke-width: 0.8;
   }
 
