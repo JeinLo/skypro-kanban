@@ -2,10 +2,6 @@ import axios from "axios";
 
 const API_URL = "https://wedev-api.sky.pro/api/kanban/";
 
-// Удаляем глобальные настройки Content-Type
-// axios.defaults.headers.put["Content-Type"] = "application/json";
-// axios.defaults.headers.post["Content-Type"] = "application/json";
-
 export async function fetchTasks({ token }) {
   try {
     const response = await axios.get(API_URL, {
@@ -13,7 +9,7 @@ export async function fetchTasks({ token }) {
         Authorization: "Bearer " + token,
       },
     });
-    console.log("Ответ fetchTasks:", response.data); // Логирование ответа
+    console.log("Ответ fetchTasks:", response.data);
     return response.data.tasks || [];
   } catch (error) {
     console.error("Ошибка fetchTasks:", error.response?.data || error.message);
@@ -28,7 +24,7 @@ export async function getTask({ id, token }) {
         Authorization: "Bearer " + token,
       },
     });
-    console.log("Ответ getTask:", response.data); // Логирование ответа
+    console.log("Ответ getTask:", response.data);
     return response.data.task;
   } catch (error) {
     console.error("Ошибка getTask:", error.response?.data || error.message);
@@ -38,17 +34,13 @@ export async function getTask({ id, token }) {
 
 export async function postTask({ token, task }) {
   try {
-    const response = await axios.post(
-      API_URL,
-      task,
-      {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "", // Пустой Content-Type
-        },
-      }
-    );
-    console.log("Ответ postTask:", response.data); // Логирование ответа
+    const response = await axios.post(API_URL, task, {
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "", // Пустой Content-Type, как в исходном коде
+      },
+    });
+    console.log("Ответ postTask:", response.data);
     return response.data.tasks || [];
   } catch (error) {
     console.error("Ошибка postTask:", error.response?.data || error.message);
@@ -61,23 +53,20 @@ export async function editTask({ id, token, task }) {
     const payload = {
       userId: task.userId,
       title: task.title,
+      topic: task.topic, // Включаем topic для сохранения категории
       status: task.status,
       date: task.date,
       description: task.description || "",
     };
     console.log("Отправляемые данные в editTask:", { id, payload });
 
-    const response = await axios.put(
-      `${API_URL}${id}`,
-      payload,
-      {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "", // Пустой Content-Type
-        },
-      }
-    );
-    console.log("Ответ editTask:", response.data); // Логирование ответа
+    const response = await axios.put(`${API_URL}${id}`, payload, {
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "", // Убираем Content-Type, как требует API
+      },
+    });
+    console.log("Ответ editTask:", response.data);
     return response.data.tasks || [];
   } catch (error) {
     console.error("Ошибка editTask:", error.response?.data || error.message);
@@ -93,7 +82,7 @@ export async function deleteTask({ id, token }) {
         Authorization: "Bearer " + token,
       },
     });
-    console.log("Ответ deleteTask:", response.data); // Логирование ответа
+    console.log("Ответ deleteTask:", response.data);
     return response.data.tasks || [];
   } catch (error) {
     console.error("Ошибка deleteTask:", error.response?.data || error.message);

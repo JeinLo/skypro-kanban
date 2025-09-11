@@ -59,12 +59,7 @@ function CardPage({ theme }) {
   if (!task) return null;
 
   const handleCategoryClick = (currentCat) => {
-    if (isEditing) {
-      const categories = ["Web Design", "Research", "Copywriting"];
-      const currentIndex = categories.indexOf(currentCat);
-      const nextIndex = (currentIndex + 1) % categories.length;
-      setCategory(categories[nextIndex]);
-    }
+    // Функция оставлена пустой, так как категория не меняется
   };
 
   const handleStatusClick = (newStatus) => {
@@ -92,13 +87,21 @@ function CardPage({ theme }) {
   const handleSave = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!description.trim() || !category || !dueDate || !token) return;
+    if (!description.trim() || !dueDate || !token) {
+      console.error("Ошибка: не заполнены обязательные поля", {
+        description,
+        dueDate,
+      });
+      return;
+    }
 
     const updatedTaskData = {
+      title: originalTask.title,
       description,
-      topic: category,
+      topic: originalTask.topic,
       date: dueDate.toISOString(),
       status,
+      userId: originalTask.userId,
     };
 
     editTask({ id, token, task: updatedTaskData })
@@ -125,7 +128,7 @@ function CardPage({ theme }) {
   const handleDelete = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.confirm("Вы уверены, что хотите удалить задачу?") && token) {
+    if (token) {
       deleteTask({ id, token })
         .then((updatedTasks) => {
           setTasks(updatedTasks);
