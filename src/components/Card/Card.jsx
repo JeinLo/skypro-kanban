@@ -1,6 +1,6 @@
-import React from "react";
-import { Draggable } from "@hello-pangea/dnd";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Draggable } from '@hello-pangea/dnd';
+import { Link } from 'react-router-dom';
 import {
   CardItem,
   CardStyled,
@@ -10,27 +10,28 @@ import {
   CardContent,
   CardTitle,
   CardDate,
-} from "./Card.styled";
+} from './Card.styled';
 
 function Card({ card, index, theme, token }) {
   const getThemeType = (topic) => {
     switch (topic) {
-      case "Web Design":
-        return "_orange";
-      case "Research":
-        return "_green";
-      case "Copywriting":
-        return "_purple";
+      case 'Web Design':
+        return '_orange';
+      case 'Research':
+        return '_green';
+      case 'Copywriting':
+        return '_purple';
       default:
-        return "_default";
+        return '_default';
     }
   };
 
   const formattedDate = (date) => {
+    if (!date) return 'Без даты';
     const d = new Date(date);
-    return `${d.getDate().toString().padStart(2, "0")}.${(d.getMonth() + 1)
+    return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1)
       .toString()
-      .padStart(2, "0")}.${d.getFullYear().toString().slice(-2)}`;
+      .padStart(2, '0')}.${d.getFullYear().toString().slice(-2)}`;
   };
 
   return (
@@ -41,14 +42,17 @@ function Card({ card, index, theme, token }) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Link to={`/cardview/${card._id}`} style={{ textDecoration: "none", color: "inherit" }}>
+          <Link
+            to={`/cardview/${card._id}`}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             <CardStyled
               theme={theme}
-              isDragging={snapshot.isDragging} // Передаём isDragging для стилей
+              isDragging={snapshot.isDragging}
             >
               <CardGroup>
                 <CardTheme themeType={getThemeType(card.topic)}>
-                  <p>{card.topic || "Без темы"}</p>
+                  <p>{card.topic || 'Без темы'}</p>
                 </CardTheme>
                 <CardButton>
                   <div></div>
@@ -57,7 +61,7 @@ function Card({ card, index, theme, token }) {
                 </CardButton>
               </CardGroup>
               <CardContent>
-                <CardTitle theme={theme}>{card.title}</CardTitle>
+                <CardTitle theme={theme}>{card.title || 'Без названия'}</CardTitle>
                 <CardDate>
                   <svg
                     width="13"
@@ -87,7 +91,7 @@ function Card({ card, index, theme, token }) {
                       </clipPath>
                     </defs>
                   </svg>
-                  <p>{card.date ? formattedDate(card.date) : "Без даты"}</p>
+                  <p>{formattedDate(card.date)}</p>
                 </CardDate>
               </CardContent>
             </CardStyled>

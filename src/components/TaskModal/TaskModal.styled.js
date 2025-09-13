@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -6,7 +6,8 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.5)")};
+  background-color: ${({ theme }) =>
+    theme === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)'};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +15,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#1a1a1a" : "#ffffff")};
+  background-color: ${({ theme }) => theme.modalBackground};
   width: 630px;
   height: 596px;
   border-radius: 10px;
@@ -24,8 +25,8 @@ export const ModalContent = styled.div`
   flex-direction: column;
   gap: 20px;
   position: relative;
-  border: 0.7px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#333" : "#ccc")};
-  font-family: "Roboto", sans-serif;
+  border: 0.7px solid ${({ theme }) => theme.modalBorder};
+  font-family: 'Roboto', sans-serif;
 `;
 
 export const ModalHeader = styled.div`
@@ -36,11 +37,11 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalTitle = styled.h2`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600;
   font-style: normal;
   font-size: 20px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
+  color: ${({ theme }) => theme.text};
 `;
 
 export const CloseButton = styled.button`
@@ -48,11 +49,11 @@ export const CloseButton = styled.button`
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94a6be")};
-  font-family: "Roboto", sans-serif;
+  color: ${({ theme }) => theme.secondary};
+  font-family: 'Roboto', sans-serif;
 
   &:hover {
-    color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    color: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -76,11 +77,11 @@ export const InputWrapper = styled.div`
 `;
 
 export const InputLabel = styled.label`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+  color: ${({ theme }) => theme.text};
 `;
 
 export const Input = styled.input`
@@ -89,180 +90,151 @@ export const Input = styled.input`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid #94A6BE66;
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
+  border: 0.7px solid ${({ theme }) => theme.secondary}66;
+  background-color: ${({ theme }) => theme.modalBackground};
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
-  font-family: "Roboto", sans-serif;
+  color: ${({ theme }) => theme.text};
+  font-family: 'Roboto', sans-serif;
 
   &:focus {
-    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    outline: 2px solid ${({ theme }) => theme.primary};
   }
 
   &::placeholder {
-    color: #94A6BE66;
+    color: ${({ theme }) => theme.secondary}66;
   }
 `;
 
 export const TextareaWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 `;
 
 export const TextareaLabel = styled.label`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600;
-  font-style: normal;
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+  color: ${({ theme }) => theme.text};
 `;
 
 export const Textarea = styled.textarea`
-  width: 370px;
+  width: 100%;
   height: 200px;
   border-radius: 8px;
   padding: 14px;
-  gap: 14px;
-  border: 0.7px solid #94A6BE66;
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
+  border: 0.7px solid ${({ theme }) => theme.secondary}66;
+  background-color: ${({ theme }) => theme.modalBackground};
   font-size: 14px;
+  color: ${({ theme }) => theme.text};
+  font-family: 'Roboto', sans-serif;
   resize: none;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
-  font-family: "Roboto", sans-serif;
 
   &:focus {
-    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    outline: 2px solid ${({ theme }) => theme.primary};
   }
 
   &::placeholder {
-    color: #94A6BE66;
+    color: ${({ theme }) => theme.secondary}66;
   }
 `;
 
 export const CalendarWrapper = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 200px;
 `;
 
 export const CalendarLabel = styled.label`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600;
-  font-style: normal;
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  margin-bottom: 15px;
+  color: ${({ theme }) => theme.text};
 `;
 
 export const SelectedDateText = styled.p`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-style: normal;
-  font-size: 10px;
+  font-size: 12px;
+  color: ${({ theme }) => theme.secondary};
   text-align: center;
-  vertical-align: middle;
-  color: #94A6BE;
 `;
 
 export const CategoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 `;
 
 export const Category = styled.button`
-  width: 115px;
-  height: 30px;
-  padding: 8px 20px;
-  border: none;
+  padding: 6px 16px;
   border-radius: 24px;
   font-size: 12px;
   font-weight: 600;
+  border: 0.7px solid ${({ theme }) => theme.secondary}66;
+  background-color: ${({ $isActive, $category, theme }) =>
+    $isActive
+      ? $category === 'Web Design'
+        ? theme === 'dark' ? '#4d3d1a' : '#FFE4C2'
+        : $category === 'Research'
+        ? theme === 'dark' ? '#1a4d3d' : '#B4FDD1'
+        : $category === 'Copywriting'
+        ? theme === 'dark' ? '#3d1a4d' : '#E9D4FF'
+        : theme.primary
+      : theme.modalBackground};
+  color: ${({ $isActive, $category, theme }) =>
+    $isActive
+      ? $category === 'Web Design'
+        ? theme === 'dark' ? '#ffaa66' : '#FF6D00'
+        : $category === 'Research'
+        ? theme === 'dark' ? '#66ffaa' : '#06B16E'
+        : $category === 'Copywriting'
+        ? theme === 'dark' ? '#aa66ff' : '#9A48F1'
+        : '#ffffff'
+      : theme.text};
   cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-  font-family: "Roboto", sans-serif;
+  transition: background-color 0.3s, color 0.3s;
 
-  ${({ $isSelected, $isDarkTheme, children }) => {
-    if ($isSelected) {
-      switch (children) {
-        case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
-        case "Research":
-          return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
-        case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
-        default:
-          return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"};`;
-      }
-    } else {
-      switch (children) {
-        case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#4d3d1a80" : "#FFE4C280"}; color: ${$isDarkTheme ? "#ffaa6680" : "#FF6D0080"}; opacity: 1;`;
-        case "Research":
-          return `background-color: ${$isDarkTheme ? "#1a4d3d80" : "#B4FDD180"}; color: ${$isDarkTheme ? "#66ffaa80" : "#06B16E80"}; opacity: 1;`;
-        case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#3d1a4d80" : "#E9D4FF80"}; color: ${$isDarkTheme ? "#aa66ff80" : "#9A48F180"}; opacity: 1;`;
-        default:
-          return `background-color: ${$isDarkTheme ? "#2a2a2a80" : "#f4f5f780"}; color: ${$isDarkTheme ? "#66680" : "#99980"}; opacity: 0.4;`;
-      }
-    }
-  }}
-
-  &:hover,
-  &:active {
-    ${({ $isDarkTheme, children }) => {
-      switch (children) {
-        case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
-        case "Research":
-          return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
-        case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
-        default:
-          return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"};`;
-      }
-    }}
-  }
-`;
-
-export const Button = styled.button`
-  width: 132px;
-  height: 30px;
-  padding: 10px 14px;
-  border: 2px solid #565EEF;
-  border-radius: 4px;
-  background-color: #565EEF;
-  color: #ffffff;
-  font-size: 14px;
-  cursor: pointer;
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Roboto", sans-serif;
-  white-space: nowrap;
-  transition: background-color 0.3s;
-
-  &:hover,
-  &:active {
-    background-color: #3f53d8;
-    border-color: #3f53d8;
-  }
-
-  &:focus {
-    outline: none;
+  &:hover {
+    background-color: ${({ $category, theme }) =>
+      $category === 'Web Design'
+        ? theme === 'dark' ? '#4d3d1a' : '#FFE4C2'
+        : $category === 'Research'
+        ? theme === 'dark' ? '#1a4d3d' : '#B4FDD1'
+        : $category === 'Copywriting'
+        ? theme === 'dark' ? '#3d1a4d' : '#E9D4FF'
+        : theme.primaryHover};
+    color: ${({ $category, theme }) =>
+      $category === 'Web Design'
+        ? theme === 'dark' ? '#ffaa66' : '#FF6D00'
+        : $category === 'Research'
+        ? theme === 'dark' ? '#66ffaa' : '#06B16E'
+        : $category === 'Copywriting'
+        ? theme === 'dark' ? '#aa66ff' : '#9A48F1'
+        : '#ffffff'};
   }
 `;
 
 export const Error = styled.p`
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ff6666" : "red")};
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: ${({ theme }) => theme.error};
   text-align: center;
+`;
+
+export const Button = styled.button`
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
   font-size: 14px;
-  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background-color: ${({ theme }) => theme.primary};
+  color: #ffffff;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.primaryHover};
+  }
 `;

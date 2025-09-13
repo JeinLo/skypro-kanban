@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const SHeader = styled.header`
-  background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
+  background-color: ${({ theme }) => theme.modalBackground};
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
@@ -26,7 +26,7 @@ export const StyledActions = styled.div`
 `;
 
 export const StyledTaskLink = styled(Link)`
-  background-color: #565EEF;
+  background-color: #565eef;
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 4px;
@@ -40,13 +40,15 @@ export const StyledTaskLink = styled(Link)`
 `;
 
 export const StyledUserLink = styled.div`
-  color: #565EEF;
+  color: #565eef;
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;
-  transition: color 0.3s, text-decoration 0.3s;
+  transition:
+    color 0.3s,
+    text-decoration 0.3s;
   &:hover {
     color: #3f53d8;
     text-decoration: underline;

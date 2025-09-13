@@ -1,29 +1,27 @@
-import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
-import { signIn } from "../services/auth";
-import { AuthContext } from "../contexts/AuthContext";
+import styled from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { signIn } from '../services/auth';
+import { AuthContext } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
+import { Container } from '../styles/Global.styled';
 
 const StyledBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#eaeef6")};
+  background-color: ${({ theme }) => theme.background};
 `;
 
 const StyledModal = styled.div`
-  background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
+  background-color: ${({ theme }) => theme.modalBackground};
   width: 400px;
   height: 380px;
   border-radius: 10px;
-  gap: 10px;
-  top: 285px;
-  left: 536px;
-  border: 0.7px solid ${({ theme }) => (theme === "dark" ? "#333" : "#ccc")};
+  border: 0.7px solid ${({ theme }) => theme.modalBorder};
   padding: 50px 60px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +30,7 @@ const StyledModal = styled.div`
 const StyledTitle = styled.h2`
   font-size: 20px;
   margin-bottom: 20px;
-  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+  color: ${({ theme }) => theme.text};
 `;
 
 const StyledForm = styled.form`
@@ -53,19 +51,19 @@ const StyledInput = styled.input`
   width: 248px;
   height: 30px;
   border-radius: 8px;
-  gap: 10px;
-  border: 0.7px solid ${({ theme, $error }) => ($error ? "#F84D4D" : (theme === "dark" ? "#333" : "#ccc"))};
+  border: 0.7px solid
+    ${({ theme, $error }) => ($error ? theme.error : theme.modalBorder)};
   padding: 8px 10px;
   font-size: 16px;
-  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#ffffff")};
-  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+  background-color: ${({ theme }) => theme.modalBackground};
+  color: ${({ theme }) => theme.text};
 
   &:focus {
-    outline: 2px solid ${({ theme }) => (theme === "dark" ? "#565EEF" : "#565EEF")};
+    outline: 2px solid ${({ theme }) => theme.primary};
   }
 
   &::placeholder {
-    color: #94A6BE;
+    color: ${({ theme }) => theme.secondary};
   }
 `;
 
@@ -73,34 +71,34 @@ const StyledButton = styled.button`
   width: 248px;
   height: 30px;
   border-radius: 4px;
-  gap: 10px;
   padding: 8px 10px;
-  background-color: ${({ $disabled, theme }) => ($disabled ? "#94A6BE" : "#565EEF")};
-  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#ffffff")};
-  border: 0.7px solid ${({ $disabled, theme }) => ($disabled ? "#94A6BE" : "#565EEF")};
+  background-color: ${({ $disabled, theme }) =>
+    $disabled ? theme.secondary : theme.primary};
+  color: #ffffff;
+  border: 0.7px solid
+    ${({ $disabled, theme }) => ($disabled ? theme.secondary : theme.primary)};
   font-size: 16px;
-  cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
 
   &:hover:not(:disabled),
   &:active:not(:disabled) {
-    background-color: #3f53d8;
-    border-color: #3f53d8;
+    background-color: ${({ theme }) => theme.primaryHover};
+    border-color: ${({ theme }) => theme.primaryHover};
   }
 `;
 
 const StyledFormGroup = styled.div`
   text-align: center;
   margin-top: 5px;
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 14px;
-  line-height: 150%;
-  color: ${({ theme }) => (theme === "dark" ? "#94A6BE66" : "#94A6BE66")};
+  color: ${({ theme }) => theme.secondary}66;
 `;
 
 const StyledLink = styled(Link)`
-  color: #94A6BE66;
+  color: ${({ theme }) => theme.secondary}66;
   text-decoration: none;
 
   &:hover {
@@ -109,7 +107,7 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledError = styled.p`
-  color: #F84D4D;
+  color: ${({ theme }) => theme.error};
   text-align: center;
   font-size: 14px;
 `;
@@ -119,11 +117,11 @@ function LoginPage({ theme }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    login: "",
-    password: "",
+    login: '',
+    password: '',
   });
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [errors, setErrors] = useState({ login: false, password: false });
 
   const validateForm = () => {
@@ -144,7 +142,11 @@ function LoginPage({ theme }) {
     }
 
     setErrors(newErrors);
-    setError(isValid ? "" : "Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.");
+    setError(
+      isValid
+        ? ''
+        : 'Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.'
+    );
     return isValid;
   };
 
@@ -152,71 +154,80 @@ function LoginPage({ theme }) {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: false });
-    setError("");
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
+      toast.error(
+        'Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.'
+      );
       return;
     }
 
     try {
-      const data = await signIn({ login: formData.login, password: formData.password });
+      const data = await signIn({
+        login: formData.login,
+        password: formData.password,
+      });
       setIsAuth(true);
       setToken(data.user?.token || data.token);
-      localStorage.setItem("isAuth", "true");
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      navigate("/");
+      localStorage.setItem('isAuth', 'true');
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      toast.success('Вход выполнен успешно!');
+      navigate('/');
     } catch (err) {
-      console.error("Ошибка входа:", err.message);
       setError(err.message);
       setErrors({ login: true, password: true });
+      toast.error(err.message || 'Ошибка входа. Попробуйте снова.');
     }
   };
 
   const isFormInvalid = errors.login || errors.password || error;
 
   return (
-    <StyledBackground theme={theme}>
-      <StyledModal theme={theme}>
-        <StyledTitle theme={theme}>Вход</StyledTitle>
-        <StyledForm theme={theme} onSubmit={handleSubmit}>
-          <StyledInputWrapper>
-            <StyledInput
-              theme={theme}
-              type="email"
-              name="login"
-              placeholder="Эл. почта"
-              value={formData.login}
-              onChange={handleChange}
-              $error={errors.login}
-            />
-            <StyledInput
-              theme={theme}
-              type="password"
-              name="password"
-              placeholder="Пароль"
-              value={formData.password}
-              onChange={handleChange}
-              $error={errors.password}
-            />
-          </StyledInputWrapper>
+    <Container>
+      <StyledBackground theme={theme}>
+        <StyledModal theme={theme}>
+          <StyledTitle theme={theme}>Вход</StyledTitle>
+          <StyledForm theme={theme} onSubmit={handleSubmit}>
+            <StyledInputWrapper>
+              <StyledInput
+                theme={theme}
+                type="email"
+                name="login"
+                placeholder="Эл. почта"
+                value={formData.login}
+                onChange={handleChange}
+                $error={errors.login}
+              />
+              <StyledInput
+                theme={theme}
+                type="password"
+                name="password"
+                placeholder="Пароль"
+                value={formData.password}
+                onChange={handleChange}
+                $error={errors.password}
+              />
+            </StyledInputWrapper>
 
-          {error && <StyledError>{error}</StyledError>}
+            {error && <StyledError>{error}</StyledError>}
 
-          <StyledButton theme={theme} type="submit" $disabled={isFormInvalid}>
-            Войти
-          </StyledButton>
+            <StyledButton theme={theme} type="submit" $disabled={isFormInvalid}>
+              Войти
+            </StyledButton>
 
-          <StyledFormGroup theme={theme}>
-            <p>Нужно зарегистрироваться?</p>
-            <StyledLink to="/register">Регистрируйтесь здесь</StyledLink>
-          </StyledFormGroup>
-        </StyledForm>
-      </StyledModal>
-    </StyledBackground>
+            <StyledFormGroup theme={theme}>
+              <p>Нужно зарегистрироваться?</p>
+              <StyledLink to="/register">Регистрируйтесь здесь</StyledLink>
+            </StyledFormGroup>
+          </StyledForm>
+        </StyledModal>
+      </StyledBackground>
+    </Container>
   );
 }
 

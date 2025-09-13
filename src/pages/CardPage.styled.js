@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -6,8 +6,8 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: ${({ $isDarkTheme }) =>
-    $isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.3)"};
+  background-color: ${({ theme }) =>
+    theme === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)'};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,7 +15,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#fff" : "#fff")};
+  background-color: ${({ theme }) => theme.modalBackground};
   width: 700px;
   max-height: 90vh;
   border-radius: 12px;
@@ -25,8 +25,8 @@ export const ModalContent = styled.div`
   flex-direction: column;
   gap: 24px;
   position: relative;
-  font-family: "Roboto", sans-serif;
-  color: #000;
+  font-family: 'Roboto', sans-serif;
+  color: ${({ theme }) => theme.text};
 `;
 
 export const ModalHeader = styled.div`
@@ -39,7 +39,7 @@ export const ModalHeader = styled.div`
 export const ModalTitle = styled.h2`
   font-size: 20px;
   font-weight: 700;
-  color: #000;
+  color: ${({ theme }) => theme.text};
   margin: 0;
   flex-grow: 1;
 `;
@@ -60,20 +60,23 @@ export const InputWrapper = styled.div`
 export const InputLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: ${({ theme }) => theme.text};
 `;
 
 export const StatusButton = styled.button`
   height: 30px;
-  padding: 10px 14px; /* Адаптивная ширина для редактируемых статусов */
+  padding: 10px 14px;
   border-radius: 24px;
-  border: 0.7px solid #94A6BE;
-  background-color: ${({ $isActive }) => ($isActive ? "#94A6BE" : "#ffffff")};
-  color: ${({ $isActive }) => ($isActive ? "#ffffff" : "#94A6BE")};
+  border: 0.7px solid ${({ theme }) => theme.secondary};
+  background-color: ${({ $isActive, theme }) =>
+    $isActive ? theme.secondary : theme.modalBackground};
+  color: ${({ $isActive, theme }) => ($isActive ? '#ffffff' : theme.secondary)};
   font-size: 14px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   white-space: nowrap;
   margin: 0 5px 5px 0;
   text-align: center;
@@ -81,24 +84,20 @@ export const StatusButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  /* Специфический стиль для неактивного статуса (до редактирования) */
   &:disabled {
     width: 136px;
     gap: 7px;
     margin-right: auto;
     margin-left: 0;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   &:hover:not(:disabled),
   &:focus:not(:disabled) {
-    background-color: #94A6BE;
+    background-color: ${({ theme }) => theme.secondary};
     color: #ffffff;
-    border-color: #94A6BE;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+    border-color: ${({ theme }) => theme.secondary};
   }
 `;
 
@@ -112,7 +111,7 @@ export const TextareaWrapper = styled.div`
 export const TextareaLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: ${({ theme }) => theme.text};
 `;
 
 export const Textarea = styled.textarea`
@@ -120,21 +119,21 @@ export const Textarea = styled.textarea`
   height: 200px;
   border-radius: 12px;
   padding: 12px 14px;
-  border: 1px solid #94a6be;
-  background-color: ${({ disabled }) => (disabled ? "#f0f3f9" : "#f0f3f9")};
+  border: 1px solid ${({ theme }) => theme.secondary};
+  background-color: ${({ disabled, theme }) =>
+    disabled ? '#f0f3f9' : theme.modalBackground};
   font-size: 14px;
   resize: none;
-  color: #333;
-  font-family: "Roboto", sans-serif;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
+  color: ${({ theme }) => theme.text};
+  font-family: 'Roboto', sans-serif;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'text')};
 
   &:focus {
-    outline: 2px solid #565eef;
-    background-color: #fff;
+    outline: 2px solid ${({ theme }) => theme.primary};
   }
 
   &::placeholder {
-    color: #94a6be;
+    color: ${({ theme }) => theme.secondary};
   }
 `;
 
@@ -148,13 +147,13 @@ export const CalendarWrapper = styled.div`
 export const CalendarLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: ${({ theme }) => theme.text};
 `;
 
 export const SelectedDateText = styled.p`
   font-weight: 400;
   font-size: 12px;
-  color: #94a6be;
+  color: ${({ theme }) => theme.secondary};
   margin-top: 6px;
   text-align: center;
 `;
@@ -167,18 +166,18 @@ export const Category = styled.div`
   user-select: none;
   white-space: nowrap;
   flex-shrink: 0;
-  cursor: ${({ onClick }) => (onClick ? "pointer" : "default")};
+  cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
 
-  ${({ $isDarkTheme, $category }) => {
+  ${({ theme, $category }) => {
     switch ($category) {
-      case "Web Design":
-        return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
-      case "Research":
-        return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
-      case "Copywriting":
-        return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+      case 'Web Design':
+        return `background-color: ${theme === 'dark' ? '#4d3d1a' : '#FFE4C2'}; color: ${theme === 'dark' ? '#ffaa66' : '#FF6D00'};`;
+      case 'Research':
+        return `background-color: ${theme === 'dark' ? '#1a4d3d' : '#B4FDD1'}; color: ${theme === 'dark' ? '#66ffaa' : '#06B16E'};`;
+      case 'Copywriting':
+        return `background-color: ${theme === 'dark' ? '#3d1a4d' : '#E9D4FF'}; color: ${theme === 'dark' ? '#aa66ff' : '#9A48F1'};`;
       default:
-        return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"}; opacity: 0.6;`;
+        return `background-color: ${theme === 'dark' ? '#2a2a2a' : '#f4f5f7'}; color: ${theme === 'dark' ? '#666' : '#999'}; opacity: 0.6;`;
     }
   }}
 `;
@@ -212,31 +211,32 @@ export const Button = styled.button`
   min-width: 140px;
   transition: background-color 0.3s;
 
-  background-color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-    if ($isDelete || $isCancel) return "#f0f3f9";
-    if ($isSecondary) return "transparent";
-    return "#565eef";
+  background-color: ${({ $isDelete, $isCancel, $isSecondary, theme }) => {
+    if ($isDelete || $isCancel) return '#f0f3f9';
+    if ($isSecondary) return 'transparent';
+    return theme.primary;
   }};
-  color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-    if ($isDelete) return "#94a6be";
-    if ($isCancel) return "#565EEF";
-    if ($isSecondary) return "#565eef";
-    return "#fff";
+  color: ${({ $isDelete, $isCancel, $isSecondary, theme }) => {
+    if ($isDelete) return theme.secondary;
+    if ($isCancel) return theme.primary;
+    if ($isSecondary) return theme.primary;
+    return '#fff';
   }};
-  border: ${({ $isCancel, $isSecondary }) => {
-    if ($isCancel) return "1px solid #565EEF";
-    if ($isSecondary) return "1px solid #565eef";
-    return "none";
+  border: ${({ $isCancel, $isSecondary, theme }) => {
+    if ($isCancel) return `1px solid ${theme.primary}`;
+    if ($isSecondary) return `1px solid ${theme.primary}`;
+    return 'none';
   }};
 
   &:hover {
-    background-color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-      if ($isDelete) return "#d9e0ff";
-      if ($isCancel) return "#565EEF";
-      if ($isSecondary) return "#3f53d8";
-      return "#3f53d8";
+    background-color: ${({ $isDelete, $isCancel, $isSecondary, theme }) => {
+      if ($isDelete) return '#d9e0ff';
+      if ($isCancel) return theme.primary;
+      if ($isSecondary) return theme.primaryHover;
+      return theme.primaryHover;
     }};
-    color: ${({ $isCancel, $isSecondary }) => ($isCancel || $isSecondary ? "#fff" : "#fff")};
+    color: ${({ $isCancel, $isSecondary }) =>
+      $isCancel || $isSecondary ? '#fff' : '#fff'};
   }
 
   ${({ $isClose }) =>

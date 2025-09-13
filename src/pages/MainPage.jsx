@@ -1,11 +1,13 @@
-import React, { useState, useContext } from "react";
-import styled, { keyframes } from "styled-components";
-import { DragDropContext } from "@hello-pangea/dnd";
-import Column from "../components/Column/Column";
-import { editTask } from "../services/api";
-import { AuthContext } from "../contexts/AuthContext";
-import { TaskContext } from "../contexts/TaskContext";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { DragDropContext } from '@hello-pangea/dnd';
+import Column from '../components/Column/Column';
+import { editTask } from '../services/api';
+import { AuthContext } from '../contexts/AuthContext';
+import { TaskContext } from '../contexts/TaskContext';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { Container } from '../styles/Global.styled';
 
 const StyledMain = styled.div`
   padding: 20px;
@@ -13,29 +15,45 @@ const StyledMain = styled.div`
   gap: 20px;
   min-height: 100vh;
   position: relative;
-  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#e5e7eb")};
+  background-color: ${({ theme }) => theme.background};
 `;
 
 const gradientAnimation = keyframes`
   0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 `;
 
 const Loader = styled.div`
   width: 100%;
   height: 100vh;
-  background: linear-gradient(270deg, ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#e0e7ff")}, ${({ theme }) => (theme === "dark" ? "#333" : "#c7d2fe")}, ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#e0e7ff")});
+  background: linear-gradient(
+    270deg,
+    ${({ theme }) => theme.modalBackground},
+    ${({ theme }) => theme.secondary},
+    ${({ theme }) => theme.modalBackground}
+  );
   background-size: 600% 600%;
-  animation: ${gradientAnimation} 3s ease infinite;
+  animation: ${gradientAnimation} 4s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
-  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+  font-size: 18px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text};
+`;
+
+const EmptyMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.secondary};
+  padding: 20px;
 `;
 
 const ErrorMessage = styled.div`
-  color: ${({ theme }) => (theme === "dark" ? "#ff6666" : "red")};
+  color: ${({ theme }) => theme.error};
   text-align: center;
   font-size: 16px;
   padding: 20px;
@@ -45,24 +63,27 @@ function MainPage({ theme }) {
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
   const { tasks, setTasks, loading, error } = useContext(TaskContext);
-  const [dragError, setDragError] = useState(""); // Переименовано для отличия от error из TaskContext
+  const [dragError, setDragError] = useState('');
 
-  if (loading) return <Loader theme={theme}>Загрузка...</Loader>;
+  if (loading) return <Loader theme={theme}>Загрузка задач...</Loader>;
   if (error) {
-    if (error.includes("авторизации")) {
-      navigate("/login"); // Перенаправление на страницу входа при ошибке авторизации
+    if (error.includes('авторизации')) {
+      navigate('/login');
       return null;
     }
     return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
   }
   if (dragError) return <ErrorMessage theme={theme}>{dragError}</ErrorMessage>;
+  if (tasks.length === 0) {
+    return <EmptyMessage theme={theme}>Новых задач нет</EmptyMessage>;
+  }
 
   const columnTitles = [
-    "Без статуса",
-    "Нужно сделать",
-    "В работе",
-    "Тестирование",
-    "Готово",
+    'Без статуса',
+    'Нужно сделать',
+    'В работе',
+    'Тестирование',
+    'Готово',
   ];
 
   const handleDragEnd = async (result) => {
@@ -74,14 +95,17 @@ function MainPage({ theme }) {
 
     const movedCard = tasks.find((task) => task._id === draggableId);
     if (!movedCard) {
-      console.error("Задача не найдена:", draggableId);
-      setDragError("Задача не найдена");
+      setDragError('Задача не найдена');
+      toast.error('Задача не найдена');
       return;
     }
 
-    if (!movedCard.status || movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()) {
-      console.error("Некорректный статус задачи или несоответствие колонке:", movedCard.status, sourceColumnTitle);
-      setDragError("Некорректный статус задачи или несоответствие колонке");
+    if (
+      !movedCard.status ||
+      movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()
+    ) {
+      setDragError('Некорректный статус задачи или несоответствие колонке');
+      toast.error('Некорректный статус задачи или несоответствие колонке');
       return;
     }
 
@@ -101,29 +125,31 @@ function MainPage({ theme }) {
 
     try {
       await editTask({ id: movedCard._id, token, task: updatedCard });
-      console.log("Статус задачи успешно обновлен");
-      setDragError(""); // Сбрасываем ошибку при успехе
+      toast.success('Статус задачи успешно обновлен');
+      setDragError('');
     } catch (err) {
-      console.error("Ошибка при сохранении статуса задачи:", err.message);
       setDragError(`Ошибка при сохранении статуса задачи: ${err.message}`);
-      setTasks(tasks); // Откатываем изменения при ошибке
+      toast.error(`Ошибка при сохранении статуса задачи: ${err.message}`);
+      setTasks(tasks);
     }
   };
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <StyledMain theme={theme}>
-        {columnTitles.map((title, index) => (
-          <Column
-            key={index}
-            columnId={String(index)}
-            title={title}
-            cards={tasks}
-            theme={theme}
-            token={token}
-          />
-        ))}
-      </StyledMain>
+      <Container>
+        <StyledMain theme={theme}>
+          {columnTitles.map((title, index) => (
+            <Column
+              key={index}
+              columnId={String(index)}
+              title={title}
+              cards={tasks}
+              theme={theme}
+              token={token}
+            />
+          ))}
+        </StyledMain>
+      </Container>
     </DragDropContext>
   );
 }

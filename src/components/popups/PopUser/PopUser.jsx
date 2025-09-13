@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   StyledPopUser,
   StyledName,
@@ -7,30 +7,30 @@ import {
   StyledThemeLabel,
   StyledToggleSwitch,
   StyledLogoutButton,
-} from "./PopUser.styled";
-import { useNavigate } from "react-router-dom";
+} from './PopUser.styled';
+import { useNavigate } from 'react-router-dom';
 
 function PopUser({
   isOpen,
   setIsAuth,
-  userName = "Пользователь",
-  userEmail = "email@example.com",
+  userName = 'Пользователь',
+  userEmail = 'email@example.com',
   theme,
   onToggleTheme = () => {},
 }) {
   const navigate = useNavigate();
-  const [isDarkTheme, setIsDarkTheme] = useState(theme === "dark");
+  const [isDarkTheme, setIsDarkTheme] = useState(theme === 'dark');
 
   useEffect(() => {
-    setIsDarkTheme(theme === "dark");
+    setIsDarkTheme(theme === 'dark');
   }, [theme]);
 
   const handleLogoutClick = () => {
-    navigate("/exit"); // Сразу переходим на /exit
+    navigate('/exit');
   };
 
   const handleThemeToggle = () => {
-    const newTheme = !isDarkTheme ? "dark" : "light";
+    const newTheme = !isDarkTheme ? 'dark' : 'light';
     setIsDarkTheme(!isDarkTheme);
     onToggleTheme(newTheme);
   };
@@ -51,7 +51,10 @@ function PopUser({
           $isDarkTheme={isDarkTheme}
         />
       </StyledThemeToggleWrapper>
-      <StyledLogoutButton $isDarkTheme={isDarkTheme} onClick={handleLogoutClick}>
+      <StyledLogoutButton
+        $isDarkTheme={isDarkTheme}
+        onClick={handleLogoutClick}
+      >
         Выйти
       </StyledLogoutButton>
     </StyledPopUser>

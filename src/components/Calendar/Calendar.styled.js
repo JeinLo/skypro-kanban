@@ -1,16 +1,16 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const CalendarWrapper = styled.div`
   width: 200px;
   user-select: none;
   margin: 0;
-  font-family: "Roboto", sans-serif;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
+  font-family: 'Roboto', sans-serif;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#b0b0b0' : '#94A6BE')};
 `;
 
 export const CalendarHeader = styled.div`
   display: flex;
-  justify-content: flex-start; /* Выравнивание к левому краю */
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 8px;
 `;
@@ -21,15 +21,16 @@ export const Button = styled.button`
   font-size: 14px;
   cursor: pointer;
   user-select: none;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
-  font-family: "Roboto", sans-serif;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#b0b0b0' : '#94A6BE')};
+  font-family: 'Roboto', sans-serif;
 
   &:hover:not(:disabled) {
-    color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#3f53d8' : '#565eef')};
   }
 
   &:focus:not(:disabled) {
-    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    outline: 2px solid
+      ${({ $isDarkTheme }) => ($isDarkTheme ? '#3f53d8' : '#565eef')};
   }
 
   &:disabled {
@@ -38,16 +39,16 @@ export const Button = styled.button`
   }
 
   svg {
-    vertical-align: middle; /* Выравнивание SVG */
+    vertical-align: middle;
   }
 `;
 
 export const MonthYear = styled.div`
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600; /* SemiBold */
   font-style: normal;
   font-size: 14px;
-  color: #94A6BE;
+  color: #94a6be;
   user-select: none;
   display: flex;
   align-items: center;
@@ -59,9 +60,9 @@ export const DaysOfWeek = styled.div`
   justify-content: space-between;
   font-weight: 600;
   font-size: 11px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#b0b0b0' : '#94A6BE')};
   margin-bottom: 6px;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 `;
 
 export const DaysOfWeekItem = styled.div`
@@ -84,12 +85,12 @@ export const Day = styled.div`
   border-radius: 50%;
   cursor: pointer;
   user-select: none;
-  font-family: "Roboto", sans-serif;
-  font-weight: 700; /* Bold */
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
   font-style: normal;
   font-size: 10px;
   letter-spacing: -2%;
-  color: #94A6BE;
+  color: #94a6be;
 
   ${({ $isToday }) =>
     $isToday &&
@@ -112,12 +113,13 @@ export const Day = styled.div`
   `}
 
   &:hover:not(:disabled) {
-    background-color: #94A6BE;
+    background-color: #94a6be;
     color: #ffffff;
   }
 
   &:focus:not(:disabled) {
-    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    outline: 2px solid
+      ${({ $isDarkTheme }) => ($isDarkTheme ? '#3f53d8' : '#565eef')};
   }
 
   &:disabled {

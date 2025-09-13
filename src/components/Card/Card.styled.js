@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { css, keyframes } from 'styled-components';
 
 export const cardAnimation = keyframes`
   0% { height: 0; opacity: 0; }
@@ -13,7 +13,7 @@ export const CardItem = styled.div`
 export const CardStyled = styled.div`
   width: 220px;
   height: 130px;
-  background-color: ${({ theme }) => (theme === "dark" ? "#333" : "#ffffff")};
+  background-color: ${({ theme }) => theme.modalBackground};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -21,7 +21,9 @@ export const CardStyled = styled.div`
   justify-content: space-between;
   padding: 15px 13px 19px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s, transform 0.3s;
+  transition:
+    box-shadow 0.3s,
+    transform 0.3s;
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -31,10 +33,7 @@ export const CardStyled = styled.div`
     isDragging &&
     css`
       transform: scale(1.02);
-      ${theme === "dark" &&
-      css`
-        box-shadow: 0px 10px 39px 0px #94A6BE66;
-      `}
+      box-shadow: 0px 10px 39px 0px ${({ theme }) => theme.secondary}66;
     `}
 `;
 
@@ -52,30 +51,28 @@ export const CardTheme = styled.div`
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
-  background-color: ${({ themeType }) => {
-    switch (themeType) {
-      case "_orange":
-        return "#FFE4C2";
-      case "_green":
-        return "#B4FDD1";
-      case "_purple":
-        return "#E9D4FF";
-      case "_default":
+  background-color: ${({ $category, theme }) => {
+    switch ($category) {
+      case 'Web Design':
+        return theme === 'dark' ? '#4d3d1a' : '#FFE4C2';
+      case 'Research':
+        return theme === 'dark' ? '#1a4d3d' : '#B4FDD1';
+      case 'Copywriting':
+        return theme === 'dark' ? '#3d1a4d' : '#E9D4FF';
       default:
-        return "#FFF";
+        return theme === 'dark' ? '#2a2a2a' : '#f4f5f7';
     }
   }};
-  color: ${({ themeType }) => {
-    switch (themeType) {
-      case "_orange":
-        return "#FF6D00";
-      case "_green":
-        return "#06B16E";
-      case "_purple":
-        return "#9A48F1";
-      case "_default":
+  color: ${({ $category, theme }) => {
+    switch ($category) {
+      case 'Web Design':
+        return theme === 'dark' ? '#ffaa66' : '#FF6D00';
+      case 'Research':
+        return theme === 'dark' ? '#66ffaa' : '#06B16E';
+      case 'Copywriting':
+        return theme === 'dark' ? '#aa66ff' : '#9A48F1';
       default:
-        return "#000";
+        return theme === 'dark' ? '#666' : '#999';
     }
   }};
   display: flex;
@@ -102,12 +99,12 @@ export const CardButton = styled.div`
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: #94A6BE;
+    background-color: ${({ theme }) => theme.secondary};
     transition: background-color 0.3s;
   }
 
   &:hover div {
-    background-color: #3f53d8;
+    background-color: ${({ theme }) => theme.primaryHover};
   }
 `;
 
@@ -123,7 +120,7 @@ export const CardTitle = styled.p`
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => (theme === "dark" ? "#fff" : "#000000")};
+  color: ${({ theme }) => theme.text};
   margin-bottom: 10px;
 `;
 
@@ -136,7 +133,7 @@ export const CardDate = styled.div`
     width: 13px;
     height: 13px;
     fill: none;
-    stroke: #6a6b6cff;
+    stroke: ${({ theme }) => theme.secondary};
     stroke-width: 0.8;
   }
 
@@ -144,7 +141,7 @@ export const CardDate = styled.div`
     margin-left: 6px;
     font-size: 10px;
     line-height: 13px;
-    color: #94A6BE;
+    color: ${({ theme }) => theme.secondary};
     letter-spacing: 0.2px;
   }
 `;

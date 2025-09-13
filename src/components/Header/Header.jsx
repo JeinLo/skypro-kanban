@@ -1,26 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   SHeader,
   Logo,
   StyledActions,
   StyledTaskLink,
   StyledUserLink,
-} from "./Header.styled";
-import PopUser from "../popups/PopUser/PopUser";
-import { Link } from "react-router-dom";
+} from './Header.styled';
+import PopUser from '../popups/PopUser/PopUser';
+import { Link } from 'react-router-dom';
 
 function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   const [isPopUserOpen, setIsPopUserOpen] = useState(false);
-  const [userName, setUserName] = useState("Ivan Ivanov");
+  const [userName, setUserName] = useState('Пользователь');
+  const [userEmail, setUserEmail] = useState('email@example.com');
 
   useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
+    const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       try {
         const parsed = JSON.parse(userInfo);
-        setUserName(parsed.user?.name || parsed.name || "Пользователь");
+        setUserName(parsed.user?.name || parsed.name || 'Пользователь');
+        setUserEmail(parsed.user?.login || parsed.login || 'email@example.com');
       } catch (err) {
-        console.error("Ошибка парсинга userInfo:", err);
       }
     }
   }, []);
@@ -29,7 +30,7 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
     <SHeader theme={theme}>
       <Logo theme={theme}>
         <img
-          src={`/images/${theme === "dark" ? "logo_dark.png" : "logo.png"}`}
+          src={`/images/${theme === 'dark' ? 'logo_dark.png' : 'logo.png'}`}
           alt="Logo"
         />
       </Logo>
@@ -37,13 +38,17 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
         <StyledTaskLink as={Link} to="/createcard" theme={theme}>
           Создать новую задачу
         </StyledTaskLink>
-        <StyledUserLink theme={theme} onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
+        <StyledUserLink
+          theme={theme}
+          onClick={() => setIsPopUserOpen(!isPopUserOpen)}
+        >
           {userName}
         </StyledUserLink>
         <PopUser
           isOpen={isPopUserOpen}
           setIsAuth={setIsAuth}
           userName={userName}
+          userEmail={userEmail}
           theme={theme}
           onToggleTheme={onToggleTheme}
         />
