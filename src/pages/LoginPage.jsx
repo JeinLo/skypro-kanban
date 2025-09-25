@@ -11,15 +11,15 @@ const StyledBackground = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.background};
+  background-color: ${props => props.theme.background};
 `;
 
 const StyledModal = styled.div`
-  background-color: ${({ theme }) => theme.modalBackground};
+  background-color: ${props => props.theme.modalBackground};
   width: 400px;
   height: 380px;
   border-radius: 10px;
-  border: 0.7px solid ${({ theme }) => theme.modalBorder};
+  border: 0.7px solid ${props => props.theme.modalBorder};
   padding: 50px 60px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -30,7 +30,7 @@ const StyledModal = styled.div`
 const StyledTitle = styled.h2`
   font-size: 20px;
   margin-bottom: 20px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 const StyledForm = styled.form`
@@ -52,18 +52,16 @@ const StyledInput = styled.input`
   height: 30px;
   border-radius: 8px;
   border: 0.7px solid
-    ${({ theme, $error }) => ($error ? theme.error : theme.modalBorder)};
+    ${({ $error, theme }) => ($error ? theme.error : theme.modalBorder)};
   padding: 8px 10px;
   font-size: 16px;
-  background-color: ${({ theme }) => theme.modalBackground};
-  color: ${({ theme }) => theme.text};
-
+  background-color: ${props => props.theme.modalBackground};
+  color: ${props => props.theme.text};
   &:focus {
-    outline: 2px solid ${({ theme }) => theme.primary};
+    outline: 2px solid ${props => props.theme.primary};
   }
-
   &::placeholder {
-    color: ${({ theme }) => theme.secondary};
+    color: ${props => props.theme.secondary};
   }
 `;
 
@@ -80,11 +78,10 @@ const StyledButton = styled.button`
   font-size: 16px;
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
-
   &:hover:not(:disabled),
   &:active:not(:disabled) {
-    background-color: ${({ theme }) => theme.primaryHover};
-    border-color: ${({ theme }) => theme.primaryHover};
+    background-color: ${props => props.theme.primaryHover};
+    border-color: ${props => props.theme.primaryHover};
   }
 `;
 
@@ -100,27 +97,24 @@ const StyledFormGroup = styled.div`
 const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.secondary}66;
   text-decoration: none;
-
   &:hover {
     text-decoration: underline;
   }
 `;
 
 const StyledError = styled.p`
-  color: ${({ theme }) => theme.error};
+  color: ${props => props.theme.error};
   text-align: center;
   font-size: 14px;
 `;
 
-function LoginPage({ theme }) {
+function LoginPage() {
   const { setIsAuth, setToken } = useContext(AuthContext);
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     login: '',
     password: '',
   });
-
   const [error, setError] = useState('');
   const [errors, setErrors] = useState({ login: false, password: false });
 
@@ -159,7 +153,6 @@ function LoginPage({ theme }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) {
       toast.error(
         'Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.'
@@ -189,13 +182,12 @@ function LoginPage({ theme }) {
 
   return (
     <Container>
-      <StyledBackground theme={theme}>
-        <StyledModal theme={theme}>
-          <StyledTitle theme={theme}>Вход</StyledTitle>
-          <StyledForm theme={theme} onSubmit={handleSubmit}>
+      <StyledBackground>
+        <StyledModal>
+          <StyledTitle>Вход</StyledTitle>
+          <StyledForm onSubmit={handleSubmit}>
             <StyledInputWrapper>
               <StyledInput
-                theme={theme}
                 type="email"
                 name="login"
                 placeholder="Эл. почта"
@@ -204,7 +196,6 @@ function LoginPage({ theme }) {
                 $error={errors.login}
               />
               <StyledInput
-                theme={theme}
                 type="password"
                 name="password"
                 placeholder="Пароль"
@@ -213,14 +204,11 @@ function LoginPage({ theme }) {
                 $error={errors.password}
               />
             </StyledInputWrapper>
-
             {error && <StyledError>{error}</StyledError>}
-
-            <StyledButton theme={theme} type="submit" $disabled={isFormInvalid}>
+            <StyledButton type="submit" $disabled={isFormInvalid}>
               Войти
             </StyledButton>
-
-            <StyledFormGroup theme={theme}>
+            <StyledFormGroup>
               <p>Нужно зарегистрироваться?</p>
               <StyledLink to="/register">Регистрируйтесь здесь</StyledLink>
             </StyledFormGroup>

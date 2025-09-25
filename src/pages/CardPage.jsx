@@ -28,7 +28,7 @@ import styled from 'styled-components';
 import { toast } from 'react-toastify';
 
 const ErrorMessage = styled.div`
-  color: ${({ theme }) => theme.error};
+  color: ${props => props.theme.error};
   font-size: 14px;
   margin: 10px 0;
   text-align: center;
@@ -36,7 +36,7 @@ const ErrorMessage = styled.div`
 
 const statuses = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
 
-function CardPage({ theme }) {
+function CardPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
@@ -68,7 +68,7 @@ function CardPage({ theme }) {
     }
   }, [id, token]);
 
-  if (!task) return error ? <ErrorMessage theme={theme}>{error}</ErrorMessage> : null;
+  if (!task) return error ? <ErrorMessage>{error}</ErrorMessage> : null;
 
   const handleCategoryClick = () => {};
 
@@ -171,19 +171,16 @@ function CardPage({ theme }) {
 
   return (
     <ModalOverlay
-      $isDarkTheme={theme === 'dark'}
       onClick={(e) => {
         if (e.target === e.currentTarget && !isEditing) navigate('/');
       }}
     >
-      <ModalContent $isDarkTheme={theme === 'dark'} onClick={(e) => e.stopPropagation()}>
-        {error && <ErrorMessage theme={theme}>{error}</ErrorMessage>}
+      <ModalContent onClick={(e) => e.stopPropagation()}>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <ModalHeader>
-          <ModalTitle $isDarkTheme={theme === 'dark'}>{task.title || 'Название задачи'}</ModalTitle>
+          <ModalTitle>{task.title || 'Название задачи'}</ModalTitle>
           {category && (
             <Category
-              $isDarkTheme={theme === 'dark'}
-              $isActive={true}
               $category={category}
               onClick={() => handleCategoryClick(category)}
               style={{ cursor: isEditing ? 'pointer' : 'default' }}
@@ -192,16 +189,15 @@ function CardPage({ theme }) {
             </Category>
           )}
         </ModalHeader>
-        <Form $isDarkTheme={theme === 'dark'} onSubmit={handleSave}>
+        <Form onSubmit={handleSave}>
           <InputWrapper>
-            <InputLabel $isDarkTheme={theme === 'dark'}>Статус</InputLabel>
+            <InputLabel>Статус</InputLabel>
             {isEditing ? (
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {statuses.map((stat) => (
                   <StatusButton
                     key={stat}
                     $isActive={stat === status}
-                    $isDarkTheme={theme === 'dark'}
                     onClick={() => handleStatusClick(stat)}
                     type="button"
                     disabled={!isEditing}
@@ -211,7 +207,7 @@ function CardPage({ theme }) {
                 ))}
               </div>
             ) : (
-              <StatusButton $isActive={true} $isDarkTheme={theme === 'dark'} disabled={!isEditing}>
+              <StatusButton $isActive={true} disabled={!isEditing}>
                 {status}
               </StatusButton>
             )}
@@ -219,9 +215,8 @@ function CardPage({ theme }) {
           <FormContent>
             <div style={{ flex: 1 }}>
               <TextareaWrapper>
-                <TextareaLabel $isDarkTheme={theme === 'dark'}>Описание задачи</TextareaLabel>
+                <TextareaLabel>Описание задачи</TextareaLabel>
                 <Textarea
-                  $isDarkTheme={theme === 'dark'}
                   value={description}
                   onChange={(e) => isEditing && setDescription(e.target.value.trim())}
                   disabled={!isEditing}
@@ -230,14 +225,13 @@ function CardPage({ theme }) {
               </TextareaWrapper>
             </div>
             <CalendarWrapper>
-              <CalendarLabel $isDarkTheme={theme === 'dark'}>Даты</CalendarLabel>
+              <CalendarLabel>Даты</CalendarLabel>
               <Calendar
                 value={dueDate}
                 onChange={handleDateSelect}
-                $isDarkTheme={theme === 'dark'}
                 disabled={!isEditing}
               />
-              <SelectedDateText $isDarkTheme={theme === 'dark'}>
+              <SelectedDateText>
                 {dueDate ? `Срок исполнения: ${dueDate.toLocaleDateString('ru-RU')}` : 'Срок исполнения'}
               </SelectedDateText>
             </CalendarWrapper>
@@ -245,28 +239,28 @@ function CardPage({ theme }) {
           <ButtonGroup>
             {!isEditing ? (
               <>
-                <Button $isDarkTheme={theme === 'dark'} type="button" onClick={handleEdit} $isSecondary>
+                <Button type="button" onClick={handleEdit} $isSecondary>
                   Редактировать задачу
                 </Button>
-                <Button $isDarkTheme={theme === 'dark'} type="button" onClick={handleDelete} $isSecondary>
+                <Button type="button" onClick={handleDelete} $isSecondary>
                   Удалить задачу
                 </Button>
-                <Button $isDarkTheme={theme === 'dark'} type="button" onClick={() => navigate('/')} $isClose>
+                <Button type="button" onClick={() => navigate('/')} $isClose>
                   Закрыть
                 </Button>
               </>
             ) : (
               <>
-                <Button $isDarkTheme={theme === 'dark'} type="submit">
+                <Button type="submit">
                   Сохранить
                 </Button>
-                <Button $isDarkTheme={theme === 'dark'} type="button" onClick={handleCancel} $isCancel>
+                <Button type="button" onClick={handleCancel} $isCancel>
                   Отменить
                 </Button>
-                <Button $isDarkTheme={theme === 'dark'} type="button" onClick={handleDelete} $isSecondary>
+                <Button type="button" onClick={handleDelete} $isSecondary>
                   Удалить задачу
                 </Button>
-                <Button $isDarkTheme={theme === 'dark'} type="button" onClick={() => navigate('/')} $isClose>
+                <Button type="button" onClick={() => navigate('/')} $isClose>
                   Закрыть
                 </Button>
               </>

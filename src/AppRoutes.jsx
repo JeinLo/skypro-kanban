@@ -1,4 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { AuthContext } from './contexts/AuthContext';
+import { TaskContext } from './contexts/TaskContext';
+import { postTask } from './services/api';
+import { toast } from 'react-toastify';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -7,13 +12,8 @@ import CardPage from './pages/CardPage';
 import Header from './components/Header/Header';
 import ExitPage from './pages/ExitPage';
 import TaskModal from './components/TaskModal/TaskModal';
-import { useState, useContext } from 'react';
-import { AuthContext } from './contexts/AuthContext';
-import { TaskContext } from './contexts/TaskContext';
-import { postTask } from './services/api';
-import { toast } from 'react-toastify';
 
-function AppRoutes({ theme, onToggleTheme }) {
+function AppRoutes({ onToggleTheme }) {
   const { isAuth, setIsAuth, token } = useContext(AuthContext);
   const { setTasks } = useContext(TaskContext);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -35,7 +35,6 @@ function AppRoutes({ theme, onToggleTheme }) {
       {isAuth && (
         <Header
           setIsAuth={setIsAuth}
-          theme={theme}
           onToggleTheme={onToggleTheme}
           token={token}
           setTasks={setTasks}
@@ -46,7 +45,7 @@ function AppRoutes({ theme, onToggleTheme }) {
           path="/"
           element={
             isAuth ? (
-              <MainPage theme={theme} />
+              <MainPage />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -58,7 +57,7 @@ function AppRoutes({ theme, onToggleTheme }) {
             isAuth ? (
               <Navigate to="/" replace />
             ) : (
-              <LoginPage theme={theme} />
+              <LoginPage />
             )
           }
         />
@@ -68,7 +67,7 @@ function AppRoutes({ theme, onToggleTheme }) {
             isAuth ? (
               <Navigate to="/" replace />
             ) : (
-              <RegisterPage theme={theme} />
+              <RegisterPage />
             )
           }
         />
@@ -76,7 +75,7 @@ function AppRoutes({ theme, onToggleTheme }) {
           path="/cardview/:id"
           element={
             isAuth ? (
-              <CardPage theme={theme} />
+              <CardPage />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -90,7 +89,6 @@ function AppRoutes({ theme, onToggleTheme }) {
                 isOpen={true}
                 onClose={() => setIsTaskModalOpen(false)}
                 onCreateTask={handleCreateTask}
-                theme={theme}
               />
             ) : (
               <Navigate to="/login" replace />
@@ -103,7 +101,7 @@ function AppRoutes({ theme, onToggleTheme }) {
         />
         <Route
           path="*"
-          element={<NotFoundPage theme={theme} />}
+          element={<NotFoundPage />}
         />
       </Routes>
     </>

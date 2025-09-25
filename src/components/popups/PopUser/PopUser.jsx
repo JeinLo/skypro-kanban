@@ -30,7 +30,7 @@ function PopUser({
   };
 
   const handleThemeToggle = () => {
-    const newTheme = !isDarkTheme ? 'dark' : 'light';
+    const newTheme = isDarkTheme ? 'light' : 'dark';
     setIsDarkTheme(!isDarkTheme);
     onToggleTheme(newTheme);
   };
@@ -38,21 +38,19 @@ function PopUser({
   if (!isOpen) return null;
 
   return (
-    <StyledPopUser $isDarkTheme={isDarkTheme}>
-      <StyledName $isDarkTheme={isDarkTheme}>{userName}</StyledName>
-      <StyledEmail $isDarkTheme={isDarkTheme}>{userEmail}</StyledEmail>
-      <StyledThemeToggleWrapper $isDarkTheme={isDarkTheme}>
+    <StyledPopUser>
+      <StyledName>{userName}</StyledName>
+      <StyledEmail>{userEmail}</StyledEmail>
+      <StyledThemeToggleWrapper>
         <StyledThemeLabel htmlFor="theme-toggle">Темная тема</StyledThemeLabel>
         <StyledToggleSwitch
           id="theme-toggle"
           type="checkbox"
           checked={isDarkTheme}
           onChange={handleThemeToggle}
-          $isDarkTheme={isDarkTheme}
         />
       </StyledThemeToggleWrapper>
       <StyledLogoutButton
-        $isDarkTheme={isDarkTheme}
         onClick={handleLogoutClick}
       >
         Выйти

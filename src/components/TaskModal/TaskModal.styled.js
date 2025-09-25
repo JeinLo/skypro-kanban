@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -6,8 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: ${({ theme }) =>
-    theme === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)'};
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,7 +14,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.modalBackground};
+  background-color: ${props => props.theme.modalBackground};
   width: 630px;
   height: 596px;
   border-radius: 10px;
@@ -25,8 +24,8 @@ export const ModalContent = styled.div`
   flex-direction: column;
   gap: 20px;
   position: relative;
-  border: 0.7px solid ${({ theme }) => theme.modalBorder};
-  font-family: 'Roboto', sans-serif;
+  border: 0.7px solid ${props => props.theme.modalBorder};
+  font-family: "Roboto", sans-serif;
 `;
 
 export const ModalHeader = styled.div`
@@ -37,11 +36,11 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalTitle = styled.h2`
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-style: normal;
   font-size: 20px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 export const CloseButton = styled.button`
@@ -49,23 +48,17 @@ export const CloseButton = styled.button`
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: ${({ theme }) => theme.secondary};
-  font-family: 'Roboto', sans-serif;
+  color: ${props => props.theme.secondary};
+  font-family: "Roboto", sans-serif;
 
   &:hover {
-    color: ${({ theme }) => theme.primary};
+    color: ${props => props.theme.primary};
   }
 `;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  flex-grow: 1;
-`;
-
-export const FormContent = styled.div`
-  display: flex;
   gap: 20px;
   flex-grow: 1;
 `;
@@ -77,11 +70,11 @@ export const InputWrapper = styled.div`
 `;
 
 export const InputLabel = styled.label`
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 export const Input = styled.input`
@@ -90,151 +83,167 @@ export const Input = styled.input`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid ${({ theme }) => theme.secondary}66;
-  background-color: ${({ theme }) => theme.modalBackground};
+  border: 0.7px solid ${props => props.theme.secondary}66;
+  background-color: ${props => props.theme.modalBackground};
   font-size: 14px;
-  color: ${({ theme }) => theme.text};
-  font-family: 'Roboto', sans-serif;
+  color: ${props => props.theme.text};
+  font-family: "Roboto", sans-serif;
 
   &:focus {
-    outline: 2px solid ${({ theme }) => theme.primary};
+    outline: 2px solid ${props => props.theme.primary};
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.secondary}66;
+    color: ${props => props.theme.secondary}66;
   }
 `;
 
 export const TextareaWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 20px;
 `;
 
 export const TextareaLabel = styled.label`
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 600;
+  font-style: normal;
   font-size: 14px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
+  margin-top: 20px;
 `;
 
 export const Textarea = styled.textarea`
-  width: 100%;
+  width: 370px;
   height: 200px;
   border-radius: 8px;
   padding: 14px;
-  border: 0.7px solid ${({ theme }) => theme.secondary}66;
-  background-color: ${({ theme }) => theme.modalBackground};
+  gap: 14px;
+  border: 0.7px solid ${props => props.theme.secondary}66;
+  background-color: ${props => props.theme.modalBackground};
   font-size: 14px;
-  color: ${({ theme }) => theme.text};
-  font-family: 'Roboto', sans-serif;
   resize: none;
+  color: ${props => props.theme.text};
+  font-family: "Roboto", sans-serif;
 
   &:focus {
-    outline: 2px solid ${({ theme }) => theme.primary};
+    outline: 2px solid ${props => props.theme.primary};
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.secondary}66;
+    color: ${props => props.theme.secondary}66;
   }
 `;
 
 export const CalendarWrapper = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 200px;
 `;
 
 export const CalendarLabel = styled.label`
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 600;
+  font-style: normal;
   font-size: 14px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
+  margin-bottom: 15px;
 `;
 
 export const SelectedDateText = styled.p`
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 12px;
-  color: ${({ theme }) => theme.secondary};
+  font-style: normal;
+  font-size: 10px;
   text-align: center;
+  vertical-align: middle;
+  color: ${props => props.theme.secondary};
 `;
 
 export const CategoryWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 `;
 
 export const Category = styled.button`
-  padding: 6px 16px;
+  width: 115px;
+  height: 30px;
+  padding: 8px 20px;
+  border: none;
   border-radius: 24px;
   font-size: 12px;
   font-weight: 600;
-  border: 0.7px solid ${({ theme }) => theme.secondary}66;
-  background-color: ${({ $isActive, $category, theme }) =>
-    $isActive
-      ? $category === 'Web Design'
-        ? theme === 'dark' ? '#4d3d1a' : '#FFE4C2'
-        : $category === 'Research'
-        ? theme === 'dark' ? '#1a4d3d' : '#B4FDD1'
-        : $category === 'Copywriting'
-        ? theme === 'dark' ? '#3d1a4d' : '#E9D4FF'
-        : theme.primary
-      : theme.modalBackground};
-  color: ${({ $isActive, $category, theme }) =>
-    $isActive
-      ? $category === 'Web Design'
-        ? theme === 'dark' ? '#ffaa66' : '#FF6D00'
-        : $category === 'Research'
-        ? theme === 'dark' ? '#66ffaa' : '#06B16E'
-        : $category === 'Copywriting'
-        ? theme === 'dark' ? '#aa66ff' : '#9A48F1'
-        : '#ffffff'
-      : theme.text};
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  user-select: none;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  font-family: "Roboto", sans-serif;
+  background-color: ${({ $isSelected, theme, children }) => {
+    const cat = children;
+    if ($isSelected) {
+      return theme.categories[cat]?.background || theme.categories.default.background;
+    } else {
+      return `${theme.categories[cat]?.background}80` || `${theme.categories.default.background}80`;
+    }
+  }};
+  color: ${({ $isSelected, theme, children }) => {
+    const cat = children;
+    if ($isSelected) {
+      return theme.categories[cat]?.color || theme.categories.default.color;
+    } else {
+      return `${theme.categories[cat]?.color}80` || `${theme.categories.default.color}80`;
+    }
+  }};
+  opacity: ${({ $isSelected }) => ($isSelected ? 1 : 0.5)};
+  &:hover,
+  &:active {
+    background-color: ${({ theme, children }) => {
+      const cat = children;
+      return theme.categories[cat]?.background || theme.categories.default.background;
+    }};
+    color: ${({ theme, children }) => {
+      const cat = children;
+      return theme.categories[cat]?.color || theme.categories.default.color;
+    }};
+  }
+`;
 
-  &:hover {
-    background-color: ${({ $category, theme }) =>
-      $category === 'Web Design'
-        ? theme === 'dark' ? '#4d3d1a' : '#FFE4C2'
-        : $category === 'Research'
-        ? theme === 'dark' ? '#1a4d3d' : '#B4FDD1'
-        : $category === 'Copywriting'
-        ? theme === 'dark' ? '#3d1a4d' : '#E9D4FF'
-        : theme.primaryHover};
-    color: ${({ $category, theme }) =>
-      $category === 'Web Design'
-        ? theme === 'dark' ? '#ffaa66' : '#FF6D00'
-        : $category === 'Research'
-        ? theme === 'dark' ? '#66ffaa' : '#06B16E'
-        : $category === 'Copywriting'
-        ? theme === 'dark' ? '#aa66ff' : '#9A48F1'
-        : '#ffffff'};
+export const Button = styled.button`
+  width: 132px;
+  height: 30px;
+  padding: 10px 14px;
+  border: 2px solid ${props => props.theme.primary};
+  border-radius: 4px;
+  background-color: ${props => props.theme.primary};
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Roboto", sans-serif;
+  white-space: nowrap;
+  transition: background-color 0.3s;
+
+  &:hover,
+  &:active {
+    background-color: ${props => props.theme.primaryHover};
+    border-color: ${props => props.theme.primaryHover};
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
 export const Error = styled.p`
-  font-family: 'Roboto', sans-serif;
-  font-size: 12px;
-  color: ${({ theme }) => theme.error};
+  color: ${props => props.theme.error};
   text-align: center;
-`;
-
-export const Button = styled.button`
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
   font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  background-color: ${({ theme }) => theme.primary};
-  color: #ffffff;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.primaryHover};
-  }
+  font-family: "Roboto", sans-serif;
 `;

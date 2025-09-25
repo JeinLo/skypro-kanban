@@ -3,7 +3,7 @@ import { Droppable } from '@hello-pangea/dnd';
 import Card from '../Card/Card';
 import { ColumnStyled, ColumnTitle } from './Column.styled';
 
-function Column({ title, cards, columnId, theme, token }) {
+function Column({ title, cards, columnId, token }) {
   const filteredCards = cards.filter(
     (card) => card.status?.toLowerCase() === title.toLowerCase()
   );
@@ -15,15 +15,13 @@ function Column({ title, cards, columnId, theme, token }) {
           $isDraggingOver={snapshot.isDraggingOver}
           ref={provided.innerRef}
           {...provided.droppableProps}
-          theme={theme}
         >
-          <ColumnTitle theme={theme}>{title}</ColumnTitle>
+          <ColumnTitle>{title}</ColumnTitle>
           {filteredCards.map((card, index) => (
             <Card
               key={card._id}
               card={card}
               index={index}
-              theme={theme}
               token={token}
             />
           ))}

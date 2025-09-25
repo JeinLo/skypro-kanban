@@ -8,15 +8,15 @@ const StyledNotFoundPage = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.background};
-  color: ${({ theme }) => theme.text};
+  background-color: ${props => props.theme.background};
+  color: ${props => props.theme.text};
   text-align: center;
   font-family: 'Roboto', sans-serif;
 `;
 
 const StyledTitle = styled.h2`
   font-size: 36px;
-  color: ${({ theme }) => theme.error};
+  color: ${props => props.theme.error};
   margin-bottom: 20px;
   font-weight: 700;
 `;
@@ -24,28 +24,27 @@ const StyledTitle = styled.h2`
 const StyledMessage = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.primary};
+  color: ${props => props.theme.primary};
   text-decoration: none;
   font-size: 16px;
   font-weight: 600;
   padding: 8px 16px;
   border-radius: 4px;
   transition: background-color 0.3s;
-
   &:hover {
-    background-color: ${({ theme }) => theme.primaryHover};
+    background-color: ${props => props.theme.primaryHover};
     color: #ffffff;
   }
 `;
 
-const NotFoundPage = ({ theme }) => {
+const NotFoundPage = () => {
   return (
     <Container>
-      <StyledNotFoundPage theme={theme}>
+      <StyledNotFoundPage>
         <StyledTitle>404</StyledTitle>
         <StyledMessage>Страница не найдена</StyledMessage>
         <StyledLink to="/">Вернуться на главную</StyledLink>

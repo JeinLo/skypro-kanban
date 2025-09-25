@@ -15,7 +15,7 @@ const StyledMain = styled.div`
   gap: 20px;
   min-height: 100vh;
   position: relative;
-  background-color: ${({ theme }) => theme.background};
+  background-color: ${props => props.theme.background};
 `;
 
 const gradientAnimation = keyframes`
@@ -29,9 +29,9 @@ const Loader = styled.div`
   height: 100vh;
   background: linear-gradient(
     270deg,
-    ${({ theme }) => theme.modalBackground},
-    ${({ theme }) => theme.secondary},
-    ${({ theme }) => theme.modalBackground}
+    ${props => props.theme.modalBackground},
+    ${props => props.theme.secondary},
+    ${props => props.theme.modalBackground}
   );
   background-size: 600% 600%;
   animation: ${gradientAnimation} 4s ease infinite;
@@ -40,7 +40,7 @@ const Loader = styled.div`
   align-items: center;
   font-size: 18px;
   font-weight: 600;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 const EmptyMessage = styled.div`
@@ -48,34 +48,34 @@ const EmptyMessage = styled.div`
   text-align: center;
   font-size: 18px;
   font-weight: 600;
-  color: ${({ theme }) => theme.secondary};
+  color: ${props => props.theme.secondary};
   padding: 20px;
 `;
 
 const ErrorMessage = styled.div`
-  color: ${({ theme }) => theme.error};
+  color: ${props => props.theme.error};
   text-align: center;
   font-size: 16px;
   padding: 20px;
 `;
 
-function MainPage({ theme }) {
+function MainPage() {
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
   const { tasks, setTasks, loading, error } = useContext(TaskContext);
   const [dragError, setDragError] = useState('');
 
-  if (loading) return <Loader theme={theme}>Загрузка задач...</Loader>;
+  if (loading) return <Loader>Загрузка задач...</Loader>;
   if (error) {
     if (error.includes('авторизации')) {
       navigate('/login');
       return null;
     }
-    return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
+    return <ErrorMessage>{error}</ErrorMessage>;
   }
-  if (dragError) return <ErrorMessage theme={theme}>{dragError}</ErrorMessage>;
+  if (dragError) return <ErrorMessage>{dragError}</ErrorMessage>;
   if (tasks.length === 0) {
-    return <EmptyMessage theme={theme}>Новых задач нет</EmptyMessage>;
+    return <EmptyMessage>Новых задач нет</EmptyMessage>;
   }
 
   const columnTitles = [
@@ -137,14 +137,13 @@ function MainPage({ theme }) {
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Container>
-        <StyledMain theme={theme}>
+        <StyledMain>
           {columnTitles.map((title, index) => (
             <Column
               key={index}
               columnId={String(index)}
               title={title}
               cards={tasks}
-              theme={theme}
               token={token}
             />
           ))}

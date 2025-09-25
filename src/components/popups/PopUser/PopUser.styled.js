@@ -4,7 +4,7 @@ export const StyledPopUser = styled.div`
   position: absolute;
   top: 60px;
   right: 20px;
-  background-color: ${({ theme }) => theme.modalBackground};
+  background-color: ${props => props.theme.modalBackground};
   padding: 20px;
   border-radius: 8px;
   width: 220px;
@@ -19,13 +19,13 @@ export const StyledName = styled.div`
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 6px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
   text-align: center;
 `;
 
 export const StyledEmail = styled.div`
   font-size: 14px;
-  color: ${({ theme }) => theme.secondary};
+  color: ${props => props.theme.secondary};
   margin-bottom: 16px;
   word-break: break-word;
   text-align: center;
@@ -37,7 +37,7 @@ export const StyledThemeToggleWrapper = styled.label`
   align-items: center;
   font-weight: 500;
   font-size: 14px;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
   margin-bottom: 20px;
   cursor: pointer;
 `;
@@ -51,16 +51,14 @@ export const StyledToggleSwitch = styled.input.attrs({ type: 'checkbox' })`
   height: 20px;
   position: relative;
   appearance: none;
-  background: ${({ theme }) => theme.modalBorder};
+  background: ${props => props.theme.modalBorder};
   border-radius: 20px;
   outline: none;
   cursor: pointer;
   transition: background-color 0.3s;
-
   &:checked {
-    background: ${({ theme }) => theme.primary};
+    background: ${props => props.theme.primary};
   }
-
   &::before {
     content: '';
     position: absolute;
@@ -73,7 +71,6 @@ export const StyledToggleSwitch = styled.input.attrs({ type: 'checkbox' })`
     transition: transform 0.3s;
     transform: translateX(0);
   }
-
   &:checked::before {
     transform: translateX(20px);
   }
@@ -84,19 +81,18 @@ export const StyledLogoutButton = styled.button`
   padding: 8px 0;
   font-weight: 600;
   font-size: 14px;
-  border: 1.5px solid ${({ theme }) => theme.primary};
+  border: 1.5px solid ${props => props.theme.primary};
   border-radius: 8px;
   cursor: pointer;
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
-  background-color: ${({ theme }) => theme.modalBackground};
-  color: ${({ theme }) => theme.primary};
-
+  background-color: ${props => props.theme.modalBackground};
+  color: ${props => props.theme.primary};
   &:hover,
   &:active {
-    background-color: ${({ theme }) => theme.primary};
+    background-color: ${props => props.theme.primary};
     color: #ffffff;
-    border-color: ${({ theme }) => theme.primaryHover};
+    border-color: ${props => props.theme.primaryHover};
   }
 `;

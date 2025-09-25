@@ -1,11 +1,11 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const CalendarWrapper = styled.div`
   width: 200px;
   user-select: none;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#b0b0b0' : '#94A6BE')};
+  font-family: "Roboto", sans-serif;
+  color: ${props => props.theme.secondary};
 `;
 
 export const CalendarHeader = styled.div`
@@ -21,16 +21,15 @@ export const Button = styled.button`
   font-size: 14px;
   cursor: pointer;
   user-select: none;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#b0b0b0' : '#94A6BE')};
-  font-family: 'Roboto', sans-serif;
+  color: ${props => props.theme.secondary};
+  font-family: "Roboto", sans-serif;
 
   &:hover:not(:disabled) {
-    color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#3f53d8' : '#565eef')};
+    color: ${props => props.theme.primary};
   }
 
   &:focus:not(:disabled) {
-    outline: 2px solid
-      ${({ $isDarkTheme }) => ($isDarkTheme ? '#3f53d8' : '#565eef')};
+    outline: 2px solid ${props => props.theme.primary};
   }
 
   &:disabled {
@@ -44,11 +43,11 @@ export const Button = styled.button`
 `;
 
 export const MonthYear = styled.div`
-  font-family: 'Roboto', sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: #94a6be;
+  color: ${props => props.theme.secondary};
   user-select: none;
   display: flex;
   align-items: center;
@@ -60,9 +59,9 @@ export const DaysOfWeek = styled.div`
   justify-content: space-between;
   font-weight: 600;
   font-size: 11px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? '#b0b0b0' : '#94A6BE')};
+  color: ${props => props.theme.secondary};
   margin-bottom: 6px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 `;
 
 export const DaysOfWeekItem = styled.div`
@@ -85,12 +84,12 @@ export const Day = styled.div`
   border-radius: 50%;
   cursor: pointer;
   user-select: none;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-style: normal;
   font-size: 10px;
   letter-spacing: -2%;
-  color: #94a6be;
+  color: ${props => props.theme.secondary};
 
   ${({ $isToday }) =>
     $isToday &&
@@ -101,25 +100,24 @@ export const Day = styled.div`
   ${({ $isSelected }) =>
     $isSelected &&
     `
-    background-color: #94A6BE;
-    color: #ffffff;
+    background-color: ${props => props.theme.secondary};
+    color: ${props => props.theme.text};
   `}
 
   ${({ $isHovered }) =>
     $isHovered &&
     `
-    background-color: #94A6BE;
-    color: #ffffff;
+    background-color: ${props => props.theme.secondary};
+    color: ${props => props.theme.text};
   `}
 
   &:hover:not(:disabled) {
-    background-color: #94a6be;
-    color: #ffffff;
+    background-color: ${props => props.theme.secondary};
+    color: ${props => props.theme.text};
   }
 
   &:focus:not(:disabled) {
-    outline: 2px solid
-      ${({ $isDarkTheme }) => ($isDarkTheme ? '#3f53d8' : '#565eef')};
+    outline: 2px solid ${props => props.theme.primary};
   }
 
   &:disabled {

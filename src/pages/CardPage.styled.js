@@ -6,8 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: ${({ theme }) =>
-    theme === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)'};
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,7 +14,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.modalBackground};
+  background-color: ${props => props.theme.modalBackground};
   width: 700px;
   max-height: 90vh;
   border-radius: 12px;
@@ -26,7 +25,7 @@ export const ModalContent = styled.div`
   gap: 24px;
   position: relative;
   font-family: 'Roboto', sans-serif;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 export const ModalHeader = styled.div`
@@ -39,7 +38,7 @@ export const ModalHeader = styled.div`
 export const ModalTitle = styled.h2`
   font-size: 20px;
   font-weight: 700;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
   margin: 0;
   flex-grow: 1;
 `;
@@ -60,14 +59,14 @@ export const InputWrapper = styled.div`
 export const InputLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 export const StatusButton = styled.button`
   height: 30px;
   padding: 10px 14px;
   border-radius: 24px;
-  border: 0.7px solid ${({ theme }) => theme.secondary};
+  border: 0.7px solid ${props => props.theme.secondary};
   background-color: ${({ $isActive, theme }) =>
     $isActive ? theme.secondary : theme.modalBackground};
   color: ${({ $isActive, theme }) => ($isActive ? '#ffffff' : theme.secondary)};
@@ -83,7 +82,6 @@ export const StatusButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   &:disabled {
     width: 136px;
     gap: 7px;
@@ -92,12 +90,11 @@ export const StatusButton = styled.button`
     cursor: not-allowed;
     opacity: 0.6;
   }
-
   &:hover:not(:disabled),
   &:focus:not(:disabled) {
-    background-color: ${({ theme }) => theme.secondary};
+    background-color: ${props => props.theme.secondary};
     color: #ffffff;
-    border-color: ${({ theme }) => theme.secondary};
+    border-color: ${props => props.theme.secondary};
   }
 `;
 
@@ -111,7 +108,7 @@ export const TextareaWrapper = styled.div`
 export const TextareaLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 export const Textarea = styled.textarea`
@@ -119,21 +116,19 @@ export const Textarea = styled.textarea`
   height: 200px;
   border-radius: 12px;
   padding: 12px 14px;
-  border: 1px solid ${({ theme }) => theme.secondary};
+  border: 1px solid ${props => props.theme.secondary};
   background-color: ${({ disabled, theme }) =>
     disabled ? '#f0f3f9' : theme.modalBackground};
   font-size: 14px;
   resize: none;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
   font-family: 'Roboto', sans-serif;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'text')};
-
   &:focus {
-    outline: 2px solid ${({ theme }) => theme.primary};
+    outline: 2px solid ${props => props.theme.primary};
   }
-
   &::placeholder {
-    color: ${({ theme }) => theme.secondary};
+    color: ${props => props.theme.secondary};
   }
 `;
 
@@ -147,13 +142,13 @@ export const CalendarWrapper = styled.div`
 export const CalendarLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: ${({ theme }) => theme.text};
+  color: ${props => props.theme.text};
 `;
 
 export const SelectedDateText = styled.p`
   font-weight: 400;
   font-size: 12px;
-  color: ${({ theme }) => theme.secondary};
+  color: ${props => props.theme.secondary};
   margin-top: 6px;
   text-align: center;
 `;
@@ -167,25 +162,10 @@ export const Category = styled.div`
   white-space: nowrap;
   flex-shrink: 0;
   cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
-
-  ${({ theme, $category }) => {
-    switch ($category) {
-      case 'Web Design':
-        return `background-color: ${theme === 'dark' ? '#4d3d1a' : '#FFE4C2'}; color: ${theme === 'dark' ? '#ffaa66' : '#FF6D00'};`;
-      case 'Research':
-        return `background-color: ${theme === 'dark' ? '#1a4d3d' : '#B4FDD1'}; color: ${theme === 'dark' ? '#66ffaa' : '#06B16E'};`;
-      case 'Copywriting':
-        return `background-color: ${theme === 'dark' ? '#3d1a4d' : '#E9D4FF'}; color: ${theme === 'dark' ? '#aa66ff' : '#9A48F1'};`;
-      default:
-        return `background-color: ${theme === 'dark' ? '#2a2a2a' : '#f4f5f7'}; color: ${theme === 'dark' ? '#666' : '#999'}; opacity: 0.6;`;
-    }
-  }}
-`;
-
-export const CategoryWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  background-color: ${({ $category, theme }) =>
+    theme.categories[$category]?.background || theme.categories.default.background};
+  color: ${({ $category, theme }) =>
+    theme.categories[$category]?.color || theme.categories.default.color};
 `;
 
 export const FormContent = styled.div`
@@ -210,7 +190,6 @@ export const Button = styled.button`
   border: none;
   min-width: 140px;
   transition: background-color 0.3s;
-
   background-color: ${({ $isDelete, $isCancel, $isSecondary, theme }) => {
     if ($isDelete || $isCancel) return '#f0f3f9';
     if ($isSecondary) return 'transparent';
@@ -227,7 +206,6 @@ export const Button = styled.button`
     if ($isSecondary) return `1px solid ${theme.primary}`;
     return 'none';
   }};
-
   &:hover {
     background-color: ${({ $isDelete, $isCancel, $isSecondary, theme }) => {
       if ($isDelete) return '#d9e0ff';
@@ -238,7 +216,6 @@ export const Button = styled.button`
     color: ${({ $isCancel, $isSecondary }) =>
       $isCancel || $isSecondary ? '#fff' : '#fff'};
   }
-
   ${({ $isClose }) =>
     $isClose &&
     `

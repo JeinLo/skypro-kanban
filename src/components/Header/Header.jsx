@@ -9,7 +9,7 @@ import {
 import PopUser from '../popups/PopUser/PopUser';
 import { Link } from 'react-router-dom';
 
-function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
+function Header({ setIsAuth, onToggleTheme, token, setTasks }) {
   const [isPopUserOpen, setIsPopUserOpen] = useState(false);
   const [userName, setUserName] = useState('Пользователь');
   const [userEmail, setUserEmail] = useState('email@example.com');
@@ -21,25 +21,23 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
         const parsed = JSON.parse(userInfo);
         setUserName(parsed.user?.name || parsed.name || 'Пользователь');
         setUserEmail(parsed.user?.login || parsed.login || 'email@example.com');
-      } catch (err) {
-      }
+      } catch (err) {}
     }
   }, []);
 
   return (
-    <SHeader theme={theme}>
-      <Logo theme={theme}>
+    <SHeader>
+      <Logo>
         <img
-          src={`/images/${theme === 'dark' ? 'logo_dark.png' : 'logo.png'}`}
+          src={`/images/${localStorage.getItem('theme') === 'dark' ? 'logo_dark.png' : 'logo.png'}`}
           alt="Logo"
         />
       </Logo>
       <StyledActions>
-        <StyledTaskLink as={Link} to="/createcard" theme={theme}>
+        <StyledTaskLink as={Link} to="/createcard">
           Создать новую задачу
         </StyledTaskLink>
         <StyledUserLink
-          theme={theme}
           onClick={() => setIsPopUserOpen(!isPopUserOpen)}
         >
           {userName}
@@ -49,8 +47,11 @@ function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
           setIsAuth={setIsAuth}
           userName={userName}
           userEmail={userEmail}
-          theme={theme}
-          onToggleTheme={onToggleTheme}
+          theme={localStorage.getItem('theme') || 'light'}
+          onToggleTheme={(newTheme) => {
+            localStorage.setItem('theme', newTheme);
+            onToggleTheme(newTheme);
+          }}
         />
       </StyledActions>
     </SHeader>
