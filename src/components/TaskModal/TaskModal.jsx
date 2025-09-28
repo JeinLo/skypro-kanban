@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Добавлен useNavigate
 import {
   ModalOverlay,
   ModalContent,
@@ -25,7 +25,7 @@ import Calendar from "../Calendar/Calendar";
 
 const categories = ["Web Design", "Research", "Copywriting"];
 
-function TaskModal({ isOpen, onClose, onCreateTask }) {
+function TaskModal({ onCreateTask }) { // Убраны isOpen и onClose
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -34,8 +34,7 @@ function TaskModal({ isOpen, onClose, onCreateTask }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState("");
-  const [isTaskCreated, setIsTaskCreated] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Для перехода на главную страницу
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -70,32 +69,31 @@ function TaskModal({ isOpen, onClose, onCreateTask }) {
         date: selectedDate.toISOString(),
         status: formData.status,
       });
-      setIsTaskCreated(true);
+      setFormData({ title: "", description: "", status: "Без статуса" });
+      setSelectedDate(null);
+      setSelectedCategory(null);
+      setError("");
+      navigate('/'); // Переход на главную страницу после создания
     } catch (err) {
       setError(err.message || "Ошибка при создании задачи!");
     }
   };
 
-  useEffect(() => {
-    if (isTaskCreated && isOpen) {
-      onClose();
-      setIsTaskCreated(false);
-    }
-  }, [isTaskCreated, isOpen, onClose]);
-
-  if (!isOpen) return null;
+  const handleClose = () => {
+    setFormData({ title: "", description: "", status: "Без статуса" });
+    setSelectedDate(null);
+    setSelectedCategory(null);
+    setError("");
+    navigate('/'); 
+  };
 
   return (
-    <ModalOverlay
-      onClick={() => onClose()}
-    >
-      <ModalContent
-        onClick={(e) => e.stopPropagation()}
-      >
+    <ModalOverlay onClick={handleClose}>
+      <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>Создание задачи</ModalTitle>
           <CloseButton
-            onClick={() => onClose()}
+            onClick={handleClose}
             aria-label="Закрыть модалку"
           >
             &times;

@@ -7,6 +7,7 @@ export const lightTheme = {
   modalBackground: '#ffffff',
   modalBorder: '#ccc',
   error: 'red',
+  isDark: false,
   categories: {
     'Web Design': { background: '#FFE4C2', color: '#FF6D00' },
     'Research': { background: '#B4FDD1', color: '#06B16E' },
@@ -24,6 +25,7 @@ export const darkTheme = {
   modalBackground: '#2a2a2a',
   modalBorder: '#333',
   error: '#ff6666',
+  isDark: true,
   categories: {
     'Web Design': { background: '#4d3d1a', color: '#ffaa66' },
     'Research': { background: '#1a4d3d', color: '#66ffaa' },

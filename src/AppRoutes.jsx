@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import { AuthContext } from './contexts/AuthContext';
 import { TaskContext } from './contexts/TaskContext';
 import { postTask } from './services/api';
@@ -16,16 +16,16 @@ import TaskModal from './components/TaskModal/TaskModal';
 function AppRoutes({ onToggleTheme }) {
   const { isAuth, setIsAuth, token } = useContext(AuthContext);
   const { setTasks } = useContext(TaskContext);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleCreateTask = async (taskData) => {
     try {
       const updatedTasks = await postTask({ token, task: taskData });
       setTasks(updatedTasks);
-      setIsTaskModalOpen(false);
       toast.success('Задача успешно создана!');
+      navigate('/'); // Перенаправляем на главную после создания
     } catch (err) {
-      toast.error(err.message || 'Ошибка при создании задачи');
+      toast.error(err.message || 'Ошибка при создания задачи');
       throw err;
     }
   };
@@ -43,56 +43,35 @@ function AppRoutes({ onToggleTheme }) {
       <Routes>
         <Route
           path="/"
-          element={
-            isAuth ? (
-              <MainPage />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+          element={isAuth ? <MainPage /> : <Navigate to="/login" replace />}
+        >
+          <Route
+            path="createcard"
+            element={
+              isAuth ? (
+                <TaskModal onCreateTask={handleCreateTask} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="cardview/:id"
+            element={
+              isAuth ? <CardPage /> : <Navigate to="/login" replace />
+            }
+          />
+        </Route>
         <Route
           path="/login"
           element={
-            isAuth ? (
-              <Navigate to="/" replace />
-            ) : (
-              <LoginPage />
-            )
+            isAuth ? <Navigate to="/" replace /> : <LoginPage />
           }
         />
         <Route
           path="/register"
           element={
-            isAuth ? (
-              <Navigate to="/" replace />
-            ) : (
-              <RegisterPage />
-            )
-          }
-        />
-        <Route
-          path="/cardview/:id"
-          element={
-            isAuth ? (
-              <CardPage />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route
-          path="/createcard"
-          element={
-            isAuth ? (
-              <TaskModal
-                isOpen={true}
-                onClose={() => setIsTaskModalOpen(false)}
-                onCreateTask={handleCreateTask}
-              />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            isAuth ? <Navigate to="/" replace /> : <RegisterPage />
           }
         />
         <Route
