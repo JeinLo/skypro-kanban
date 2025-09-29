@@ -13,7 +13,7 @@ import {
 
 const daysOfWeek = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
-function Calendar({ value, onChange = () => {}, disabled }) {
+function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
   const [currentDate, setCurrentDate] = useState(() =>
     value ? new Date(value) : new Date()
   );
@@ -85,15 +85,16 @@ function Calendar({ value, onChange = () => {}, disabled }) {
   };
 
   return (
-    <CalendarWrapper>
+    <CalendarWrapper $isDarkTheme={$isDarkTheme}>
       <CalendarHeader>
-        <MonthYear>
+        <MonthYear $isDarkTheme={$isDarkTheme}>
           {currentDate.toLocaleString("ru-RU", {
             month: "long",
             year: "numeric",
           }).replace(/^./, (str) => str.toUpperCase())}
           <div style={{ display: "flex", gap: "5px", marginLeft: "10px", alignItems: "center" }}>
             <Button
+              $isDarkTheme={$isDarkTheme}
               onClick={nextMonth}
               aria-label="Следующий месяц"
               disabled={disabled}
@@ -112,6 +113,7 @@ function Calendar({ value, onChange = () => {}, disabled }) {
               </svg>
             </Button>
             <Button
+              $isDarkTheme={$isDarkTheme}
               onClick={prevMonth}
               aria-label="Предыдущий месяц"
               disabled={disabled}
@@ -135,7 +137,7 @@ function Calendar({ value, onChange = () => {}, disabled }) {
 
       <DaysOfWeek>
         {daysOfWeek.map((day) => (
-          <DaysOfWeekItem key={day}>
+          <DaysOfWeekItem key={day} $isDarkTheme={$isDarkTheme}>
             {day}
           </DaysOfWeekItem>
         ))}
@@ -149,6 +151,7 @@ function Calendar({ value, onChange = () => {}, disabled }) {
               $isToday={isSameDay(day, today)}
               $isSelected={isSameDay(day, value)}
               $isHovered={isSameDay(day, hoveredDay)}
+              $isDarkTheme={$isDarkTheme}
               onClick={() => handleDayClick(day)}
               onMouseEnter={() => handleDayHover(day)}
               onMouseLeave={handleMouseLeave}

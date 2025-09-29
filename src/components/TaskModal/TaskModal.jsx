@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Добавлен useNavigate
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ModalOverlay,
   ModalContent,
@@ -22,10 +22,12 @@ import {
   Error,
 } from "./TaskModal.styled";
 import Calendar from "../Calendar/Calendar";
+import { toast } from 'react-toastify';
 
 const categories = ["Web Design", "Research", "Copywriting"];
 
-function TaskModal({ onCreateTask }) { // Убраны isOpen и onClose
+function TaskModal({ isOpen, onClose, onCreateTask, theme }) {
+  console.log("TaskModal props:", { isOpen, theme, onCreateTask });
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -34,7 +36,7 @@ function TaskModal({ onCreateTask }) { // Убраны isOpen и onClose
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Для перехода на главную страницу
+  const [isTaskCreated, setIsTaskCreated] = useState(false);
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -50,17 +52,18 @@ function TaskModal({ onCreateTask }) { // Убраны isOpen и onClose
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: value.trim(), // Используем trim() из новой версии
     });
     setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title || !selectedCategory || !selectedDate) {
+    if (!formData.title.trim() || !selectedCategory || !selectedDate) {
       setError("Заполните все поля: название, категория, дата");
       return;
     }
+    console.log("Submitting task:", { formData, selectedCategory, selectedDate });
     try {
       await onCreateTask({
         title: formData.title,
@@ -69,31 +72,44 @@ function TaskModal({ onCreateTask }) { // Убраны isOpen и onClose
         date: selectedDate.toISOString(),
         status: formData.status,
       });
-      setFormData({ title: "", description: "", status: "Без статуса" });
-      setSelectedDate(null);
-      setSelectedCategory(null);
-      setError("");
-      navigate('/'); // Переход на главную страницу после создания
+      toast.success('Задача успешно создана!');
+      setIsTaskCreated(true);
     } catch (err) {
+      toast.error(err.message || 'Ошибка при создании задачи');
       setError(err.message || "Ошибка при создании задачи!");
+      console.error("Ошибка создания задачи:", err);
     }
   };
 
-  const handleClose = () => {
-    setFormData({ title: "", description: "", status: "Без статуса" });
-    setSelectedDate(null);
-    setSelectedCategory(null);
-    setError("");
-    navigate('/'); 
-  };
+  useEffect(() => {
+    if (isTaskCreated && isOpen) {
+      onClose(); // Закрытие из старой версии
+      setIsTaskCreated(false);
+    }
+  }, [isTaskCreated, isOpen, onClose]);
+
+  if (!isOpen) {
+    console.log("TaskModal не рендерится, isOpen=false");
+    return null;
+  }
 
   return (
-    <ModalOverlay onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay
+      onClick={() => {
+        console.log("Закрытие TaskModal через фон");
+        onClose();
+      }}
+    >
+      <ModalContent
+        onClick={(e) => e.stopPropagation()}
+      >
         <ModalHeader>
           <ModalTitle>Создание задачи</ModalTitle>
           <CloseButton
-            onClick={handleClose}
+            onClick={() => {
+              console.log("Закрытие TaskModal через крестик");
+              onClose();
+            }}
             aria-label="Закрыть модалку"
           >
             &times;

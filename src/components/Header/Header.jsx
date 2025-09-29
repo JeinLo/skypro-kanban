@@ -1,57 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   SHeader,
   Logo,
   StyledActions,
   StyledTaskLink,
   StyledUserLink,
-} from './Header.styled';
-import PopUser from '../popups/PopUser/PopUser';
-import { Link } from 'react-router-dom';
+} from "./Header.styled";
+import PopUser from "../popups/PopUser/PopUser";
+import { Link } from "react-router-dom";
 
-function Header({ setIsAuth, onToggleTheme, token, setTasks }) {
+function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   const [isPopUserOpen, setIsPopUserOpen] = useState(false);
-  const [userName, setUserName] = useState('Пользователь');
-  const [userEmail, setUserEmail] = useState('email@example.com');
+  const [userName, setUserName] = useState("Пользователь");
 
   useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
+    const userInfo = localStorage.getItem("userInfo");
     if (userInfo) {
       try {
         const parsed = JSON.parse(userInfo);
-        setUserName(parsed.user?.name || parsed.name || 'Пользователь');
-        setUserEmail(parsed.user?.login || parsed.login || 'email@example.com');
-      } catch (err) {}
+        setUserName(parsed.user?.name || parsed.name || "Пользователь");
+      } catch (err) {
+        console.error("Ошибка парсинга userInfo:", err);
+      }
     }
   }, []);
 
   return (
-    <SHeader>
-      <Logo>
+    <SHeader theme={theme}>
+      <Logo theme={theme}>
         <img
-          src={`/images/${localStorage.getItem('theme') === 'dark' ? 'logo_dark.png' : 'logo.png'}`}
+          src={`/images/${theme === "dark" ? "logo_dark.png" : "logo.png"}`}
           alt="Logo"
         />
       </Logo>
       <StyledActions>
-        <StyledTaskLink as={Link} to="/createcard">
+        <StyledTaskLink as={Link} to="/createcard" theme={theme}>
           Создать новую задачу
         </StyledTaskLink>
-        <StyledUserLink
-          onClick={() => setIsPopUserOpen(!isPopUserOpen)}
-        >
+        <StyledUserLink theme={theme} onClick={() => setIsPopUserOpen(!isPopUserOpen)}>
           {userName}
         </StyledUserLink>
         <PopUser
           isOpen={isPopUserOpen}
           setIsAuth={setIsAuth}
           userName={userName}
-          userEmail={userEmail}
-          theme={localStorage.getItem('theme') || 'light'}
-          onToggleTheme={(newTheme) => {
-            localStorage.setItem('theme', newTheme);
-            onToggleTheme(newTheme);
-          }}
+          theme={theme}
+          onToggleTheme={onToggleTheme}
         />
       </StyledActions>
     </SHeader>

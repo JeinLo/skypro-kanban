@@ -13,7 +13,7 @@ export const CardItem = styled.div`
 export const CardStyled = styled.div`
   width: 220px;
   height: 130px;
-  background-color: ${props => props.theme.modalBackground};
+  background-color: ${props => props.theme.modalBackground || '#ffffff'};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -41,10 +41,10 @@ export const CardTheme = styled.div`
   height: 20px;
   padding: 5px 14px;
   border-radius: 18px;
-  background-color: ${({ $category, theme }) =>
-    theme.categories[$category]?.background || theme.categories.default.background};
-  color: ${({ $category, theme }) =>
-    theme.categories[$category]?.color || theme.categories.default.color};
+  background-color: ${({ $themeType, theme }) =>
+    theme.categories[$themeType]?.background || theme.categories._default.background || '#e0e0e0'};
+  color: ${({ $themeType, theme }) =>
+    theme.categories[$themeType]?.color || theme.categories._default.color || '#000000'};
   display: flex;
   align-items: center;
   p {
@@ -67,11 +67,11 @@ export const CardButton = styled.div`
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: ${props => props.theme.secondary};
+    background-color: ${props => props.theme.secondary || '#94A6BE'};
     transition: background-color 0.3s;
   }
   &:hover div {
-    background-color: ${props => props.theme.primaryHover};
+    background-color: ${props => props.theme.primaryHover || '#3f53d8'};
   }
 `;
 
@@ -87,7 +87,7 @@ export const CardTitle = styled.p`
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
-  color: ${props => props.theme.text};
+  color: ${props => props.theme.text || '#000000'};
   margin-bottom: 10px;
 `;
 
@@ -99,14 +99,14 @@ export const CardDate = styled.div`
     width: 13px;
     height: 13px;
     fill: none;
-    stroke: ${props => props.theme.secondary};
+    stroke: ${props => props.theme.secondary || '#94A6BE'};
     stroke-width: 0.8;
   }
   p {
     margin-left: 6px;
     font-size: 10px;
     line-height: 13px;
-    color: ${props => props.theme.secondary};
+    color: ${props => props.theme.secondary || '#94A6BE'};
     letter-spacing: 0.2px;
   }
 `;

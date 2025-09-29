@@ -26,7 +26,7 @@ export const StyledActions = styled.div`
 `;
 
 export const StyledTaskLink = styled(Link)`
-  background-color: ${props => props.theme.primary};
+  background-color: #565EEF; // Восстановлено из старой версии
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 4px;
@@ -35,7 +35,7 @@ export const StyledTaskLink = styled(Link)`
   display: inline-block;
   transition: background-color 0.3s;
   &:hover {
-    background-color: ${props => props.theme.primaryHover};
+    background-color: #3f53d8; // Восстановлено из старой версии
   }
 `;
 
@@ -46,9 +46,7 @@ export const StyledUserLink = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  transition:
-    color 0.3s,
-    text-decoration 0.3s;
+  transition: color 0.3s, text-decoration 0.3s;
   &:hover {
     color: ${props => props.theme.primaryHover};
     text-decoration: underline;

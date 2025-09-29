@@ -1,24 +1,34 @@
 import { useState } from "react";
-import { ThemeProvider } from 'styled-components';
-import { lightTheme, darkTheme } from './styles/themes';
-import GlobalStyle from './styles/GlobalStyles';
-import { AuthProvider } from './contexts/AuthContext';
-import { TaskProvider } from './contexts/TaskContext';
+import { ThemeProvider } from "styled-components";
 import AppRoutes from "./AppRoutes";
+import GlobalStyle from "./styles/GlobalStyles";
+import { lightTheme, darkTheme } from "./styles/themes";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || "light");
-  const themeConfig = theme === 'dark' ? darkTheme : lightTheme;
+  const [isAuth, setIsAuth] = useState(!!localStorage.getItem("isAuth"));
+  const [token, setToken] = useState(null);
+  const [theme, setTheme] = useState("light");
+  const [tasks, setTasks] = useState([]);
+
+  const currentTheme = theme === "light" ? lightTheme : darkTheme;
 
   return (
-    <AuthProvider>
-      <TaskProvider>
-        <ThemeProvider theme={themeConfig}>
-          <GlobalStyle />
-          <AppRoutes onToggleTheme={setTheme} />
-        </ThemeProvider>
-      </TaskProvider>
-    </AuthProvider>
+    <ThemeProvider theme={currentTheme}>
+      <GlobalStyle theme={theme} />
+      <ErrorBoundary>
+        <AppRoutes
+          isAuth={isAuth}
+          setIsAuth={setIsAuth}
+          token={token}
+          setToken={setToken}
+          theme={currentTheme}
+          onToggleTheme={setTheme}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

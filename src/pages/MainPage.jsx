@@ -1,13 +1,10 @@
-import React, { useState, useContext } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { DragDropContext } from '@hello-pangea/dnd';
-import Column from '../components/Column/Column';
-import { editTask } from '../services/api';
-import { AuthContext } from '../contexts/AuthContext';
-import { TaskContext } from '../contexts/TaskContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
+import { DragDropContext } from "@hello-pangea/dnd";
+import Column from "../components/Column/Column";
+import { fetchTasks, editTask } from "../services/api";
+import { useOutletContext } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { Container } from '../styles/Global.styled';
 
 const StyledMain = styled.div`
   padding: 20px;
@@ -15,32 +12,25 @@ const StyledMain = styled.div`
   gap: 20px;
   min-height: 100vh;
   position: relative;
-  background-color: ${props => props.theme.background};
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#e5e7eb")};
 `;
 
 const gradientAnimation = keyframes`
   0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 `;
 
 const Loader = styled.div`
   width: 100%;
   height: 100vh;
-  background: linear-gradient(
-    270deg,
-    ${props => props.theme.modalBackground},
-    ${props => props.theme.secondary},
-    ${props => props.theme.modalBackground}
-  );
+  background: linear-gradient(270deg, ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#e0e7ff")}, ${({ theme }) => (theme === "dark" ? "#333" : "#c7d2fe")}, ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#e0e7ff")});
   background-size: 600% 600%;
-  animation: ${gradientAnimation} 4s ease infinite;
+  animation: ${gradientAnimation} 3s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-  color: ${props => props.theme.text};
+  font-size: 16px;
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
 `;
 
 const EmptyMessage = styled.div`
@@ -48,42 +38,50 @@ const EmptyMessage = styled.div`
   text-align: center;
   font-size: 18px;
   font-weight: 600;
-  color: ${props => props.theme.secondary};
+  color: ${({ theme }) => (theme === "dark" ? "#b0b0b0" : "#94A6BE")};
   padding: 20px;
 `;
 
 const ErrorMessage = styled.div`
-  color: ${props => props.theme.error};
+  color: ${({ theme }) => (theme === "dark" ? "#ff6666" : "red")};
   text-align: center;
   font-size: 16px;
   padding: 20px;
 `;
 
-function MainPage() {
-  const navigate = useNavigate();
-  const { token } = useContext(AuthContext);
-  const { tasks, setTasks, loading, error } = useContext(TaskContext);
-  const [dragError, setDragError] = useState('');
+function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }) {
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(initialLoading);
+  const { setTasks } = useOutletContext();
 
-  if (loading) return <Loader>Загрузка задач...</Loader>;
-  if (error) {
-    if (error.includes('авторизации')) {
-      navigate('/login');
-      return null;
+  useEffect(() => {
+    if (!initialLoading && token && initialTasks.length === 0) {
+      setIsLoading(true);
+      fetchTasks({ token })
+        .then((tasksData) => {
+          console.log("Данные из fetchTasks:", tasksData);
+          setTasks(tasksData);
+        })
+        .catch((err) => {
+          console.error("Ошибка загрузки задач:", err.message);
+          setError(err.message || "Ошибка загрузки задач");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-    return <ErrorMessage>{error}</ErrorMessage>;
-  }
-  if (dragError) return <ErrorMessage>{dragError}</ErrorMessage>;
-  if (tasks.length === 0) {
-    return <EmptyMessage>Новых задач нет</EmptyMessage>;
-  }
+  }, [initialLoading, token, initialTasks.length, setTasks]);
+
+  if (isLoading) return <Loader theme={theme}>Загрузка...</Loader>;
+  if (error) return <ErrorMessage theme={theme}>{error} </ErrorMessage>;
+  if (initialTasks.length === 0) return <EmptyMessage theme={theme}>Новых задач нет</EmptyMessage>;
 
   const columnTitles = [
-    'Без статуса',
-    'Нужно сделать',
-    'В работе',
-    'Тестирование',
-    'Готово',
+    "Без статуса",
+    "Нужно сделать",
+    "В работе",
+    "Тестирование",
+    "Готово",
   ];
 
   const handleDragEnd = async (result) => {
@@ -93,22 +91,22 @@ function MainPage() {
     const sourceColumnTitle = columnTitles[parseInt(source.droppableId)];
     const destColumnTitle = columnTitles[parseInt(destination.droppableId)];
 
-    const movedCard = tasks.find((task) => task._id === draggableId);
+    // Находим карточку по _id
+    const movedCard = initialTasks.find((task) => task._id === draggableId);
     if (!movedCard) {
-      setDragError('Задача не найдена');
+      console.error("Задача не найдена:", draggableId);
       toast.error('Задача не найдена');
       return;
     }
 
-    if (
-      !movedCard.status ||
-      movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()
-    ) {
-      setDragError('Некорректный статус задачи или несоответствие колонке');
+    // Проверяем, что карточка находится в исходной колонке
+    if (movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()) {
+      console.error("Статус карточки не соответствует исходной колонке:", movedCard.status, sourceColumnTitle);
       toast.error('Некорректный статус задачи или несоответствие колонке');
       return;
     }
 
+    // Формируем обновленную карточку
     const updatedCard = {
       ...movedCard,
       status: destColumnTitle,
@@ -118,37 +116,40 @@ function MainPage() {
       date: movedCard.date,
     };
 
-    const optimisticTasks = tasks.map((task) =>
+    // Оптимистичное обновление состояния
+    const optimisticTasks = initialTasks.map((task) =>
       task._id === movedCard._id ? updatedCard : task
     );
     setTasks(optimisticTasks);
 
+    // Запрос к бэкенду
     try {
       await editTask({ id: movedCard._id, token, task: updatedCard });
+      console.log("Статус задачи успешно обновлен");
       toast.success('Статус задачи успешно обновлен');
-      setDragError('');
     } catch (err) {
-      setDragError(`Ошибка при сохранении статуса задачи: ${err.message}`);
-      toast.error(`Ошибка при сохранении статуса задачи: ${err.message}`);
-      setTasks(tasks);
+      console.error("Ошибка при сохранении статуса задачи:", err.message);
+      setError(`Ошибка при сохранении статуса задачи: ${err.message}`);
+      toast.error(err.message || 'Ошибка при сохранении статуса задачи');
+      // Откатываем оптимистичное обновление в случае ошибки
+      setTasks(initialTasks);
     }
   };
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Container>
-        <StyledMain>
-          {columnTitles.map((title, index) => (
-            <Column
-              key={index}
-              columnId={String(index)}
-              title={title}
-              cards={tasks}
-              token={token}
-            />
-          ))}
-        </StyledMain>
-      </Container>
+      <StyledMain theme={theme}>
+        {columnTitles.map((title, index) => (
+          <Column
+            key={index}
+            columnId={String(index)}
+            title={title}
+            cards={initialTasks}
+            theme={theme}
+            token={token}
+          />
+        ))}
+      </StyledMain>
     </DragDropContext>
   );
 }

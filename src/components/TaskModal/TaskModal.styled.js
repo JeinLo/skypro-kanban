@@ -6,7 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${props => props.theme.background}80; // Используем theme.background
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +24,7 @@ export const ModalContent = styled.div`
   flex-direction: column;
   gap: 20px;
   position: relative;
-  border: 0.7px solid ${props => props.theme.modalBorder};
+  border: 0.7px solid ${props => props.theme.secondary}66;
   font-family: "Roboto", sans-serif;
 `;
 
@@ -52,7 +52,7 @@ export const CloseButton = styled.button`
   font-family: "Roboto", sans-serif;
 
   &:hover {
-    color: ${props => props.theme.primary};
+    color: ${props => props.theme.primaryHover};
   }
 `;
 
@@ -180,23 +180,23 @@ export const Category = styled.button`
   user-select: none;
   transition: background-color 0.2s ease, opacity 0.2s ease;
   font-family: "Roboto", sans-serif;
-  background-color: ${({ $isSelected, theme, children }) => {
+
+  ${({ $isSelected, theme, children }) => {
     const cat = children;
     if ($isSelected) {
-      return theme.categories[cat]?.background || theme.categories.default.background;
+      return `
+        background-color: ${theme.categories[cat]?.background || theme.categories.default.background};
+        color: ${theme.categories[cat]?.color || theme.categories.default.color};
+      `;
     } else {
-      return `${theme.categories[cat]?.background}80` || `${theme.categories.default.background}80`;
+      return `
+        background-color: ${theme.categories[cat]?.background}80 || ${theme.categories.default.background}80;
+        color: ${theme.categories[cat]?.color}80 || ${theme.categories.default.color}80;
+        opacity: 0.5;
+      `;
     }
-  }};
-  color: ${({ $isSelected, theme, children }) => {
-    const cat = children;
-    if ($isSelected) {
-      return theme.categories[cat]?.color || theme.categories.default.color;
-    } else {
-      return `${theme.categories[cat]?.color}80` || `${theme.categories.default.color}80`;
-    }
-  }};
-  opacity: ${({ $isSelected }) => ($isSelected ? 1 : 0.5)};
+  }}
+
   &:hover,
   &:active {
     background-color: ${({ theme, children }) => {
@@ -242,7 +242,7 @@ export const Button = styled.button`
 `;
 
 export const Error = styled.p`
-  color: ${props => props.theme.error};
+  color: ${props => props.theme.error || '#ff6666'};
   text-align: center;
   font-size: 14px;
   font-family: "Roboto", sans-serif;

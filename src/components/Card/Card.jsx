@@ -12,7 +12,21 @@ import {
   CardDate,
 } from "./Card.styled";
 
-function Card({ card, index, token }) {
+function Card({ card, index, theme, token }) {
+  const getThemeType = (topic) => {
+    if (!topic || typeof topic !== 'string') return '_default';
+    switch (topic.toLowerCase()) {
+      case "web design":
+        return "_orange";
+      case "research":
+        return "_green";
+      case "copywriting":
+        return "_purple";
+      default:
+        return "_default";
+    }
+  };
+
   const formattedDate = (date) => {
     const d = new Date(date);
     return `${d.getDate().toString().padStart(2, "0")}.${(d.getMonth() + 1)
@@ -29,10 +43,10 @@ function Card({ card, index, token }) {
           {...provided.dragHandleProps}
         >
           <Link to={`/cardview/${card._id}`} style={{ textDecoration: "none", color: "inherit" }}>
-            <CardStyled>
+            <CardStyled theme={theme}>
               <CardGroup>
-                <CardTheme $category={card.topic || 'default'}>
-                  <p>{card.topic || 'Без категории'}</p>
+                <CardTheme $themeType={getThemeType(card.topic)}>
+                  <p>{card.topic || 'Без темы'}</p>
                 </CardTheme>
                 <CardButton>
                   <div></div>

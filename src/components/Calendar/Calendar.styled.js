@@ -5,7 +5,7 @@ export const CalendarWrapper = styled.div`
   user-select: none;
   margin: 0;
   font-family: "Roboto", sans-serif;
-  color: ${props => props.theme.secondary};
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
 `;
 
 export const CalendarHeader = styled.div`
@@ -21,15 +21,15 @@ export const Button = styled.button`
   font-size: 14px;
   cursor: pointer;
   user-select: none;
-  color: ${props => props.theme.secondary};
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
   font-family: "Roboto", sans-serif;
 
   &:hover:not(:disabled) {
-    color: ${props => props.theme.primary};
+    color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
   }
 
   &:focus:not(:disabled) {
-    outline: 2px solid ${props => props.theme.primary};
+    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
   }
 
   &:disabled {
@@ -47,7 +47,7 @@ export const MonthYear = styled.div`
   font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: ${props => props.theme.secondary};
+  color: #94A6BE;
   user-select: none;
   display: flex;
   align-items: center;
@@ -59,7 +59,7 @@ export const DaysOfWeek = styled.div`
   justify-content: space-between;
   font-weight: 600;
   font-size: 11px;
-  color: ${props => props.theme.secondary};
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94A6BE")};
   margin-bottom: 6px;
   font-family: "Roboto", sans-serif;
 `;
@@ -89,7 +89,7 @@ export const Day = styled.div`
   font-style: normal;
   font-size: 10px;
   letter-spacing: -2%;
-  color: ${props => props.theme.secondary};
+  color: #94A6BE;
 
   ${({ $isToday }) =>
     $isToday &&
@@ -100,24 +100,24 @@ export const Day = styled.div`
   ${({ $isSelected }) =>
     $isSelected &&
     `
-    background-color: ${props => props.theme.secondary};
-    color: ${props => props.theme.text};
+    background-color: #94A6BE;
+    color: #ffffff;
   `}
 
   ${({ $isHovered }) =>
     $isHovered &&
     `
-    background-color: ${props => props.theme.secondary};
-    color: ${props => props.theme.text};
+    background-color: #94A6BE;
+    color: #ffffff;
   `}
 
   &:hover:not(:disabled) {
-    background-color: ${props => props.theme.secondary};
-    color: ${props => props.theme.text};
+    background-color: #94A6BE;
+    color: #ffffff;
   }
 
   &:focus:not(:disabled) {
-    outline: 2px solid ${props => props.theme.primary};
+    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
   }
 
   &:disabled {

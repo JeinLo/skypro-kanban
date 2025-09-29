@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Container } from '../styles/Global.styled';
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const StyledNotFoundPage = styled.div`
   display: flex;
@@ -8,48 +7,39 @@ const StyledNotFoundPage = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: ${props => props.theme.background};
-  color: ${props => props.theme.text};
+  background-color: ${({ theme }) => (theme === "dark" ? "#1a1a1a" : "#eaeef6")};
+  color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
   text-align: center;
-  font-family: 'Roboto', sans-serif;
 `;
 
 const StyledTitle = styled.h2`
   font-size: 36px;
-  color: ${props => props.theme.error};
+  color: ${({ theme }) => (theme === "dark" ? "#ff6666" : "#dc3545")};
   margin-bottom: 20px;
-  font-weight: 700;
 `;
 
 const StyledMessage = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
-  color: ${props => props.theme.text};
+  color: ${({ theme }) => (theme === "dark" ? "#b0b0b0" : "#000000")};
 `;
 
 const StyledLink = styled(Link)`
-  color: ${props => props.theme.primary};
+  color: ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
   text-decoration: none;
   font-size: 16px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
   &:hover {
-    background-color: ${props => props.theme.primaryHover};
-    color: #ffffff;
+    text-decoration: underline;
   }
 `;
 
-const NotFoundPage = () => {
+const NotFoundPage = ({ theme }) => {
   return (
-    <Container>
-      <StyledNotFoundPage>
-        <StyledTitle>404</StyledTitle>
-        <StyledMessage>Страница не найдена</StyledMessage>
-        <StyledLink to="/">Вернуться на главную</StyledLink>
-      </StyledNotFoundPage>
-    </Container>
+    <StyledNotFoundPage theme={theme}>
+      <StyledTitle theme={theme}>404</StyledTitle>
+      <StyledMessage theme={theme}>Страница не найдена</StyledMessage>
+      <StyledLink theme={theme} to="/">Вернуться на главную</StyledLink>
+    </StyledNotFoundPage>
   );
 };
 

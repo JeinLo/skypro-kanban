@@ -11,8 +11,7 @@ export const ColumnStyled = styled.div`
   transition: background-color 0.3s;
   ${({ $isDraggingOver, theme }) =>
     $isDraggingOver &&
-    `background-color: ${theme.secondary}33;`
-  }
+    `background-color: ${theme.secondary}33;`}
 `;
 
 export const ColumnTitle = styled.h3`
@@ -20,4 +19,13 @@ export const ColumnTitle = styled.h3`
   font-weight: 600;
   color: ${props => props.theme.text};
   margin: 0 0 10px 0;
+`;
+
+export const Cards = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100px;
+  background-color: transparent;
+  transition: background-color 0.3s;
 `;
