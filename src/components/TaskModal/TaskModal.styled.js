@@ -6,7 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: ${props => props.theme.background}80; // Используем theme.background
+  background-color: ${props => props.theme.background}80;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -182,31 +182,47 @@ export const Category = styled.button`
   font-family: "Roboto", sans-serif;
 
   ${({ $isSelected, theme, children }) => {
-    const cat = children;
+    const isDarkTheme = theme.background === '#1a1a1a'; // Определяем тему через background
     if ($isSelected) {
-      return `
-        background-color: ${theme.categories[cat]?.background || theme.categories.default.background};
-        color: ${theme.categories[cat]?.color || theme.categories.default.color};
-      `;
+      switch (children) {
+        case "Web Design":
+          return `background-color: ${isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
+        case "Research":
+          return `background-color: ${isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${isDarkTheme ? "#66ffaa" : "#06B16E"};`;
+        case "Copywriting":
+          return `background-color: ${isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+        default:
+          return `background-color: ${isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${isDarkTheme ? "#666" : "#999"};`;
+      }
     } else {
-      return `
-        background-color: ${theme.categories[cat]?.background}80 || ${theme.categories.default.background}80;
-        color: ${theme.categories[cat]?.color}80 || ${theme.categories.default.color}80;
-        opacity: 0.5;
-      `;
+      switch (children) {
+        case "Web Design":
+          return `background-color: ${isDarkTheme ? "#4d3d1a80" : "#FFE4C280"}; color: ${isDarkTheme ? "#ffaa6680" : "#FF6D0080"}; opacity: 1;`;
+        case "Research":
+          return `background-color: ${isDarkTheme ? "#1a4d3d80" : "#B4FDD180"}; color: ${isDarkTheme ? "#66ffaa80" : "#06B16E80"}; opacity: 1;`;
+        case "Copywriting":
+          return `background-color: ${isDarkTheme ? "#3d1a4d80" : "#E9D4FF80"}; color: ${isDarkTheme ? "#aa66ff80" : "#9A48F180"}; opacity: 1;`;
+        default:
+          return `background-color: ${isDarkTheme ? "#2a2a2a80" : "#f4f5f780"}; color: ${isDarkTheme ? "#66680" : "#99980"}; opacity: 0.4;`;
+      }
     }
   }}
 
   &:hover,
   &:active {
-    background-color: ${({ theme, children }) => {
-      const cat = children;
-      return theme.categories[cat]?.background || theme.categories.default.background;
-    }};
-    color: ${({ theme, children }) => {
-      const cat = children;
-      return theme.categories[cat]?.color || theme.categories.default.color;
-    }};
+    ${({ theme, children }) => {
+      const isDarkTheme = theme.background === '#1a1a1a';
+      switch (children) {
+        case "Web Design":
+          return `background-color: ${isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
+        case "Research":
+          return `background-color: ${isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${isDarkTheme ? "#66ffaa" : "#06B16E"};`;
+        case "Copywriting":
+          return `background-color: ${isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+        default:
+          return `background-color: ${isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${isDarkTheme ? "#666" : "#999"};`;
+      }
+    }}
   }
 `;
 
@@ -214,9 +230,9 @@ export const Button = styled.button`
   width: 132px;
   height: 30px;
   padding: 10px 14px;
-  border: 2px solid ${props => props.theme.primary};
+  border: 2px solid #565EEF;
   border-radius: 4px;
-  background-color: ${props => props.theme.primary};
+  background-color: #565EEF;
   color: #ffffff;
   font-size: 14px;
   cursor: pointer;
@@ -228,12 +244,12 @@ export const Button = styled.button`
   align-items: center;
   font-family: "Roboto", sans-serif;
   white-space: nowrap;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s;
 
   &:hover,
   &:active {
-    background-color: ${props => props.theme.primaryHover};
-    border-color: ${props => props.theme.primaryHover};
+    background-color: #3f53d8;
+    border-color: #3f53d8;
   }
 
   &:focus {

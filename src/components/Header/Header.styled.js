@@ -26,7 +26,7 @@ export const StyledActions = styled.div`
 `;
 
 export const StyledTaskLink = styled(Link)`
-  background-color: #565EEF; // Восстановлено из старой версии
+  background-color: #565EEF;
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 4px;
@@ -34,8 +34,10 @@ export const StyledTaskLink = styled(Link)`
   font-size: 16px;
   display: inline-block;
   transition: background-color 0.3s;
-  &:hover {
-    background-color: #3f53d8; // Восстановлено из старой версии
+  &:hover,
+  &:active {
+    background-color: #3f53d8;
+    color: #ffffff; /* Гарантируем, что текст остаётся белым */
   }
 `;
 
