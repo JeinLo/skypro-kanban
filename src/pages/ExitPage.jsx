@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { toast } from 'react-toastify';
 
 const StyledExitPage = styled.div`
   position: fixed;
@@ -87,6 +88,7 @@ function ExitPage({ setIsAuth, theme }) {
     localStorage.removeItem("isAuth");
     localStorage.removeItem("userInfo");
     setIsAuth(false);
+    toast.success('Вы успешно вышли из аккаунта');
     navigate("/login");
   };
 

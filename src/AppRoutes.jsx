@@ -9,7 +9,9 @@ import TaskModal from "./components/TaskModal/TaskModal";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { fetchTasks, postTask } from "./services/api";
+import { toast } from 'react-toastify';
 
 function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, tasks, setTasks }) {
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,7 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
         setToken(parsed.user?.token || parsed.token);
       } catch (err) {
         console.error("Ошибка парсинга userInfo:", err);
+        toast.error('Ошибка загрузки данных пользователя');
       }
     }
 
@@ -40,11 +43,15 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
       setLoading(true);
       fetchTasks({ token })
         .then((tasksData) => {
-          setTasks(tasksData);
+          const normalizedTasks = tasksData.map(task => ({
+            ...task,
+            topic: task.topic && typeof task.topic === 'string' ? task.topic : 'Без темы',
+          }));
+          setTasks(normalizedTasks);
         })
         .catch((err) => {
           console.error("Ошибка загрузки задач:", err.message);
-          // Не перенаправляем на /login здесь, только логируем
+          toast.error(err.message || 'Ошибка загрузки задач');
         })
         .finally(() => {
           setLoading(false);
@@ -70,13 +77,15 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
             path="/"
             element={
               <>
-                <MainPage
-                  loading={loading}
-                  token={token}
-                  theme={theme}
-                  tasks={tasks}
-                  setTasks={setTasks}
-                />
+                <ErrorBoundary>
+                  <MainPage
+                    loading={loading}
+                    token={token}
+                    theme={theme}
+                    tasks={tasks}
+                    setTasks={setTasks}
+                  />
+                </ErrorBoundary>
                 <Outlet />
               </>
             }
@@ -86,14 +95,19 @@ function AppRoutes({ isAuth, setIsAuth, token, setToken, theme, onToggleTheme, t
               element={
                 <TaskModal
                   isOpen={true}
-                  onClose={() => window.history.back()} // Сохраняем для совместимости, но улучшим ниже
+                  onClose={() => window.history.back()}
                   onCreateTask={async (task) => {
                     try {
                       const newTasks = await postTask({ token, task });
-                      setTasks(newTasks);
-                      return { success: true }; // Указываем успех
+                      const normalizedTasks = newTasks.map(t => ({
+                        ...t,
+                        topic: t.topic && typeof t.topic === 'string' ? t.topic : 'Без темы',
+                      }));
+                      setTasks(normalizedTasks);
+                      toast.success('Задача успешно создана!');
+                      return { success: true };
                     } catch (err) {
-                      console.error("Ошибка создания задачи:", err.message);
+                      toast.error(err.message || 'Ошибка при создании задачи');
                       throw new Error(err.message || "Ошибка при создании задачи");
                     }
                   }}

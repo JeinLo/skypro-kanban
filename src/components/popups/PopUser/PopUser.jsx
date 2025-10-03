@@ -26,7 +26,7 @@ function PopUser({
   }, [theme]);
 
   const handleLogoutClick = () => {
-    navigate("/exit"); // Сразу переходим на /exit
+    navigate("/exit");
   };
 
   const handleThemeToggle = () => {

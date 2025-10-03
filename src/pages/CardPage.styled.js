@@ -15,7 +15,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#fff" : "#fff")};
+  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#1a1a1a" : "#fff")};
   width: 700px;
   max-height: 90vh;
   border-radius: 12px;
@@ -26,7 +26,7 @@ export const ModalContent = styled.div`
   gap: 24px;
   position: relative;
   font-family: "Roboto", sans-serif;
-  color: #000;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000")};
 `;
 
 export const ModalHeader = styled.div`
@@ -39,7 +39,7 @@ export const ModalHeader = styled.div`
 export const ModalTitle = styled.h2`
   font-size: 20px;
   font-weight: 700;
-  color: #000;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000")};
   margin: 0;
   flex-grow: 1;
 `;
@@ -60,12 +60,12 @@ export const InputWrapper = styled.div`
 export const InputLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
 `;
 
 export const StatusButton = styled.button`
   height: 30px;
-  padding: 10px 14px; /* Адаптивная ширина для редактируемых статусов */
+  padding: 10px 14px;
   border-radius: 24px;
   border: 0.7px solid #94A6BE;
   background-color: ${({ $isActive }) => ($isActive ? "#94A6BE" : "#ffffff")};
@@ -73,7 +73,9 @@ export const StatusButton = styled.button`
   font-size: 14px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   white-space: nowrap;
   margin: 0 5px 5px 0;
   text-align: center;
@@ -81,12 +83,13 @@ export const StatusButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  /* Специфический стиль для неактивного статуса (до редактирования) */
   &:disabled {
     width: 136px;
     gap: 7px;
     margin-right: auto;
     margin-left: 0;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   &:hover:not(:disabled),
@@ -94,11 +97,6 @@ export const StatusButton = styled.button`
     background-color: #94A6BE;
     color: #ffffff;
     border-color: #94A6BE;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
   }
 `;
 
@@ -112,7 +110,7 @@ export const TextareaWrapper = styled.div`
 export const TextareaLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
 `;
 
 export const Textarea = styled.textarea`
@@ -121,16 +119,16 @@ export const Textarea = styled.textarea`
   border-radius: 12px;
   padding: 12px 14px;
   border: 1px solid #94a6be;
-  background-color: ${({ disabled }) => (disabled ? "#f0f3f9" : "#f0f3f9")};
+  background-color: ${({ disabled, $isDarkTheme }) =>
+    disabled ? ($isDarkTheme ? "#2a2a2a" : "#f0f3f9") : ($isDarkTheme ? "#2a2a2a" : "#f0f3f9")};
   font-size: 14px;
   resize: none;
-  color: #333;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
   font-family: "Roboto", sans-serif;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
 
   &:focus {
     outline: 2px solid #565eef;
-    background-color: #fff;
   }
 
   &::placeholder {
@@ -148,7 +146,7 @@ export const CalendarWrapper = styled.div`
 export const CalendarLabel = styled.label`
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
 `;
 
 export const SelectedDateText = styled.p`
@@ -183,12 +181,6 @@ export const Category = styled.div`
   }}
 `;
 
-export const CategoryWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
 export const FormContent = styled.div`
   display: flex;
   gap: 24px;
@@ -212,13 +204,13 @@ export const Button = styled.button`
   min-width: 140px;
   transition: background-color 0.3s;
 
-  background-color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-    if ($isDelete || $isCancel) return "#f0f3f9";
+  background-color: ${({ $isDelete, $isCancel, $isSecondary, $isDarkTheme }) => {
+    if ($isDelete || $isCancel) return $isDarkTheme ? "#2a2a2a" : "#f0f3f9";
     if ($isSecondary) return "transparent";
     return "#565eef";
   }};
-  color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-    if ($isDelete) return "#94a6be";
+  color: ${({ $isDelete, $isCancel, $isSecondary, $isDarkTheme }) => {
+    if ($isDelete) return $isDarkTheme ? "#b0b0b0" : "#94a6be";
     if ($isCancel) return "#565EEF";
     if ($isSecondary) return "#565eef";
     return "#fff";
@@ -230,8 +222,8 @@ export const Button = styled.button`
   }};
 
   &:hover {
-    background-color: ${({ $isDelete, $isCancel, $isSecondary }) => {
-      if ($isDelete) return "#d9e0ff";
+    background-color: ${({ $isDelete, $isCancel, $isSecondary, $isDarkTheme }) => {
+      if ($isDelete) return $isDarkTheme ? "#333" : "#d9e0ff";
       if ($isCancel) return "#565EEF";
       if ($isSecondary) return "#3f53d8";
       return "#3f53d8";

@@ -1,12 +1,51 @@
-# React + Vite
+# Skypro-kanban
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React-приложение для управления задачами с авторизацией, регистрацией и Kanban-доской.
 
-Currently, two official plugins are available:
+## Основные функции
+- **Авторизация и регистрация**: Пользователи могут регистрироваться и входить в систему. Валидация полей (email, пароль, имя) предотвращает отправку пустых или некорректных данных.
+- **Создание задач**: Пользователи могут создавать задачи с названием, описанием, категорией, датой и статусом. Поля валидируются, и при ошибке отображается уведомление.
+- **Редактирование задач**: Поддерживается изменение статуса, описания, категории и даты выполнения. Список задач обновляется автоматически.
+- **Удаление задач**: Задачи можно удалить, список обновляется автоматически.
+- **Перетаскивание задач**: Поддержка drag-and-drop для изменения статуса задач на Kanban-доске.
+- **Обработка ошибок**: Отображаются ошибки сервера, сети или авторизации с помощью React-Toastify.
+- **Пустой список задач**: Если задач нет, отображается сообщение "Новых задач нет".
+- **Страница 404**: Стилизована в соответствии с темой приложения, содержит ссылку на главную страницу.
+- **Темная/светлая тема**: Реализована с помощью ThemeProvider, переключение темы в профиле пользователя.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Дополнительные функции
+- **React-Toastify**: Уведомления для успешных действий (создание, редактирование, удаление) и ошибок.
+- **Фильтрация задач**: По категории и статусу.
+- **Поиск задач**: Поиск по заголовку задачи.
+- **Сортировка задач**: По дате или заголовку.
+- **Анимация загрузки**: Используется `react-spinners` для отображения загрузки задач.
 
-## Expanding the ESLint configuration
+## Установка и запуск
+1. Склонируйте репозиторий: `git clone <repository-url>`
+2. Установите зависимости: `npm install`
+3. Запустите приложение: `npm start`
+4. Для форматирования кода: `npm run format`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Используемые технологии
+- React, React Router, Styled-Components
+- Axios для API-запросов
+- React-Toastify для уведомлений
+- React-Spinners для анимации загрузки
+- @hello-pangea/dnd для drag-and-drop
+
+## API
+Приложение взаимодействует с API `https://wedev-api.sky.pro/api/`. Все запросы обрабатывают ошибки сети и авторизации.
+
+## Структура проекта
+- `src/components`: Компоненты UI (Header, Card, Column, TaskModal, Calendar и др.)
+- `src/pages`: Страницы приложения (MainPage, LoginPage, RegisterPage, CardPage, NotFoundPage)
+- `src/services`: API-запросы (auth.js, api.js)
+- `src/contexts`: Контексты для управления авторизацией и задачами
+- `src/styles`: Глобальные стили и стилизованные компоненты
+
+## Дополнительные фичи
+- Toast уведомления (react-toastify) для успеха/ошибок.
+- Валидация полей (trim, пустые поля, email).
+- Сообщение "Новых задач нет" if empty.
+- Обработка сетевых ошибок (toast).
+- Тема через string "dark"/"light", стили адаптированы.

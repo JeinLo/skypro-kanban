@@ -4,6 +4,7 @@ import { DragDropContext } from "@hello-pangea/dnd";
 import Column from "../components/Column/Column";
 import { fetchTasks, editTask } from "../services/api";
 import { useOutletContext } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const StyledMain = styled.div`
   padding: 20px;
@@ -30,6 +31,15 @@ const Loader = styled.div`
   align-items: center;
   font-size: 16px;
   color: ${({ theme }) => (theme === "dark" ? "#ffffff" : "#000000")};
+`;
+
+const EmptyMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: ${({ theme }) => (theme === "dark" ? "#b0b0b0" : "#94A6BE")};
+  padding: 20px;
 `;
 
 const ErrorMessage = styled.div`
@@ -63,7 +73,8 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
   }, [initialLoading, token, initialTasks.length, setTasks]);
 
   if (isLoading) return <Loader theme={theme}>Загрузка...</Loader>;
-  if (error) return <ErrorMessage theme={theme}>{error}</ErrorMessage>;
+  if (error) return <ErrorMessage theme={theme}>{error} </ErrorMessage>;
+  if (initialTasks.length === 0) return <EmptyMessage theme={theme}>Новых задач нет</EmptyMessage>;
 
   const columnTitles = [
     "Без статуса",
@@ -84,12 +95,14 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
     const movedCard = initialTasks.find((task) => task._id === draggableId);
     if (!movedCard) {
       console.error("Задача не найдена:", draggableId);
+      toast.error('Задача не найдена');
       return;
     }
 
     // Проверяем, что карточка находится в исходной колонке
     if (movedCard.status.toLowerCase() !== sourceColumnTitle.toLowerCase()) {
       console.error("Статус карточки не соответствует исходной колонке:", movedCard.status, sourceColumnTitle);
+      toast.error('Некорректный статус задачи или несоответствие колонке');
       return;
     }
 
@@ -113,9 +126,11 @@ function MainPage({ loading: initialLoading, token, theme, tasks: initialTasks }
     try {
       await editTask({ id: movedCard._id, token, task: updatedCard });
       console.log("Статус задачи успешно обновлен");
+      toast.success('Статус задачи успешно обновлен');
     } catch (err) {
       console.error("Ошибка при сохранении статуса задачи:", err.message);
       setError(`Ошибка при сохранении статуса задачи: ${err.message}`);
+      toast.error(err.message || 'Ошибка при сохранении статуса задачи');
       // Откатываем оптимистичное обновление в случае ошибки
       setTasks(initialTasks);
     }

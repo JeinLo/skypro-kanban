@@ -1,7 +1,7 @@
 import React from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import Card from "../Card/Card";
-import { ColumnMain, ColumnTitle, Cards } from "./Column.styled";
+import { ColumnStyled, ColumnTitle, Cards } from "./Column.styled";
 
 function Column({ columnId, title, cards, theme, token }) {
   const validStatuses = [
@@ -19,7 +19,7 @@ function Column({ columnId, title, cards, theme, token }) {
   console.log(`Рендер Column "${title}", filteredCards:`, filteredCards);
 
   return (
-    <ColumnMain $column={{ theme }}>
+    <ColumnStyled $column={{ theme }}>
       <ColumnTitle>
         <p>{title}</p>
       </ColumnTitle>
@@ -41,7 +41,7 @@ function Column({ columnId, title, cards, theme, token }) {
           </Cards>
         )}
       </Droppable>
-    </ColumnMain>
+    </ColumnStyled>
   );
 }
 

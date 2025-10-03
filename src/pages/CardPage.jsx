@@ -22,6 +22,7 @@ import {
   FormContent,
 } from "./CardPage.styled";
 import Calendar from "../components/Calendar/Calendar";
+import { toast } from 'react-toastify';
 
 const statuses = ["Без статуса", "Нужно сделать", "В работе", "Тестирование", "Готово"];
 
@@ -29,43 +30,39 @@ function CardPage({ token, theme, tasks, setTasks }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [originalTask, setOriginalTask] = useState(null); // Сохранение исходных данных
-  const [task, setTask] = useState(null); // Текущее состояние задачи
+  const [originalTask, setOriginalTask] = useState(null);
+  const [task, setTask] = useState(null);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [status, setStatus] = useState("Без статуса");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (token) {
       getTask({ id, token })
         .then((data) => {
-          setOriginalTask(data); // Сохраняем исходные данные
+          setOriginalTask(data);
           setTask(data);
           setDescription(data.description || "");
           setCategory(data.topic || null);
           setDueDate(data.date ? new Date(data.date) : null);
           setStatus(data.status || "Без статуса");
-          console.log("Задача загружена:", data);
         })
-        .catch((err) => console.error("Ошибка загрузки задачи:", err.message));
+        .catch((err) => {
+          toast.error(err.message || 'Ошибка загрузки задачи');
+          setError(err.message);
+        });
     }
   }, [id, token]);
 
-  if (!task) return null;
+  if (!task) return error ? <p>{error}</p> : null;
 
-  const handleCategoryClick = (currentCat) => {
-    if (isEditing) {
-      const categories = ["Web Design", "Research", "Copywriting"];
-      const currentIndex = categories.indexOf(currentCat);
-      const nextIndex = (currentIndex + 1) % categories.length;
-      setCategory(categories[nextIndex]);
-    }
-  };
+  const handleCategoryClick = () => {};
 
   const handleStatusClick = (newStatus) => {
     if (isEditing && newStatus !== status) {
-      setStatus(newStatus); // Обновляем локальное состояние статуса
+      setStatus(newStatus);
     }
   };
 
@@ -73,44 +70,64 @@ function CardPage({ token, theme, tasks, setTasks }) {
     if (isEditing) setDueDate(date);
   };
 
+  const validateForm = () => {
+    if (!description.trim()) {
+      setError('Описание не может быть пустым');
+      return false;
+    }
+    if (!dueDate) {
+      setError('Выберите дату выполнения');
+      return false;
+    }
+    if (!category) {
+      setError('Выберите категорию');
+      return false;
+    }
+    return true;
+  };
+
   const handleEdit = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsEditing(true);
-    console.log("Переход в режим редактирования, текущее состояние:", {
-      description,
-      category,
-      dueDate,
-      status,
-    });
+    setError(null);
   };
 
   const handleSave = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!description.trim() || !category || !dueDate || !token) return;
+    if (!validateForm()) {
+      toast.error(error);
+      return;
+    }
 
     const updatedTaskData = {
-      description,
+      title: originalTask.title,
+      description: description.trim(),
       topic: category,
       date: dueDate.toISOString(),
       status,
+      userId: originalTask.userId,
     };
 
     editTask({ id, token, task: updatedTaskData })
       .then((updatedTasks) => {
-        setTasks(updatedTasks); // Обновляем глобальное состояние задач
+        setTasks(updatedTasks);
         setIsEditing(false);
-        navigate("/"); // Возвращаемся на главную страницу
+        toast.success('Задача успешно обновлена!');
+        navigate('/');
       })
-      .catch((err) => console.error("Ошибка редактирования:", err.message));
+      .catch((err) => {
+        toast.error(err.message || 'Ошибка при сохранении задачи');
+        setError(err.message);
+      });
   };
 
   const handleCancel = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsEditing(false);
-    // Восстанавливаем исходные данные из originalTask
+    setError(null);
     if (originalTask) {
       setDescription(originalTask.description || "");
       setCategory(originalTask.topic || null);
@@ -122,17 +139,19 @@ function CardPage({ token, theme, tasks, setTasks }) {
   const handleDelete = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.confirm("Вы уверены, что хотите удалить задачу?") && token) {
+    if (token) {
       deleteTask({ id, token })
         .then((updatedTasks) => {
           setTasks(updatedTasks);
-          navigate("/");
+          toast.success('Задача успешно удалена!');
+          navigate('/');
         })
         .catch((err) => {
-          if (err.message.includes("Ошибка авторизации")) {
-            navigate("/login");
+          if (err.message.includes('Ошибка авторизации')) {
+            navigate('/login');
           } else {
-            console.error("Ошибка удаления:", err.message);
+            toast.error(err.message || 'Ошибка при удалении задачи');
+            setError(err.message);
           }
         });
     }
@@ -142,24 +161,22 @@ function CardPage({ token, theme, tasks, setTasks }) {
     <ModalOverlay
       $isDarkTheme={theme === "dark"}
       onClick={(e) => {
-        if (e.target === e.currentTarget && !isEditing) navigate("/");
+        if (e.target === e.currentTarget && !isEditing) navigate('/');
       }}
     >
       <ModalContent
         $isDarkTheme={theme === "dark"}
         onClick={(e) => e.stopPropagation()}
       >
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <ModalHeader>
-          <ModalTitle $isDarkTheme={theme === "dark"}>
-            {task.title || "Название задачи"} {/* Используем task.title */}
-          </ModalTitle>
+          <ModalTitle $isDarkTheme={theme === "dark"}>{task.title || 'Название задачи'}</ModalTitle>
           {category && (
             <Category
               $isDarkTheme={theme === "dark"}
-              $isActive={true}
               $category={category}
               onClick={() => handleCategoryClick(category)}
-              style={{ cursor: isEditing ? "pointer" : "default" }}
+              style={{ cursor: isEditing ? 'pointer' : 'default' }}
             >
               {category}
             </Category>
@@ -169,7 +186,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
           <InputWrapper>
             <InputLabel $isDarkTheme={theme === "dark"}>Статус</InputLabel>
             {isEditing ? (
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {statuses.map((stat) => (
                   <StatusButton
                     key={stat}
@@ -184,11 +201,7 @@ function CardPage({ token, theme, tasks, setTasks }) {
                 ))}
               </div>
             ) : (
-              <StatusButton
-                $isActive={true}
-                $isDarkTheme={theme === "dark"}
-                disabled={!isEditing}
-              >
+              <StatusButton $isActive={true} $isDarkTheme={theme === "dark"} disabled={!isEditing}>
                 {status}
               </StatusButton>
             )}
@@ -196,13 +209,11 @@ function CardPage({ token, theme, tasks, setTasks }) {
           <FormContent>
             <div style={{ flex: 1 }}>
               <TextareaWrapper>
-                <TextareaLabel $isDarkTheme={theme === "dark"}>
-                  Описание задачи
-                </TextareaLabel>
+                <TextareaLabel $isDarkTheme={theme === "dark"}>Описание задачи</TextareaLabel>
                 <Textarea
                   $isDarkTheme={theme === "dark"}
                   value={description}
-                  onChange={(e) => isEditing && setDescription(e.target.value)}
+                  onChange={(e) => isEditing && setDescription(e.target.value.trim())}
                   disabled={!isEditing}
                   placeholder="Введите описание задачи..."
                 />
@@ -217,70 +228,35 @@ function CardPage({ token, theme, tasks, setTasks }) {
                 disabled={!isEditing}
               />
               <SelectedDateText $isDarkTheme={theme === "dark"}>
-                {dueDate
-                  ? `Срок исполнения: ${dueDate.toLocaleDateString("ru-RU")}`
-                  : "Срок исполнения"}
+                {dueDate ? `Срок исполнения: ${dueDate.toLocaleDateString('ru-RU')}` : 'Срок исполнения'}
               </SelectedDateText>
             </CalendarWrapper>
           </FormContent>
           <ButtonGroup>
             {!isEditing ? (
               <>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="button"
-                  onClick={handleEdit}
-                  $isSecondary
-                >
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleEdit} $isSecondary>
                   Редактировать задачу
                 </Button>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="button"
-                  onClick={handleDelete}
-                  $isSecondary
-                >
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleDelete} $isSecondary>
                   Удалить задачу
                 </Button>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="button"
-                  onClick={() => navigate("/")}
-                  $isClose
-                >
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={() => navigate('/')} $isClose>
                   Закрыть
                 </Button>
               </>
             ) : (
               <>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="submit"
-                >
+                <Button $isDarkTheme={theme === "dark"} type="submit">
                   Сохранить
                 </Button>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="button"
-                  onClick={handleCancel}
-                  $isCancel
-                >
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleCancel} $isCancel>
                   Отменить
                 </Button>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="button"
-                  onClick={handleDelete}
-                  $isSecondary
-                >
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={handleDelete} $isSecondary>
                   Удалить задачу
                 </Button>
-                <Button
-                  $isDarkTheme={theme === "dark"}
-                  type="button"
-                  onClick={() => navigate("/")}
-                  $isClose
-                >
+                <Button $isDarkTheme={theme === "dark"} type="button" onClick={() => navigate('/')} $isClose>
                   Закрыть
                 </Button>
               </>

@@ -17,7 +17,7 @@ function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
   const [currentDate, setCurrentDate] = useState(() =>
     value ? new Date(value) : new Date()
   );
-  const [hoveredDay, setHoveredDay] = useState(null); // Состояние для наведения
+  const [hoveredDay, setHoveredDay] = useState(null);
 
   useEffect(() => {
     if (value) {
@@ -54,7 +54,7 @@ function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 
-  const today = new Date(); // 08:25 PM -03, 05.09.2025
+  const today = new Date();
 
   const prevMonth = () => {
     if (!disabled) {
@@ -77,11 +77,11 @@ function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
   };
 
   const handleDayHover = (day) => {
-    if (!disabled) setHoveredDay(day); // Устанавливаем наведённую дату
+    if (!disabled) setHoveredDay(day);
   };
 
   const handleMouseLeave = () => {
-    if (!disabled) setHoveredDay(null); // Сбрасываем при уходе курсора
+    if (!disabled) setHoveredDay(null);
   };
 
   return (
@@ -95,7 +95,7 @@ function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
           <div style={{ display: "flex", gap: "5px", marginLeft: "10px", alignItems: "center" }}>
             <Button
               $isDarkTheme={$isDarkTheme}
-              onClick={nextMonth} // Правая стрелка теперь слева (nextMonth)
+              onClick={nextMonth}
               aria-label="Следующий месяц"
               disabled={disabled}
             >
@@ -114,7 +114,7 @@ function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
             </Button>
             <Button
               $isDarkTheme={$isDarkTheme}
-              onClick={prevMonth} // Левая стрелка теперь справа (prevMonth)
+              onClick={prevMonth}
               aria-label="Предыдущий месяц"
               disabled={disabled}
             >
@@ -150,11 +150,11 @@ function Calendar({ value, onChange = () => {}, $isDarkTheme, disabled }) {
               key={i}
               $isToday={isSameDay(day, today)}
               $isSelected={isSameDay(day, value)}
-              $isHovered={isSameDay(day, hoveredDay)} // Добавляем состояние наведения
+              $isHovered={isSameDay(day, hoveredDay)}
               $isDarkTheme={$isDarkTheme}
               onClick={() => handleDayClick(day)}
-              onMouseEnter={() => handleDayHover(day)} // Наведение
-              onMouseLeave={handleMouseLeave} // Сброс при уходе
+              onMouseEnter={() => handleDayHover(day)}
+              onMouseLeave={handleMouseLeave}
               tabIndex={disabled ? -1 : 0}
               onKeyDown={(e) => {
                 if (!disabled && (e.key === "Enter" || e.key === " ")) {

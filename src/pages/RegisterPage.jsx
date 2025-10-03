@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signUp } from "../services/auth";
+import { toast } from 'react-toastify';
 
 const StyledBackground = styled.div`
   display: flex;
@@ -13,8 +14,8 @@ const StyledBackground = styled.div`
 
 const StyledModal = styled.div`
   background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
-  width: 400px; /* Увеличен размер окна */
-  height: 380px; /* Увеличен размер окна */
+  width: 400px;
+  height: 380px;
   border-radius: 10px;
   gap: 10px;
   top: 285px;
@@ -97,7 +98,7 @@ const StyledButton = styled.button`
 
 const StyledFormGroup = styled.div`
   text-align: center;
-  margin-top: 5px; /* Уменьшен отступ */
+  margin-top: 5px;
   font-family: Roboto;
   font-weight: 400;
   font-size: 14px;
@@ -165,7 +166,7 @@ function RegisterPage({ setIsAuth, setToken, theme }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value.trim() });
     setErrors({ ...errors, [name]: false });
     setErrorMessage("");
   };
@@ -185,11 +186,13 @@ function RegisterPage({ setIsAuth, setToken, theme }) {
       setToken(data.user?.token || data.token);
       localStorage.setItem("isAuth", "true");
       localStorage.setItem("userInfo", JSON.stringify(data));
+      toast.success('Регистрация прошла успешно!');
       navigate("/");
     } catch (err) {
       console.error("Ошибка регистрации:", err.message);
+      toast.error(err.message || 'Ошибка регистрации. Попробуйте снова.');
       setErrorMessage("Введенные вами данные не корректны. Чтобы завершить регистрацию, введите данные корректно и повторите попытку.");
-      setErrors({ name: true, login: true, password: true }); // Предполагаем ошибку во всех полях при неверных данных
+      setErrors({ name: true, login: true, password: true });
     }
   };
 
@@ -209,6 +212,7 @@ function RegisterPage({ setIsAuth, setToken, theme }) {
               value={formData.name}
               onChange={handleChange}
               $error={errors.name}
+              autoComplete="name"
             />
             <StyledInput
               theme={theme}
@@ -218,6 +222,7 @@ function RegisterPage({ setIsAuth, setToken, theme }) {
               value={formData.login}
               onChange={handleChange}
               $error={errors.login}
+              autoComplete="email"
             />
             <StyledInput
               theme={theme}
@@ -227,6 +232,7 @@ function RegisterPage({ setIsAuth, setToken, theme }) {
               value={formData.password}
               onChange={handleChange}
               $error={errors.password}
+              autoComplete="new-password"
             />
             {errorMessage && <StyledErrorMessage>{errorMessage}</StyledErrorMessage>}
           </StyledInputWrapper>

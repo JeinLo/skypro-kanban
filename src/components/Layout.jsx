@@ -31,7 +31,6 @@ const GlobalHeaderStyles = createGlobalStyle`
     transition: color 0.3s;
   }
 
-  /* Подсветка для всех модальных окон */
   [role="dialog"] {
     outline: 2px solid ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
     box-shadow: 0 0 10px ${({ theme }) => (theme === "dark" ? "#3f53d8" : "#007bff")};
@@ -45,7 +44,7 @@ function Layout({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
       <GlobalHeaderStyles theme={theme} />
       <Header setIsAuth={setIsAuth} theme={theme} onToggleTheme={onToggleTheme} token={token} setTasks={setTasks} />
       <StyledMain theme={theme}>
-        <Outlet context={{ setTasks }} /> {/* Передаем setTasks через контекст */}
+        <Outlet context={{ setTasks }} />
       </StyledMain>
     </StyledLayout>
   );

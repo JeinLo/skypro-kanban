@@ -6,7 +6,7 @@ export const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.5)")};
+  background-color: ${props => props.theme.background}80;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#1a1a1a" : "#ffffff")};
+  background-color: ${props => props.theme.modalBackground};
   width: 630px;
   height: 596px;
   border-radius: 10px;
@@ -24,7 +24,7 @@ export const ModalContent = styled.div`
   flex-direction: column;
   gap: 20px;
   position: relative;
-  border: 0.7px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#333" : "#ccc")};
+  border: 0.7px solid ${props => props.theme.secondary}66;
   font-family: "Roboto", sans-serif;
 `;
 
@@ -37,10 +37,10 @@ export const ModalHeader = styled.div`
 
 export const ModalTitle = styled.h2`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 20px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")};
+  color: ${props => props.theme.text};
 `;
 
 export const CloseButton = styled.button`
@@ -48,11 +48,11 @@ export const CloseButton = styled.button`
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#b0b0b0" : "#94a6be")};
+  color: ${props => props.theme.secondary};
   font-family: "Roboto", sans-serif;
 
   &:hover {
-    color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    color: ${props => props.theme.primaryHover};
   }
 `;
 
@@ -71,10 +71,10 @@ export const InputWrapper = styled.div`
 
 export const InputLabel = styled.label`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+  color: ${props => props.theme.text};
 `;
 
 export const Input = styled.input`
@@ -83,18 +83,18 @@ export const Input = styled.input`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid #94A6BE66; /* Обводка полей */
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
+  border: 0.7px solid ${props => props.theme.secondary}66;
+  background-color: ${props => props.theme.modalBackground};
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")}; /* Текст чёрный */
+  color: ${props => props.theme.text};
   font-family: "Roboto", sans-serif;
 
   &:focus {
-    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    outline: 2px solid ${props => props.theme.primary};
   }
 
   &::placeholder {
-    color: #94A6BE66; /* Плейсхолдер серый */
+    color: ${props => props.theme.secondary}66;
   }
 `;
 
@@ -106,10 +106,10 @@ export const TextareaWrapper = styled.div`
 
 export const TextareaLabel = styled.label`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
+  color: ${props => props.theme.text};
   margin-top: 20px;
 `;
 
@@ -119,19 +119,19 @@ export const Textarea = styled.textarea`
   border-radius: 8px;
   padding: 14px;
   gap: 14px;
-  border: 0.7px solid #94A6BE66; /* Обводка полей */
-  background-color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#2a2a2a" : "#ffffff")};
+  border: 0.7px solid ${props => props.theme.secondary}66;
+  background-color: ${props => props.theme.modalBackground};
   font-size: 14px;
   resize: none;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#000000")}; /* Текст чёрный */
+  color: ${props => props.theme.text};
   font-family: "Roboto", sans-serif;
 
   &:focus {
-    outline: 2px solid ${({ $isDarkTheme }) => ($isDarkTheme ? "#3f53d8" : "#565eef")};
+    outline: 2px solid ${props => props.theme.primary};
   }
 
   &::placeholder {
-    color: #94A6BE66; /* Плейсхолдер серый */
+    color: ${props => props.theme.secondary}66;
   }
 `;
 
@@ -145,21 +145,21 @@ export const CalendarWrapper = styled.div`
 
 export const CalendarLabel = styled.label`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ffffff" : "#333")};
-  margin-bottom: 15px; /* Отступ 15px вниз после текста "Даты" */
+  color: ${props => props.theme.text};
+  margin-bottom: 15px;
 `;
 
 export const SelectedDateText = styled.p`
   font-family: "Roboto", sans-serif;
-  font-weight: 400; /* Regular */
+  font-weight: 400;
   font-style: normal;
   font-size: 10px;
   text-align: center;
   vertical-align: middle;
-  color: #94A6BE;
+  color: ${props => props.theme.secondary};
 `;
 
 export const CategoryWrapper = styled.div`
@@ -181,44 +181,46 @@ export const Category = styled.button`
   transition: background-color 0.2s ease, opacity 0.2s ease;
   font-family: "Roboto", sans-serif;
 
-  ${({ $isSelected, $isDarkTheme, children }) => {
+  ${({ $isSelected, theme, children }) => {
+    const isDarkTheme = theme.background === '#1a1a1a'; // Определяем тему через background
     if ($isSelected) {
       switch (children) {
         case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
+          return `background-color: ${isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
         case "Research":
-          return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
+          return `background-color: ${isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${isDarkTheme ? "#66ffaa" : "#06B16E"};`;
         case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+          return `background-color: ${isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
         default:
-          return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"};`;
+          return `background-color: ${isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${isDarkTheme ? "#666" : "#999"};`;
       }
     } else {
       switch (children) {
         case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#4d3d1a80" : "#FFE4C280"}; color: ${$isDarkTheme ? "#ffaa6680" : "#FF6D0080"}; opacity: 1;`;
+          return `background-color: ${isDarkTheme ? "#4d3d1a80" : "#FFE4C280"}; color: ${isDarkTheme ? "#ffaa6680" : "#FF6D0080"}; opacity: 1;`;
         case "Research":
-          return `background-color: ${$isDarkTheme ? "#1a4d3d80" : "#B4FDD180"}; color: ${$isDarkTheme ? "#66ffaa80" : "#06B16E80"}; opacity: 1;`;
+          return `background-color: ${isDarkTheme ? "#1a4d3d80" : "#B4FDD180"}; color: ${isDarkTheme ? "#66ffaa80" : "#06B16E80"}; opacity: 1;`;
         case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#3d1a4d80" : "#E9D4FF80"}; color: ${$isDarkTheme ? "#aa66ff80" : "#9A48F180"}; opacity: 1;`;
+          return `background-color: ${isDarkTheme ? "#3d1a4d80" : "#E9D4FF80"}; color: ${isDarkTheme ? "#aa66ff80" : "#9A48F180"}; opacity: 1;`;
         default:
-          return `background-color: ${$isDarkTheme ? "#2a2a2a80" : "#f4f5f780"}; color: ${$isDarkTheme ? "#66680" : "#99980"}; opacity: 0.4;`;
+          return `background-color: ${isDarkTheme ? "#2a2a2a80" : "#f4f5f780"}; color: ${isDarkTheme ? "#66680" : "#99980"}; opacity: 0.4;`;
       }
     }
   }}
 
   &:hover,
   &:active {
-    ${({ $isDarkTheme, children }) => {
+    ${({ theme, children }) => {
+      const isDarkTheme = theme.background === '#1a1a1a';
       switch (children) {
         case "Web Design":
-          return `background-color: ${$isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${$isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
+          return `background-color: ${isDarkTheme ? "#4d3d1a" : "#FFE4C2"}; color: ${isDarkTheme ? "#ffaa66" : "#FF6D00"};`;
         case "Research":
-          return `background-color: ${$isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${$isDarkTheme ? "#66ffaa" : "#06B16E"};`;
+          return `background-color: ${isDarkTheme ? "#1a4d3d" : "#B4FDD1"}; color: ${isDarkTheme ? "#66ffaa" : "#06B16E"};`;
         case "Copywriting":
-          return `background-color: ${$isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${$isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
+          return `background-color: ${isDarkTheme ? "#3d1a4d" : "#E9D4FF"}; color: ${isDarkTheme ? "#aa66ff" : "#9A48F1"};`;
         default:
-          return `background-color: ${$isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${$isDarkTheme ? "#666" : "#999"};`;
+          return `background-color: ${isDarkTheme ? "#2a2a2a" : "#f4f5f7"}; color: ${isDarkTheme ? "#666" : "#999"};`;
       }
     }}
   }
@@ -242,7 +244,7 @@ export const Button = styled.button`
   align-items: center;
   font-family: "Roboto", sans-serif;
   white-space: nowrap;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s;
 
   &:hover,
   &:active {
@@ -256,8 +258,8 @@ export const Button = styled.button`
 `;
 
 export const Error = styled.p`
-  color: ${({ $isDarkTheme }) => ($isDarkTheme ? "#ff6666" : "red")};
+  color: ${props => props.theme.error || '#ff6666'};
   text-align: center;
   font-size: 14px;
-  font-family: "Roboto", sans-serif";
+  font-family: "Roboto", sans-serif;
 `;

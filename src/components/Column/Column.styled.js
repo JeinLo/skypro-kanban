@@ -1,34 +1,31 @@
-import styled, { css, keyframes } from "styled-components";
+import styled from 'styled-components';
 
-export const ColumnMain = styled.div`
-  width: 20%;
-  margin: 0 auto;
+export const ColumnStyled = styled.div`
+  width: 250px;
+  background-color: ${props => props.theme.background};
+  border-radius: 10px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  padding: 15px;
-  
-
-  @media screen and (max-width: 1200px) {
-    width: 100%;
-    margin: 15px 0;
-  }
+  gap: 10px;
+  transition: background-color 0.3s;
+  ${({ $isDraggingOver, theme }) =>
+    $isDraggingOver &&
+    `background-color: ${theme.secondary}33;`}
 `;
 
-export const ColumnTitle = styled.div`
-  padding: 0 10px;
-  margin-bottom: 15px;
-
-  p {
-    color: #94A6BE;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
+export const ColumnTitle = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${props => props.theme.text};
+  margin: 0 0 10px 0;
 `;
 
 export const Cards = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 5px;
+  min-height: 100px;
+  background-color: transparent;
+  transition: background-color 0.3s;
 `;

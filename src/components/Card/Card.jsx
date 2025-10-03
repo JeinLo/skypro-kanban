@@ -14,12 +14,13 @@ import {
 
 function Card({ card, index, theme, token }) {
   const getThemeType = (topic) => {
-    switch (topic) {
-      case "Web Design":
+    if (!topic || typeof topic !== 'string') return '_default';
+    switch (topic.toLowerCase()) {
+      case "web design":
         return "_orange";
-      case "Research":
+      case "research":
         return "_green";
-      case "Copywriting":
+      case "copywriting":
         return "_purple";
       default:
         return "_default";
@@ -44,8 +45,8 @@ function Card({ card, index, theme, token }) {
           <Link to={`/cardview/${card._id}`} style={{ textDecoration: "none", color: "inherit" }}>
             <CardStyled theme={theme}>
               <CardGroup>
-                <CardTheme themeType={getThemeType(card.topic)}>
-                  <p>{card.topic}</p>
+                <CardTheme $themeType={getThemeType(card.topic)}>
+                  <p>{card.topic || 'Без темы'}</p>
                 </CardTheme>
                 <CardButton>
                   <div></div>

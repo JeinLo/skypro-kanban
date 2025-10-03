@@ -10,7 +10,7 @@ export const CalendarWrapper = styled.div`
 
 export const CalendarHeader = styled.div`
   display: flex;
-  justify-content: flex-start; /* Выравнивание к левому краю */
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 8px;
 `;
@@ -38,13 +38,13 @@ export const Button = styled.button`
   }
 
   svg {
-    vertical-align: middle; /* Выравнивание SVG */
+    vertical-align: middle;
   }
 `;
 
 export const MonthYear = styled.div`
   font-family: "Roboto", sans-serif;
-  font-weight: 600; /* SemiBold */
+  font-weight: 600;
   font-style: normal;
   font-size: 14px;
   color: #94A6BE;
@@ -85,7 +85,7 @@ export const Day = styled.div`
   cursor: pointer;
   user-select: none;
   font-family: "Roboto", sans-serif;
-  font-weight: 700; /* Bold */
+  font-weight: 700;
   font-style: normal;
   font-size: 10px;
   letter-spacing: -2%;

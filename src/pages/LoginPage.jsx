@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signIn } from "../services/auth";
+import { toast } from 'react-toastify';
 
 const StyledBackground = styled.div`
   display: flex;
@@ -13,8 +14,8 @@ const StyledBackground = styled.div`
 
 const StyledModal = styled.div`
   background-color: ${({ theme }) => (theme === "dark" ? "#2a2a2a" : "#ffffff")};
-  width: 400px; /* Увеличен размер окна */
-  height: 380px; /* Увеличен размер окна */
+  width: 400px;
+  height: 380px;
   border-radius: 10px;
   gap: 10px;
   top: 285px;
@@ -22,7 +23,6 @@ const StyledModal = styled.div`
   border: 0.7px solid ${({ theme }) => (theme === "dark" ? "#333" : "#ccc")};
   padding: 50px 60px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,7 +90,7 @@ const StyledButton = styled.button`
 
 const StyledFormGroup = styled.div`
   text-align: center;
-  margin-top: 5px; /* Уменьшен отступ */
+  margin-top: 5px;
   font-family: Roboto;
   font-weight: 400;
   font-size: 14px;
@@ -142,7 +142,7 @@ function LoginPage({ setIsAuth, setToken, theme }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value.trim() });
     setErrors({ ...errors, [name]: false });
     setError("");
   };
@@ -151,6 +151,7 @@ function LoginPage({ setIsAuth, setToken, theme }) {
     e.preventDefault();
 
     if (!validateForm()) {
+      toast.error('Введенные вами данные не распознаны. Проверьте свой логин и пароль и повторите попытку входа.');
       return;
     }
 
@@ -160,11 +161,12 @@ function LoginPage({ setIsAuth, setToken, theme }) {
       setToken(data.user?.token || data.token);
       localStorage.setItem("isAuth", "true");
       localStorage.setItem("userInfo", JSON.stringify(data));
+      toast.success('Вход выполнен успешно!');
       navigate("/");
     } catch (err) {
-      console.error("Ошибка входа:", err.message);
+      toast.error(err.message || 'Ошибка входа. Попробуйте снова.');
       setError(err.message);
-      setErrors({ login: true, password: true }); // Предполагаем ошибку во всех полях при неверных данных
+      setErrors({ login: true, password: true });
     }
   };
 
@@ -184,6 +186,7 @@ function LoginPage({ setIsAuth, setToken, theme }) {
               value={formData.login}
               onChange={handleChange}
               $error={errors.login}
+              autoComplete="email"
             />
             <StyledInput
               theme={theme}
@@ -193,6 +196,7 @@ function LoginPage({ setIsAuth, setToken, theme }) {
               value={formData.password}
               onChange={handleChange}
               $error={errors.password}
+              autoComplete="current-password"
             />
           </StyledInputWrapper>
 

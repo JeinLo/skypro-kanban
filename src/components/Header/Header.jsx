@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 function Header({ setIsAuth, theme, onToggleTheme, token, setTasks }) {
   const [isPopUserOpen, setIsPopUserOpen] = useState(false);
-  const [userName, setUserName] = useState("Ivan Ivanov");
+  const [userName, setUserName] = useState("Пользователь");
 
   useEffect(() => {
     const userInfo = localStorage.getItem("userInfo");
